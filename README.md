@@ -1,9 +1,9 @@
-# Reedy
-Reedy is a Chrome extension to help you read stuff and eliminate distractions on the Internet. 
-Reedy helps you read by darkening the screen except for a single line, so you can read them one at a time.
+# Tunnel Vision
+Tunnel Vision is a Chrome extension to help you read stuff and eliminate distractions on the Internet. 
+Tunnel Vision helps you read by darkening the screen except for a single line, so you can read them one at a time.
 
 ## Development
-Reedy is written in `typescript`, and built with `vite` and `crxjs`. 
+Tunnel Vision is written in `typescript`, and built with `vite` and `crxjs`. 
 
 ## Installation
 ### Building
@@ -23,8 +23,8 @@ This will create the source code in the `dist/` folder. You can then install it 
 1. Load the `dist/` folder
 
 ## Usage
-<div> Press <b>alt-l</b> to turn the Reedy-screen on and off.</div>
-<div> You can also click Reedy icon and then click the <b>Reedy Screen On/Off</b> button.</div>
+<div> Press <b>alt-l</b> to turn the tv-screen on and off.</div>
+<div> You can also click Tunnel Vision icon and then click the <b>Tunnel Vision Screen On/Off</b> button.</div>
 <div> <b>alt + up arrow</b> to move the highlighted range up.</div>
 <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
 <div> You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
@@ -33,6 +33,7 @@ This will create the source code in the `dist/` folder. You can then install it 
 ## Plans
 * pdf mode built off of `pdfjs`
 * highlighting an arbitrary range of lines
+* highlighting by html element
 * click/drag to create a highlight box
 * click/drag to highlight an arbitrary range of lines
 

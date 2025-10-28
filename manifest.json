@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "Reedy",
+	"name": "Tunnel Vision",
 	"description": "A Chrome extension to help you read stuff and eliminate distractions by highlighting text line by line.",
 	"version": "1.0",
 	"action": {
