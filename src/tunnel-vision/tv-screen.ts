@@ -1,11 +1,11 @@
-import { ReedyScreenState, ReedyRect } from "../types"
+import { TvScreenState, TvRect } from "../types"
 
 const REEDY_SCREEN_ID = 'reedyScreen'
 const REEDY_SCREEN_DISPLAY = 'flex'
 const REEDY_SCREEN_BUFFER_RADIUS = 5
 
 // Reedy Screen State Variables
-const RECTANGLES: ReedyRect[] = []
+const RECTANGLES: TvRect[] = []
 let COLOR_HEX = '#0000ff'
 const COLOR_RGBA = {
 	r: 0,
@@ -81,7 +81,7 @@ export class ReedyScreen {
 		return ctx
 	}
 
-	static getScreenState(): ReedyScreenState {
+	static getScreenState(): TvScreenState {
 		return {
 			opacity: COLOR_RGBA.a,
 			hexColor: COLOR_HEX

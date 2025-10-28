@@ -1,7 +1,7 @@
 import { HandlerManager } from "./site-handlers/index.js"
 import { RangeManager } from "./range-manager";
 import { ReedyScreen } from "./reedy-screen";
-import { ReedyScreenState } from "../types.js";
+import { TvScreenState } from "../types.js";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
@@ -72,7 +72,7 @@ export class ReedyDirector {
 		return ea
 	}
 
-	getScreenState(): ReedyScreenState {
+	getScreenState(): TvScreenState {
 		return ReedyScreen.getScreenState()
 	}
 

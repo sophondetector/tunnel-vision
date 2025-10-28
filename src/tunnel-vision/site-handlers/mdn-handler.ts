@@ -1,4 +1,4 @@
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 function mdnElementGetter(): Array<Element> | null {
 	let mainContent;
@@ -9,7 +9,7 @@ function mdnElementGetter(): Array<Element> | null {
 	return null
 }
 
-export const mdnHandler: ReedyHandler = {
+export const mdnHandler: TvHandler = {
 	getReedyElements: mdnElementGetter,
 	getScrollableElement: () => undefined
 }

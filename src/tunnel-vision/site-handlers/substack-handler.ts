@@ -1,4 +1,4 @@
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 const SCROLLABLE_ELE_LECS = [
 	'#post-viewer > div > div > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.content-cFaSRD > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.post-XKrpvd',
@@ -47,7 +47,7 @@ function substackElementGetter(): Array<Element> | null {
 	return null
 }
 
-export const substackHandler: ReedyHandler = {
+export const substackHandler: TvHandler = {
 	getReedyElements: substackElementGetter,
 	getScrollableElement: substackScrollableElement
 }

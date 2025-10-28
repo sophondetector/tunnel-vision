@@ -1,4 +1,4 @@
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 function redditElementGetter(): Array<Element> | null {
 	const res = []
@@ -20,7 +20,7 @@ function redditElementGetter(): Array<Element> | null {
 	return null
 }
 
-export const redditHandler: ReedyHandler = {
+export const redditHandler: TvHandler = {
 	getReedyElements: redditElementGetter,
 	getScrollableElement: () => undefined
 }

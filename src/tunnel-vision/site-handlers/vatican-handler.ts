@@ -1,4 +1,4 @@
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 export function vaticanElementGetter(): Array<Element> | null {
 	const mainContent = document.querySelector('.documento')
@@ -9,7 +9,7 @@ export function vaticanElementGetter(): Array<Element> | null {
 	return [mainContent]
 }
 
-export const vaticanHandler: ReedyHandler = {
+export const vaticanHandler: TvHandler = {
 	getReedyElements: vaticanElementGetter,
 	getScrollableElement: () => undefined
 }

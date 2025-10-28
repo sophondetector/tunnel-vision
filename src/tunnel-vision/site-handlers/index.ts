@@ -4,11 +4,11 @@ import { redditHandler } from "./reddit-handler"
 import { substackHandler, isActuallySubstack } from "./substack-handler"
 import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 // TODO make handlers able to discriminate by subdomain
 const GENERIC_HANDLER_KEY: string = "GENERIC"
-const DOMAIN_HANDLER_MAP: Map<string, ReedyHandler> = new Map()
+const DOMAIN_HANDLER_MAP: Map<string, TvHandler> = new Map()
 
 DOMAIN_HANDLER_MAP.set(GENERIC_HANDLER_KEY, genericHandler)
 DOMAIN_HANDLER_MAP.set("vatican.va", vaticanHandler)
@@ -20,11 +20,11 @@ DOMAIN_HANDLER_MAP.set("reddit.com", redditHandler)
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
 export class HandlerManager {
-	static getHandler(): ReedyHandler {
+	static getHandler(): TvHandler {
 
 		const topLevelHost = HandlerManager.getTopLevelHost()
 
-		let handler: ReedyHandler | undefined
+		let handler: TvHandler | undefined
 
 		if (SUPPORTED_DOMAINS.includes(topLevelHost)) {
 			handler = DOMAIN_HANDLER_MAP.get(topLevelHost)

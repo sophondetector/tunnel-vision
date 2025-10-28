@@ -1,4 +1,4 @@
-export interface ReedyHandler {
+export interface TvHandler {
 	getReedyElements: () => Array<Element> | null
 	getScrollableElement: () => Element | undefined
 }

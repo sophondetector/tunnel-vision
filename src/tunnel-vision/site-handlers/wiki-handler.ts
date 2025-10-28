@@ -1,4 +1,4 @@
-import { ReedyHandler } from "./reedy-handler-type"
+import { TvHandler } from "./reedy-handler-type"
 
 function wikipediaElementGetter(): Array<Element> | null {
 	const candidates = ['#mw-content-text', '#bodyContent']
@@ -29,7 +29,7 @@ function wikipediaElementGetter(): Array<Element> | null {
 	return paras
 }
 
-export const wikipediaHandler: ReedyHandler = {
+export const wikipediaHandler: TvHandler = {
 	getReedyElements: wikipediaElementGetter,
 	getScrollableElement: () => undefined
 }
