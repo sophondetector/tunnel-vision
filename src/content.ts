@@ -1,9 +1,9 @@
-import { ReedyDirector } from "./reedy/index.js"
+import { TvDirector } from "./tunnel-vision/index.js"
 
 const RESIZE_DEBOUNCE_MILLIS = 500
 
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
-let DIRECTOR: ReedyDirector | null = null
+let DIRECTOR: TvDirector | null = null
 
 // TODO set control-panel messages as constants
 // receives messages from options.ts control-panel
@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener(function(value: string, sender, sendRespons
 
 		} else {
 
-			console.log(`Reedy content.ts: Unknown message receieved!!`)
+			console.log(`tv content.ts: Unknown message received!!`)
 			console.log(`message value: ${value}`)
 			console.log(`message sender: ${sender}`)
 
@@ -98,7 +98,7 @@ document.addEventListener('keyup', (event) => {
 })
 
 
-DIRECTOR = new ReedyDirector()
+DIRECTOR = new TvDirector()
 DIRECTOR.toggleScreenOff()
 
 window.onresize = () => {
@@ -108,5 +108,5 @@ window.onresize = () => {
 		RESIZE_DEBOUNCE_MILLIS) as unknown as number
 }
 
-console.log(`Reedy init complete`)
+console.log(`tv init complete`)
 

@@ -1,10 +1,10 @@
 import { TvScreenState, TvRect } from "../types"
 
-const REEDY_SCREEN_ID = 'reedyScreen'
-const REEDY_SCREEN_DISPLAY = 'flex'
-const REEDY_SCREEN_BUFFER_RADIUS = 5
+const TV_SCREEN_ID = 'TvScreen'
+const TV_SCREEN_DISPLAY = 'flex'
+const TV_SCREEN_BUFFER_RADIUS = 5
 
-// Reedy Screen State Variables
+// tv Screen State Variables
 const RECTANGLES: TvRect[] = []
 let COLOR_HEX = '#0000ff'
 const COLOR_RGBA = {
@@ -18,12 +18,12 @@ function getFillStyle(): string {
 	return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
 }
 
-export class ReedyScreen {
+export class TvScreen {
 
 	static create(): HTMLCanvasElement {
 		const canvas = document.createElement('canvas')
 
-		canvas.style.display = REEDY_SCREEN_DISPLAY
+		canvas.style.display = TV_SCREEN_DISPLAY
 		canvas.style.position = `absolute`
 		canvas.style.overflow = `auto`
 		canvas.style.pointerEvents = `none` // this ensures mouse clicks "fall through" to the main content
@@ -34,7 +34,7 @@ export class ReedyScreen {
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
 
-		canvas.id = REEDY_SCREEN_ID
+		canvas.id = TV_SCREEN_ID
 
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 		ctx.fillStyle = getFillStyle()
@@ -43,8 +43,8 @@ export class ReedyScreen {
 	}
 
 	static drawScreen() {
-		const canvas = ReedyScreen.getScreenEle()
-		const ctx = ReedyScreen.getContext()
+		const canvas = TvScreen.getScreenEle()
+		const ctx = TvScreen.getContext()
 
 		ctx.fillStyle = getFillStyle()
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -54,29 +54,29 @@ export class ReedyScreen {
 			const adjustedX = rect.x - window.scrollX
 			const adjustedY = rect.y - window.scrollY
 			ctx.clearRect(
-				adjustedX - REEDY_SCREEN_BUFFER_RADIUS,
-				adjustedY - REEDY_SCREEN_BUFFER_RADIUS,
-				rect.width + (REEDY_SCREEN_BUFFER_RADIUS * 2),
-				rect.height + (REEDY_SCREEN_BUFFER_RADIUS * 2)
+				adjustedX - TV_SCREEN_BUFFER_RADIUS,
+				adjustedY - TV_SCREEN_BUFFER_RADIUS,
+				rect.width + (TV_SCREEN_BUFFER_RADIUS * 2),
+				rect.height + (TV_SCREEN_BUFFER_RADIUS * 2)
 			);
 		});
 	}
 
 	static animate() {
-		ReedyScreen.drawScreen()
-		requestAnimationFrame(ReedyScreen.animate)
+		TvScreen.drawScreen()
+		requestAnimationFrame(TvScreen.animate)
 	}
 
 	static getScreenEle(): HTMLCanvasElement {
-		const screenEle = document.getElementById(REEDY_SCREEN_ID)
+		const screenEle = document.getElementById(TV_SCREEN_ID)
 		if (!screenEle) {
-			throw new Error(`ReedyScreen.getScreenEle: could not find element with id ${REEDY_SCREEN_ID}`)
+			throw new Error(`TvScreen.getScreenEle: could not find element with id ${TV_SCREEN_ID}`)
 		}
 		return screenEle as HTMLCanvasElement
 	}
 
 	static getContext(): CanvasRenderingContext2D {
-		const canvas = ReedyScreen.getScreenEle()
+		const canvas = TvScreen.getScreenEle()
 		const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 		return ctx
 	}
@@ -89,12 +89,12 @@ export class ReedyScreen {
 	}
 
 	static setScreenOpacity(opacity: number): void {
-		console.log(`ReedyScreen.setScreenOpacity: opacity value ${opacity} received!`)
+		console.log(`TvScreen.setScreenOpacity: opacity value ${opacity} received!`)
 		COLOR_RGBA.a = opacity / 100
 	}
 
 	static setScreenColor(color: string): void {
-		console.log(`ReedyScreen.setScreenColor: color value ${color} received!`)
+		console.log(`TvScreen.setScreenColor: color value ${color} received!`)
 		COLOR_HEX = color
 		COLOR_RGBA.r = Number('0x' + color.slice(1, 3))
 		COLOR_RGBA.g = Number('0x' + color.slice(3, 5))
@@ -106,62 +106,62 @@ export class ReedyScreen {
 	}
 
 	static inject(): void {
-		let screenEle = document.getElementById(REEDY_SCREEN_ID) as HTMLCanvasElement
+		let screenEle = document.getElementById(TV_SCREEN_ID) as HTMLCanvasElement
 		if (screenEle !== null) {
-			console.log(`ReedyScreen.inject: screen element already exists`)
+			console.log(`TvScreen.inject: screen element already exists`)
 			return
 		} else {
-			console.log(`ReedyScreen.inject: canvas element injected`)
+			console.log(`TvScreen.inject: canvas element injected`)
 		}
 
-		screenEle = ReedyScreen.create()
+		screenEle = TvScreen.create()
 		document.body.appendChild(screenEle)
-		console.log('ReedyScreen.inject: Reedy screen div injected')
+		console.log('TvScreen.inject: tv screen div injected')
 
 		window.addEventListener('resize', () => {
 			screenEle.width = window.innerWidth;
 			screenEle.height = window.innerHeight;
 		});
-		console.log('ReedyScreen.inject: Added resize event listener')
+		console.log('TvScreen.inject: Added resize event listener')
 
 		window.addEventListener('scroll', () => {
 			screenEle.style.top = `${window.scrollY}px`;
 			screenEle.style.left = `${window.scrollX}px`;
-			ReedyScreen.drawScreen()
+			TvScreen.drawScreen()
 		});
-		console.log('ReedyScreen.inject: Added scroll event listener')
+		console.log('TvScreen.inject: Added scroll event listener')
 
-		ReedyScreen.animate()
-		console.log('ReedyScreen.inject: ReedyScreen animation started')
+		TvScreen.animate()
+		console.log('TvScreen.inject: TvScreen animation started')
 	}
 
 	static turnOn(): void {
-		const screenEle = ReedyScreen.getScreenEle()
-		screenEle.style.display = REEDY_SCREEN_DISPLAY
-		console.log(`Reedy screen turned on!`)
+		const screenEle = TvScreen.getScreenEle()
+		screenEle.style.display = TV_SCREEN_DISPLAY
+		console.log(`tv screen turned on!`)
 	}
 
 	static turnOff(): void {
-		const screenEle = ReedyScreen.getScreenEle()
+		const screenEle = TvScreen.getScreenEle()
 		screenEle.style.display = 'none'
-		console.log(`Reedy screen turned off!`)
+		console.log(`tv screen turned off!`)
 	}
 
 	/*
-	* if Reedy screen is on return true
+	* if tv screen is on return true
 	* else return false
 	*/
 	static isOn(): boolean {
-		const screenEle = ReedyScreen.getScreenEle()
+		const screenEle = TvScreen.getScreenEle()
 		return !(screenEle.style.display === 'none')
 	}
 
 	static toggle(): void {
-		if (ReedyScreen.isOn()) {
-			ReedyScreen.turnOff()
+		if (TvScreen.isOn()) {
+			TvScreen.turnOff()
 			return
 		}
-		ReedyScreen.turnOn()
+		TvScreen.turnOn()
 	}
 }
 

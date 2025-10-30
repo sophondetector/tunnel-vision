@@ -1,4 +1,4 @@
-import { TvHandler } from "./reedy-handler-type"
+import { TvHandler } from "./tv-handler-type"
 
 function getArticleEle(): HTMLElement | null {
 	const article = document.querySelector('article')
@@ -58,6 +58,6 @@ export function genericElementGetter(): Array<Element> | null {
 }
 
 export const genericHandler: TvHandler = {
-	getReedyElements: genericElementGetter,
+	getTvElements: genericElementGetter,
 	getScrollableElement: () => undefined
 }

@@ -1,4 +1,4 @@
-import { TvHandler } from "./reedy-handler-type"
+import { TvHandler } from "./tv-handler-type"
 
 function redditElementGetter(): Array<Element> | null {
 	const res = []
@@ -21,7 +21,7 @@ function redditElementGetter(): Array<Element> | null {
 }
 
 export const redditHandler: TvHandler = {
-	getReedyElements: redditElementGetter,
+	getTvElements: redditElementGetter,
 	getScrollableElement: () => undefined
 }
 

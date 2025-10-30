@@ -1,5 +1,5 @@
 export interface TvHandler {
-	getReedyElements: () => Array<Element> | null
+	getTvElements: () => Array<Element> | null
 	getScrollableElement: () => Element | undefined
 }
 

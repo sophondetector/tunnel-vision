@@ -4,7 +4,7 @@ import { redditHandler } from "./reddit-handler"
 import { substackHandler, isActuallySubstack } from "./substack-handler"
 import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
-import { TvHandler } from "./reedy-handler-type"
+import { TvHandler } from "./tv-handler-type"
 
 // TODO make handlers able to discriminate by subdomain
 const GENERIC_HANDLER_KEY: string = "GENERIC"
@@ -48,7 +48,7 @@ export class HandlerManager {
 
 	static getEleArray(): Array<Element> | null {
 		const handler = HandlerManager.getHandler()
-		const ea = handler.getReedyElements()
+		const ea = handler.getTvElements()
 		if (!ea) {
 			console.log(`HandlerManager.getEleArray: elementArray from handler is ${ea}!`)
 			return null

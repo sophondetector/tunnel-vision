@@ -1,4 +1,4 @@
-import { ReedyScreenState } from "./types";
+import { TvScreenState } from "./types";
 
 async function getCurrentTab() {
 	let queryOptions = { active: true, lastFocusedWindow: true };
@@ -6,7 +6,7 @@ async function getCurrentTab() {
 	return tab;
 }
 
-const toggle = document.getElementById('reedy-toggle') as HTMLButtonElement
+const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
 const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
@@ -40,7 +40,7 @@ colorPicker.addEventListener("input", async (event) => {
 
 getCurrentTab()
 	.then(tab => {
-		chrome.tabs.sendMessage(tab.id!, "get state", function(state: ReedyScreenState) {
+		chrome.tabs.sendMessage(tab.id!, "get state", function(state: TvScreenState) {
 			const opacityPercent = String(state.opacity * 100)
 			slider.value = opacityPercent
 			sliderReadout.textContent = `${opacityPercent}%`

@@ -1,13 +1,13 @@
 import { HandlerManager } from "./site-handlers/index.js"
 import { RangeManager } from "./range-manager";
-import { ReedyScreen } from "./reedy-screen";
+import { TvScreen } from "./tv-screen";
 import { TvScreenState } from "../types.js";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
-const NAV_DEBOUCE_MILLIS = 300
+const NAV_DEBOUNCE_MILLIS = 300
 
-export class ReedyDirector {
+export class TvDirector {
 	RANGE_MANAGER: RangeManager | null = null
 	ELEMENT_ARRAY: Array<Element> | null = null
 	INITTED_ONCE: boolean = false
@@ -18,21 +18,21 @@ export class ReedyDirector {
 		this.setOnNav()
 		setTimeout(() => {
 			this.INITTED_ONCE = true
-		}, NAV_DEBOUCE_MILLIS * 5)
+		}, NAV_DEBOUNCE_MILLIS * 5)
 	}
 
 	init(): void {
-		ReedyScreen.inject()
+		TvScreen.inject()
 		this.ELEMENT_ARRAY = HandlerManager.getEleArray()
 		if (this.ELEMENT_ARRAY === null) {
-			console.log('ReedyDirector.init: null element array, exiting early')
+			console.log('TvDirector.init: null element array, exiting early')
 			return
 		}
 		this.RANGE_MANAGER = new RangeManager(this.ELEMENT_ARRAY)
 		this.setScrollableEventListener()
 		const range = this.RANGE_MANAGER.getFirstVisibleRange()
 		if (range === undefined) {
-			console.log('ReedyDirector.init: could not get first visible range')
+			console.log('TvDirector.init: could not get first visible range')
 			return
 		}
 		this.setWindowAroundRange(range)
@@ -46,17 +46,17 @@ export class ReedyDirector {
 			clearTimeout(NAV_DEBOUNCE)
 			NAV_DEBOUNCE = setTimeout(() => {
 				if (!this.INITTED_ONCE) return
-				console.log('ReedyDirector.onnavigatesuccess callback running')
+				console.log('TvDirector.onnavigatesuccess callback running')
 				this.toggleScreenOff()
 				this.init()
-			}, NAV_DEBOUCE_MILLIS) as unknown as number
+			}, NAV_DEBOUNCE_MILLIS) as unknown as number
 		}
 	}
 
 	getRangeManager(): RangeManager {
 		const rm = this.RANGE_MANAGER
 		if (!rm) {
-			throw new Error(`ReedyDirector.getRangeManager: this.RANGE_MANAGER is ${rm}!`)
+			throw new Error(`TvDirector.getRangeManager: this.RANGE_MANAGER is ${rm}!`)
 		}
 		return rm
 	}
@@ -64,16 +64,16 @@ export class ReedyDirector {
 	getElementArray(): Array<Element> {
 		const ea = this.ELEMENT_ARRAY
 		if (!ea) {
-			throw new Error(`ReedyDirector.getElementArray: this.ELEMENT_ARRAY is ${ea}`)
+			throw new Error(`TvDirector.getElementArray: this.ELEMENT_ARRAY is ${ea}`)
 		}
 		if (ea.length < 1) {
-			throw new Error(`ReedyDirector.getElementArray: this.ELEMENT_ARRAY empty!`)
+			throw new Error(`TvDirector.getElementArray: this.ELEMENT_ARRAY empty!`)
 		}
 		return ea
 	}
 
 	getScreenState(): TvScreenState {
-		return ReedyScreen.getScreenState()
+		return TvScreen.getScreenState()
 	}
 
 	// TODO is there a way I can dynamically determine a "scrollable interior" element?
@@ -88,11 +88,11 @@ export class ReedyDirector {
 			RangeManager.bind(this) // needed because by default this will refer to the HTMLElement
 			const curr = this.getRangeManager().getCurrentRange()
 			if (curr === undefined) {
-				throw new Error('ReedyDirector.setScrollableEventListener: could not find current range!')
+				throw new Error('TvDirector.setScrollableEventListener: could not find current range!')
 			}
 			this.setWindowAroundRange(curr)
 		})
-		console.log('ReedyDirector: scrollable element event listener set')
+		console.log('TvDirector: scrollable element event listener set')
 	}
 
 	static clickInRange(event: MouseEvent, range: Range): boolean {
@@ -111,53 +111,53 @@ export class ReedyDirector {
 
 			const rm = this.getRangeManager()
 			if (rm.RANGES === null) {
-				console.log(`ReedyDirector: RangeManager.RANGES is null!`)
+				console.log(`TvDirector: RangeManager.RANGES is null!`)
 				return
 			}
 
 			for (let idx = 0; idx < rm.RANGES.length; idx++) {
 				const rng = rm.RANGES[idx]
-				if (ReedyDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
+				if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
 					rm.setRangeIdx(idx)
 					this.setWindowAroundRange(rng)
 					return
 				}
 			}
 
-			console.log('ReedyDirector.clickListener: could not find clickable range')
+			console.log('TvDirector.clickListener: could not find clickable range')
 		}
 	}
 
 	setScreenColor(color: string) {
 		if (!this.isOn()) return
-		ReedyScreen.setScreenColor(color)
+		TvScreen.setScreenColor(color)
 	}
 
 	setScreenOpacity(opacity: number) {
 		if (!this.isOn()) return
-		ReedyScreen.setScreenOpacity(opacity)
+		TvScreen.setScreenOpacity(opacity)
 	}
 
 	toggleScreen(): void {
-		ReedyScreen.toggle()
+		TvScreen.toggle()
 	}
 
 	toggleScreenOn(): void {
-		ReedyScreen.turnOn()
+		TvScreen.turnOn()
 	}
 
 	toggleScreenOff(): void {
-		ReedyScreen.turnOff()
+		TvScreen.turnOff()
 	}
 
 	isOn(): boolean {
-		return ReedyScreen.isOn()
+		return TvScreen.isOn()
 	}
 
 	incRange(): void {
 		const nextRange = this.getRangeManager().getNextRange()
 		if (nextRange === undefined) {
-			console.log('ReedyDirector.incRange: could not find next range')
+			console.log('TvDirector.incRange: could not find next range')
 			return
 		}
 		this.setWindowAroundRange(nextRange)
@@ -166,7 +166,7 @@ export class ReedyDirector {
 	decRange(): void {
 		const prevRange = this.getRangeManager().getPrevRange()
 		if (prevRange === undefined) {
-			console.log('ReedyDirector.decRange: could not find previous range')
+			console.log('TvDirector.decRange: could not find previous range')
 			return
 		}
 		this.setWindowAroundRange(prevRange)
@@ -190,7 +190,7 @@ export class ReedyDirector {
 		const finalX = rect.left + window.scrollX
 		const finalY = rect.top + window.scrollY
 
-		ReedyScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
+		TvScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
 	}
 
 	// TODO callback for when page changes layout
@@ -204,7 +204,7 @@ export class ReedyDirector {
 		const rm = this.getRangeManager()
 		const prevRange = rm.getCurrentRange()
 		if (prevRange === undefined) {
-			console.log('ReedyDirector.onResizeCallback: could not get current range!')
+			console.log('TvDirector.onResizeCallback: could not get current range!')
 			return
 		}
 		const prevNode = prevRange.startContainer
@@ -221,7 +221,7 @@ export class ReedyDirector {
 			for (rangeIdx; rangeIdx > 0; rangeIdx--) {
 				const iterRange = rm.rangeIdx2Range(rangeIdx)
 				if (iterRange === undefined) {
-					console.log(`ReedyDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+					console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
 					continue
 				}
 				if (iterRange.isPointInRange(prevNode, prevOffset)) {
@@ -235,13 +235,13 @@ export class ReedyDirector {
 		// if smaller window -> go forwards
 		const rangeLen = rm.getRangesLength()
 		if (rangeLen === undefined) {
-			console.log(`ReedyDirector.onResizeCallback: WARNING - could not get range length!`)
+			console.log(`TvDirector.onResizeCallback: WARNING - could not get range length!`)
 			return
 		}
 		for (rangeIdx; rangeIdx < rangeLen; rangeIdx++) {
 			const iterRange = rm.rangeIdx2Range(rangeIdx)
 			if (iterRange === undefined) {
-				console.log(`ReedyDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+				console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
 				continue
 			}
 			if (iterRange.isPointInRange(prevNode, prevOffset)) {
