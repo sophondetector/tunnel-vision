@@ -14,7 +14,7 @@ $ npm run build
 ```
 This will create the source code in the `dist/` folder. You can then install it as an unpacked chrome extension. 
 
-### Loading an Unpacked Chrome Extension
+### Installing as an Unpacked Chrome Extension
 1. Do the build steps above
 1. In Chrome, navigate to `chrome://extensions`
 1. Ensure `Developer mode` is on (upper right corner)
