@@ -3,7 +3,14 @@ Tunnel Vision is a Chrome extension to help you read stuff and eliminate distrac
 Tunnel Vision helps you read by darkening the screen except for a single line, so you can read them one at a time.
 
 ## Development
-Tunnel Vision is written in `typescript`, and built with `vite` and `crxjs`. 
+Tunnel Vision is written in `typescript`, and built with `vite` and `crxjs`.
+
+### Logo
+To modify the logo do the following:
+1. Open `logo/Logo.xcf` in GIMP
+1. Make the desired modifications
+1. Export as `logo/Base-Logo.png`
+1. Run `. create-icons.sh`
 
 ## Installation
 ### Building
