@@ -1,6 +1,6 @@
 export interface TvHandler {
-	getTvElements: () => Array<Element> | null
-	getScrollableElement: () => Element | undefined
+  getTvElements: () => Array<Element> | null
+  getScrollableElement: () => Element | undefined
 }
 
 // TODO experiment with making ^^^ a class
