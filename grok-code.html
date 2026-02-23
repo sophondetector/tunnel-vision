@@ -2,183 +2,183 @@
 <html>
 
 <head>
-	<title>Transparent Canvas Overlay with Rectangular Holes</title>
-	<style>
-		body {
-			margin: 0;
-			overflow: hidden;
-			font-family: Arial, sans-serif;
-			background-image: url("test.jpg");
-		}
+  <title>Transparent Canvas Overlay with Rectangular Holes</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background-image: url("test-wallpaper.jpg");
+    }
 
-		canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-		}
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
 
-		#opacitySlider {
-			position: absolute;
-			bottom: 20px;
-			left: 20px;
-			width: 200px;
-			z-index: 10;
-		}
+    #opacitySlider {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 200px;
+      z-index: 10;
+    }
 
-		#opacityLabel {
-			position: absolute;
-			bottom: 40px;
-			left: 20px;
-			color: white;
-			background: rgba(0, 0, 0, 0.7);
-			padding: 5px 10px;
-			border-radius: 3px;
-			z-index: 10;
-		}
+    #opacityLabel {
+      position: absolute;
+      bottom: 40px;
+      left: 20px;
+      color: white;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 5px 10px;
+      border-radius: 3px;
+      z-index: 10;
+    }
 
-		#resetButton {
-			position: absolute;
-			bottom: 20px;
-			left: 240px;
-			padding: 5px 10px;
-			z-index: 10;
-			background: #ff4444;
-			color: white;
-			border: none;
-			border-radius: 3px;
-			cursor: pointer;
-		}
+    #resetButton {
+      position: absolute;
+      bottom: 20px;
+      left: 240px;
+      padding: 5px 10px;
+      z-index: 10;
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
 
-		#resetButton:hover {
-			background: #cc0000;
-		}
-	</style>
+    #resetButton:hover {
+      background: #cc0000;
+    }
+  </style>
 </head>
 
 <body>
-	<canvas id="overlayCanvas"></canvas>
-	<label id="opacityLabel">Opacity: 30%</label>
-	<input type="range" id="opacitySlider" min="0" max="100" value="30">
-	<button id="resetButton">Reset</button>
-	<script>
-		const canvas = document.getElementById('overlayCanvas');
-		const ctx = canvas.getContext('2d');
-		const opacitySlider = document.getElementById('opacitySlider');
-		const opacityLabel = document.getElementById('opacityLabel');
-		const resetButton = document.getElementById('resetButton');
+  <canvas id="overlayCanvas"></canvas>
+  <label id="opacityLabel">Opacity: 30%</label>
+  <input type="range" id="opacitySlider" min="0" max="100" value="30">
+  <button id="resetButton">Reset</button>
+  <script>
+    const canvas = document.getElementById('overlayCanvas');
+    const ctx = canvas.getContext('2d');
+    const opacitySlider = document.getElementById('opacitySlider');
+    const opacityLabel = document.getElementById('opacityLabel');
+    const resetButton = document.getElementById('resetButton');
 
-		// Set canvas size to match window
-		function resizeCanvas() {
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-		}
-		resizeCanvas();
-		window.addEventListener('resize', resizeCanvas);
+    // Set canvas size to match window
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-		// Mouse state
-		let isDrawing = false;
-		let startX = 0;
-		let startY = 0;
-		let currentX = 0;
-		let currentY = 0;
+    // Mouse state
+    let isDrawing = false;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
 
-		// Store rectangles (array of {x, y, width, height})
-		const rectangles = [];
+    // Store rectangles (array of {x, y, width, height})
+    const rectangles = [];
 
-		// Opacity state
-		let opacity = 0.3; // Initial opacity (30%)
+    // Opacity state
+    let opacity = 0.3; // Initial opacity (30%)
 
-		// Update opacity from slider
-		opacitySlider.addEventListener('input', () => {
-			opacity = opacitySlider.value / 100;
-			opacityLabel.textContent = `Opacity: ${opacitySlider.value}%`;
-			drawOverlay();
-		});
+    // Update opacity from slider
+    opacitySlider.addEventListener('input', () => {
+      opacity = opacitySlider.value / 100;
+      opacityLabel.textContent = `Opacity: ${opacitySlider.value}%`;
+      drawOverlay();
+    });
 
-		// Reset function
-		resetButton.addEventListener('click', () => {
-			rectangles.length = 0; // Clear all rectangles
-			drawOverlay();
-		});
+    // Reset function
+    resetButton.addEventListener('click', () => {
+      rectangles.length = 0; // Clear all rectangles
+      drawOverlay();
+    });
 
-		// Mouse event handlers
-		canvas.addEventListener('mousedown', (e) => {
-			isDrawing = true;
-			startX = e.offsetX;
-			startY = e.offsetY;
-			currentX = startX;
-			currentY = startY;
-		});
+    // Mouse event handlers
+    canvas.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      startX = e.offsetX;
+      startY = e.offsetY;
+      currentX = startX;
+      currentY = startY;
+    });
 
-		canvas.addEventListener('mousemove', (e) => {
-			if (isDrawing) {
-				currentX = e.offsetX;
-				currentY = e.offsetY;
-				drawOverlay();
-			}
-		});
+    canvas.addEventListener('mousemove', (e) => {
+      if (isDrawing) {
+        currentX = e.offsetX;
+        currentY = e.offsetY;
+        drawOverlay();
+      }
+    });
 
-		canvas.addEventListener('mouseup', () => {
-			if (isDrawing) {
-				// Calculate rectangle dimensions
-				const width = currentX - startX;
-				const height = currentY - startY;
-				const x = width < 0 ? currentX : startX;
-				const y = height < 0 ? currentY : startY;
-				rectangles.push({x, y, width: Math.abs(width), height: Math.abs(height)});
-				isDrawing = false;
-				drawOverlay();
-			}
-		});
+    canvas.addEventListener('mouseup', () => {
+      if (isDrawing) {
+        // Calculate rectangle dimensions
+        const width = currentX - startX;
+        const height = currentY - startY;
+        const x = width < 0 ? currentX : startX;
+        const y = height < 0 ? currentY : startY;
+        rectangles.push({x, y, width: Math.abs(width), height: Math.abs(height)});
+        isDrawing = false;
+        drawOverlay();
+      }
+    });
 
-		canvas.addEventListener('mouseout', () => {
-			isDrawing = false;
-			drawOverlay();
-		});
+    canvas.addEventListener('mouseout', () => {
+      isDrawing = false;
+      drawOverlay();
+    });
 
-		// Draw transparent overlay with rectangular holes
-		function drawOverlay() {
-			// Clear canvas
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw transparent overlay with rectangular holes
+    function drawOverlay() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			// Draw semi-transparent overlay
-			ctx.fillStyle = `rgba(0, 0, 255, ${opacity})`;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Draw semi-transparent overlay
+      ctx.fillStyle = `rgba(0, 0, 255, ${opacity})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Draw saved rectangles as holes
-			rectangles.forEach(rect => {
-				ctx.save();
-				ctx.beginPath();
-				ctx.rect(rect.x, rect.y, rect.width, rect.height);
-				ctx.clip();
-				ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
-				ctx.restore();
-			});
+      // Draw saved rectangles as holes
+      rectangles.forEach(rect => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(rect.x, rect.y, rect.width, rect.height);
+        ctx.clip();
+        ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
+        ctx.restore();
+      });
 
-			// Draw current rectangle while dragging
-			if (isDrawing) {
-				ctx.save();
-				ctx.beginPath();
-				const width = currentX - startX;
-				const height = currentY - startY;
-				const x = width < 0 ? currentX : startX;
-				const y = height < 0 ? currentY : startY;
-				ctx.rect(x, y, Math.abs(width), Math.abs(height));
-				ctx.clip();
-				ctx.clearRect(x, y, Math.abs(width), Math.abs(height));
-				ctx.restore();
-			}
-		}
+      // Draw current rectangle while dragging
+      if (isDrawing) {
+        ctx.save();
+        ctx.beginPath();
+        const width = currentX - startX;
+        const height = currentY - startY;
+        const x = width < 0 ? currentX : startX;
+        const y = height < 0 ? currentY : startY;
+        ctx.rect(x, y, Math.abs(width), Math.abs(height));
+        ctx.clip();
+        ctx.clearRect(x, y, Math.abs(width), Math.abs(height));
+        ctx.restore();
+      }
+    }
 
-		// Animation loop
-		function animate() {
-			drawOverlay();
-			requestAnimationFrame(animate);
-		}
+    // Animation loop
+    function animate() {
+      drawOverlay();
+      requestAnimationFrame(animate);
+    }
 
-		// Start animation
-		animate();
-	</script>
+    // Start animation
+    animate();
+  </script>
 </body>
 
 </html>
