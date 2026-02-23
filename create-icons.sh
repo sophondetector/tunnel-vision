@@ -5,8 +5,8 @@ OUTPUT_DIR="public/images"
 
 function create_image() {
   output_name=$OUTPUT_DIR/icon-$1.png
-  magick $BASE_IMAGE -resize $1x$1 $output_name
-  printf "$output_name created\n"
+  magick $BASE_IMAGE -resize "$1x$1" "$output_name"
+  printf "%s created\n" "$output_name"
 }
 
 create_image 128
