@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "create-icons": "source create-icons.sh"
+    "create-icons": "./create-icons.sh"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.30",
