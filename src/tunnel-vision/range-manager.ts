@@ -1,6 +1,4 @@
 const TEXT_NODE_NAME = '#text'
-const UPPER_BOUND = 10000
-
 
 export class RangeManager {
   RANGES: Range[] | null = null
@@ -179,84 +177,82 @@ export class RangeManager {
     return res
   }
 
-  static #getEndIdxs(lens: Array<number>) {
-    const ends = []
-    let acc = 0
-    for (let idx = 0; idx < lens.length; idx++) {
-      acc += lens[idx]
-      ends.push(acc)
+  static textNodes2Ranges(textNodes: Node[]): Range[] {
+    if (textNodes.length === 0) return [];
+
+    // Safety limit to prevent infinite loops in pathological cases
+    const MAX_ITERATIONS = 100_000;
+    const LINE_BREAK_THRESHOLD = 5;           // pixels — when bottom jumps more than this → new line
+
+    const ranges: Range[] = [];
+    const lengths = textNodes.map(node => node.textContent?.length ?? 0);
+    const cumulativeEndIndices = this.#computeCumulativeEndIndices(lengths);
+    const totalChars = cumulativeEndIndices.at(-1) ?? 0;
+
+    // We'll maintain one active range and extend it character-by-character
+    let currentRange = new Range();
+    ranges.push(currentRange);
+
+    let charIndex = 0;                // global character position across all text nodes
+    let nodeIndex = 0;                // which text node we're currently in
+    let offsetInNode = 0;             // offset inside the current text node
+
+    currentRange.setStart(textNodes[0], 0);
+
+    let previousBottom = currentRange.getBoundingClientRect().bottom;
+
+    while (charIndex < totalChars) {
+      // Move to next text node when we reach the end of current one
+      if (charIndex === cumulativeEndIndices[nodeIndex]) {
+        nodeIndex++;
+        offsetInNode = 0;
+      }
+
+      // Extend current range by one more character
+      offsetInNode++;
+      currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
+
+      const currentBottom = currentRange.getBoundingClientRect().bottom;
+
+      // Did we cross into a new visual line?
+      if (currentBottom - previousBottom > LINE_BREAK_THRESHOLD) {
+        // Roll back one character — that one belongs to the next line
+        currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
+
+        // Start new line range
+        const nextRange = new Range();
+        nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1);
+        ranges.push(nextRange);
+
+        currentRange = nextRange;
+        previousBottom = currentBottom;
+      }
+
+      charIndex++;
+
+      if (charIndex > MAX_ITERATIONS) {
+        console.warn('textNodesToLineRanges: iteration limit reached — possible infinite loop');
+        break;
+      }
     }
-    const res = ends.map(e => e - 1)
-    return res
+
+    // Make sure last range goes all the way to the end
+    if (ranges.length > 0) {
+      const lastNode = textNodes[textNodes.length - 1];
+      const lastLength = lengths[lengths.length - 1];
+      ranges[ranges.length - 1].setEnd(lastNode, lastLength);
+    }
+
+    return ranges;
   }
 
-  static #getFinalTextIdx(textNodes: Array<Node>): number {
-    let res = 0
-    for (const tn of textNodes) {
-      res += tn.textContent!.length
+  static #computeCumulativeEndIndices(lengths: number[]): number[] {
+    const ends: number[] = [];
+    let sum = 0;
+    for (const len of lengths) {
+      sum += len;
+      ends.push(sum);
     }
-    res--
-    return res
-  }
-
-  static textNodes2Ranges(textNodes: Array<Node>): Array<Range> {
-    if (textNodes.length < 1) return []
-
-    const incrementThresh = 5
-    const res = []
-    const finalIdx = RangeManager.#getFinalTextIdx(textNodes)
-    const lens = textNodes.map(tn => tn.textContent!.length)
-    const endIdxs = RangeManager.#getEndIdxs(lens)
-
-    res.push(new Range())
-
-    // TODO try refactoring so only mainIdx is incremented and 
-    // other pointers are derived from mainIdx
-    let mainIdx = 0
-    let textNodeIdx = 0
-    let begOffset = 0
-    let endOffset = 1
-    let endIdxIdx = 0
-
-    res[res.length - 1].setStart(textNodes[textNodeIdx], begOffset)
-    let prevBottom = res[res.length - 1].getBoundingClientRect().bottom
-
-    let iterNum = 0
-
-    while (mainIdx < finalIdx) {
-      // Q how do we increment the textNodeIdx??
-      // A everytime the mainIdx crosses an end, increment textNodeIdx
-      // and reset endOffset to one
-      const curEnd = endIdxs[endIdxIdx]
-      if (mainIdx === curEnd) {
-        endIdxIdx++
-        textNodeIdx++
-        endOffset = 1
-      }
-
-      res[res.length - 1].setEnd(textNodes[textNodeIdx], endOffset)
-      const bottom = res[res.length - 1].getBoundingClientRect().bottom
-
-      if (bottom - prevBottom > incrementThresh) {
-        res[res.length - 1].setEnd(textNodes[textNodeIdx], endOffset - 1)
-        begOffset = endOffset - 1
-        const newRange = new Range()
-        newRange.setStart(textNodes[textNodeIdx], begOffset)
-        res.push(newRange)
-        prevBottom = bottom
-      }
-
-      mainIdx++
-      endOffset++
-
-      if (++iterNum > UPPER_BOUND) {
-        console.error('textNodes2Ranges: upper bound reached')
-        break
-      }
-    }
-
-    res[res.length - 1].setEnd(textNodes[textNodes.length - 1], lens[lens.length - 1])
-
-    return res
+    return ends;
   }
 }
