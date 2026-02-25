@@ -10,13 +10,14 @@ let DIRECTOR: TvDirector | null = null
 // @ts-ignore
 chrome.runtime.onMessage.addListener(function (value: string, sender, sendResponse) {
   if (DIRECTOR === null) {
-    throw new Error(`content.ts: Director is null!`)
+    throw new Error(`tv content.ts: Director is null!`)
   }
 
   // console.log('content.ts: value received: ', value)
 
   try {
 
+    // TODO change these to some kind of enum
     if (value === "toggle screen") {
 
       DIRECTOR.toggleScreen()
@@ -32,6 +33,7 @@ chrome.runtime.onMessage.addListener(function (value: string, sender, sendRespon
       const valueNum = Number(value)
       DIRECTOR.setScreenOpacity(valueNum)
 
+      // if its a color
     } else if (value.match(/^#[0-9a-f]{6}$/)) {
 
       if (!DIRECTOR.isOn()) return
@@ -46,12 +48,13 @@ chrome.runtime.onMessage.addListener(function (value: string, sender, sendRespon
     }
 
   } catch (err) {
-    console.error(`ERROR: Error trying to read input from control panel`)
+    console.error(`tv content.ts ERROR: Error trying to read input from control panel`)
     console.error(err)
   }
 })
 
 // TODO alt+click+drag creates a highlight box
+// bring that in from grok-code.html
 document.addEventListener('keyup', (event) => {
   if (DIRECTOR === null) return
   switch (event.key) {
