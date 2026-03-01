@@ -53,14 +53,14 @@ export class HandlerManager {
 
   static getEleArray(): Array<Element> | null {
     const handler = HandlerManager.getHandler()
-    const ea = handler.getTvElements()
-    if (!ea) {
-      console.log(`HandlerManager.getEleArray: elementArray from handler is ${ea}!`)
-      return null
-    }
-    if (ea.length < 1) {
-      console.log(`HandlerManager.getEleArray: empty element array from handler!`)
-      return null
+    let ea = handler.getTvElements()
+    if (!ea || ea.length == 0) {
+      console.warn(`getEleArray: hander failed: falling back on generic handler`)
+      ea = genericHandler.getTvElements()
+      if (!ea || ea.length == 0) {
+        console.error(`getEleArray: generic handler fallback also failed`)
+        return null
+      }
     }
     return ea
   }
