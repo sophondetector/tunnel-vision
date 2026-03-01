@@ -88,6 +88,12 @@ export class TvScreen {
     }
   }
 
+  static setScreenSize(width: number, height: number): void {
+    const screenEle = TvScreen.getScreenEle()
+    screenEle.width = width
+    screenEle.height = height
+  }
+
   static setScreenOpacity(opacity: number): void {
     console.log(`TvScreen.setScreenOpacity: opacity value ${opacity} received!`)
     COLOR_RGBA.a = opacity / 100
