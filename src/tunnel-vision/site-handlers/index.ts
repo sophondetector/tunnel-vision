@@ -4,6 +4,7 @@ import { redditHandler } from "./reddit-handler"
 import { substackHandler, isActuallySubstack } from "./substack-handler"
 import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
+import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "./tv-handler-type"
 
 // TODO make handlers able to discriminate by subdomain
@@ -16,6 +17,7 @@ DOMAIN_HANDLER_MAP.set("wikipedia.org", wikipediaHandler)
 DOMAIN_HANDLER_MAP.set("mozilla.org", mdnHandler)
 DOMAIN_HANDLER_MAP.set("substack.com", substackHandler)
 DOMAIN_HANDLER_MAP.set("reddit.com", redditHandler)
+DOMAIN_HANDLER_MAP.set("jpost.com", jpostHandler)
 
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
@@ -24,23 +26,26 @@ export class HandlerManager {
 
     const topLevelHost = HandlerManager.getTopLevelHost()
 
-    let handler: TvHandler | undefined
-
-    if (SUPPORTED_DOMAINS.includes(topLevelHost)) {
-      handler = DOMAIN_HANDLER_MAP.get(topLevelHost)
-    } else {
-      console.log(`HandlerManager.getHandler: ${topLevelHost} not supported; using generic handler`)
-      handler = DOMAIN_HANDLER_MAP.get(GENERIC_HANDLER_KEY)
-    }
-
     if (isActuallySubstack()) {
       console.log(`HandlerManager.getHandler: ${topLevelHost} found to be actually substack...`)
       console.log(`HandlerManager.getHandler: using substack handler`)
       return substackHandler
     }
 
+    let handler: TvHandler | undefined
+
+    if (SUPPORTED_DOMAINS.includes(topLevelHost)) {
+      console.log(`HandlerManager.getHandler: ${topLevelHost} supported!`)
+      handler = DOMAIN_HANDLER_MAP.get(topLevelHost)
+    } else {
+      console.log(`HandlerManager.getHandler: ${topLevelHost} not supported; using generic handler`)
+      handler = DOMAIN_HANDLER_MAP.get(GENERIC_HANDLER_KEY)
+    }
+
     if (!handler) {
-      throw new Error(`HandlerManager.getHandler: could not get handler!`)
+      throw new Error(`HandlerManager.getHandler: could not get handler for ${topLevelHost}!`)
+    } else {
+      console.log(`HandlerManager.getHandler: got handler for ${topLevelHost}`)
     }
 
     return handler
