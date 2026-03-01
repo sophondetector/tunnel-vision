@@ -1,10 +1,10 @@
 import { TvHandler } from "./tv-handler-type"
 
-function getArticleEle(): HTMLElement | null {
-  const article = document.querySelector('article')
-  if (article) {
+function getArticleEle(): HTMLElement[] | null {
+  const articles = Array.from(document.querySelectorAll('article'))
+  if (articles.length > 0) {
     console.log("getArticleEle: found!")
-    return article
+    return articles
   }
   return null
 }
@@ -45,7 +45,7 @@ export function genericElementGetter(): Array<Element> | null {
   let res: Element | Array<Element> | null = null;
 
   res = getArticleEle()
-  if (res) return [res]
+  if (res) return res
 
   res = getGenericTextEles()
   if (res) return res
@@ -53,6 +53,7 @@ export function genericElementGetter(): Array<Element> | null {
   res = getBodyChildWithMostText()
   if (res) return [res]
 
+  console.error('genericElementGetter: failed')
   return null
 
 }
