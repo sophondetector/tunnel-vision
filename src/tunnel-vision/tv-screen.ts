@@ -110,8 +110,6 @@ export class TvScreen {
     if (screenEle !== null) {
       console.log(`TvScreen.inject: screen element already exists`)
       return
-    } else {
-      console.log(`TvScreen.inject: canvas element injected`)
     }
 
     screenEle = TvScreen.create()
