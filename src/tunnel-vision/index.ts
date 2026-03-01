@@ -201,6 +201,10 @@ export class TvDirector {
     // if same size -> return
     if (window.innerWidth === WIN_WIDTH) return
 
+    const screenEle = TvScreen.getScreenEle()
+    screenEle.width = window.innerWidth;
+    screenEle.height = window.innerHeight;
+
     const rm = this.getRangeManager()
     const prevRange = rm.getCurrentRange()
     if (prevRange === undefined) {

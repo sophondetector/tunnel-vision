@@ -116,12 +116,6 @@ export class TvScreen {
     document.body.appendChild(screenEle)
     console.log('TvScreen.inject: tv screen div injected')
 
-    window.addEventListener('resize', () => {
-      screenEle.width = window.innerWidth;
-      screenEle.height = window.innerHeight;
-    });
-    console.log('TvScreen.inject: Added resize event listener')
-
     window.addEventListener('scroll', TvScreen.drawScreen);
     console.log('TvScreen.inject: Added scroll event listener')
 
