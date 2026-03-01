@@ -203,8 +203,8 @@ export class TvDirector {
 
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
-    const rm = this.getRangeManager()
-    const prevRange = rm.getCurrentRange()
+    const rangeManager = this.getRangeManager()
+    const prevRange = rangeManager.getCurrentRange()
     if (prevRange === undefined) {
       console.log('TvDirector.onResizeCallback: could not get current range!')
       return
@@ -212,43 +212,43 @@ export class TvDirector {
     const prevNode = prevRange.startContainer
     const prevOffset = prevRange.startOffset
 
-    rm.initRanges(this.getElementArray())
+    rangeManager.initRanges(this.getElementArray())
     const newWidth = window.innerWidth
     const delta = WIN_WIDTH - newWidth
     WIN_WIDTH = newWidth
 
-    let rangeIdx = rm.getRangeIdx()
+    let rangeIdx = rangeManager.getRangeIdx()
     // if bigger window -> go backwards
     if (delta < 0) {
       for (rangeIdx; rangeIdx > 0; rangeIdx--) {
-        const iterRange = rm.rangeIdx2Range(rangeIdx)
+        const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
         if (iterRange === undefined) {
           console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
           continue
         }
         if (iterRange.isPointInRange(prevNode, prevOffset)) {
           this.setWindowAroundRange(iterRange)
-          rm.setRangeIdx(rangeIdx)
+          rangeManager.setRangeIdx(rangeIdx)
           return
         }
       }
     }
 
     // if smaller window -> go forwards
-    const rangeLen = rm.getRangesLength()
+    const rangeLen = rangeManager.getRangesLength()
     if (rangeLen === undefined) {
       console.log(`TvDirector.onResizeCallback: WARNING - could not get range length!`)
       return
     }
     for (rangeIdx; rangeIdx < rangeLen; rangeIdx++) {
-      const iterRange = rm.rangeIdx2Range(rangeIdx)
+      const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
       if (iterRange === undefined) {
         console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
         this.setWindowAroundRange(iterRange)
-        rm.setRangeIdx(rangeIdx)
+        rangeManager.setRangeIdx(rangeIdx)
         return
       }
     }
