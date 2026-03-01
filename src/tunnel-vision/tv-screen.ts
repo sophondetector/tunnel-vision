@@ -24,7 +24,7 @@ export class TvScreen {
     const canvas = document.createElement('canvas')
 
     canvas.style.display = TV_SCREEN_DISPLAY
-    canvas.style.position = `absolute`
+    canvas.style.position = `fixed`
     canvas.style.overflow = `auto`
     canvas.style.pointerEvents = `none` // this ensures mouse clicks "fall through" to the main content
     canvas.style.zIndex = `99999999`
@@ -122,11 +122,7 @@ export class TvScreen {
     });
     console.log('TvScreen.inject: Added resize event listener')
 
-    window.addEventListener('scroll', () => {
-      screenEle.style.top = `${window.scrollY}px`;
-      screenEle.style.left = `${window.scrollX}px`;
-      TvScreen.drawScreen()
-    });
+    window.addEventListener('scroll', TvScreen.drawScreen);
     console.log('TvScreen.inject: Added scroll event listener')
 
     TvScreen.animate()
