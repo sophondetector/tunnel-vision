@@ -2,81 +2,99 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Tunnel Vision</title>
-	<script defer src="/src/options.ts" type="module"></script>
-	<style>
-		* {
-			font-family: serif;
-			background: whitesmoke
-		}
+  <meta charset="UTF-8">
+  <title>Tunnel Vision</title>
+  <script defer src="/src/options.ts" type="module"></script>
+  <style>
+    * {
+      font-family: serif;
+      background: whitesmoke
+    }
 
-		body {
-			display: flex;
-			align-items: center;
-			flex-direction: column;
-			width: 600px;
-			margin: 10px;
-		}
+    body {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      width: 600px;
+      margin: 10px;
+    }
 
-		h1 {
-			margin-bottom: 5px;
-		}
+    h1 {
+      margin-bottom: 5px;
+    }
 
-		#control-panel {
-			width: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin: 10px;
-			margin-bottom: 20px;
-		}
+    #control-panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+      margin-bottom: 20px;
+    }
 
-		#control-panel>h3 {
-			margin: 2px;
-		}
+    #control-panel>div {
+      display: flex;
+      justify-content: center;
+    }
 
-		button {
-			font-size: large;
-			border-style: solid;
-			border-color: grey;
-			border-radius: 5%;
-			margin: 5px;
-			width: 30%;
-		}
+    #control-panel>div>div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 1ch;
+    }
 
-		#help {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			font-size: large;
-			margin-bottom: 20px;
-		}
-	</style>
+    button {
+      font-size: large;
+      border-style: solid;
+      border-color: grey;
+      border-radius: 5%;
+      margin: 5px;
+      width: 30%;
+    }
+
+    #help {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: large;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 
 <body>
 
-	<h1>Tunnel Vision</h1>
+  <h1>Tunnel Vision</h1>
 
-	<div id="control-panel">
-		<button id="tv-toggle">Screen On/Off</button>
-		<h3>Opacity <span id="slider-readout" style="font-size: larger">40%</span></h3>
-		<input type="range" min="1" max="100" value="50" class="slider" id="opacity-slider">
-		<h3>Color</h3>
-		<input type="color" id="color-picker" value="#0000ff">
-	</div>
+  <div id="control-panel">
+    <div>
+      <button id="tv-toggle">Screen On/Off</button>
+      <button id="pdf-toggle">PDF Reader</button>
+    </div>
+    <div>
+      <div>
+        <h3>Opacity <span id="slider-readout" style="font-size: larger">40%</span></h3>
+        <input type="range" min="1" max="100" value="50" class="slider" id="opacity-slider">
+      </div>
+      <div>
+        <h3>Color</h3>
+        <input type="color" id="color-picker" value="#0000ff">
+      </div>
+    </div>
+  </div>
 
-	<div id="help">
-		<div>
-			<div> Press <b>alt-l</b> to turn the tunnel-vision-screen on and off.</div>
-			<div> You can also click Tunnel Vision icon and then click the <b>Screen On/Off</b> button.</div>
-			<div> <b>alt + up arrow</b> to move the highlighted range up.</div>
-			<div> <b>alt + down arrow</b> to move the highlighted range down.</div>
-			<div> You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
-			<div> When the screen is on, you may click on the text to highlight that line.</div>
-		</div>
-	</div>
+  <div id="help">
+    <div>
+      <div> Press <b>alt-l</b> to turn the tunnel-vision-screen on and off.</div>
+      <div> You can also click Tunnel Vision icon and then click the <b>Screen On/Off</b> button.</div>
+      <div> <b>alt + up arrow</b> to move the highlighted range up.</div>
+      <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
+      <div> You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
+      <div> When the screen is on, you may click on the text to highlight that line.</div>
+    </div>
+  </div>
 
 </body>
 
