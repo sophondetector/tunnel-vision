@@ -4,12 +4,12 @@ import manifest from './manifest.json'
 
 export default defineConfig({
   build: {
-    // rollupOptions: {
-    // 	input: {
-    // 		app: "pages/index.html",
-    // 		pdfReader: "pages/pdf-reader.html"
-    // 	}
-    // }
+    rollupOptions: {
+      input: {
+        app: "pages/index.html",
+        pdfReader: "pages/pdf-reader.html"
+      }
+    }
   },
   plugins: [crx({ manifest })]
 })
