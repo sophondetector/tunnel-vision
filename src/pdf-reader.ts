@@ -12,7 +12,8 @@ const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
 const loadingTask = pdfjsLib.getDocument('../test-pdf.pdf')
 
-loadingTask.promise.then(async (pdf) => pdf.getPage(1))
+loadingTask.promise
+  .then(async (pdf) => pdf.getPage(1))
   .then(async function (page) {
     let viewport = page.getViewport({ scale: SCALE });
 
