@@ -6,7 +6,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const PDF_PATH = '../test-pdf.pdf'
 const SCALE = 2
-const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
+// TODO FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
+// const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
+const OUTPUT_SCALE = { sx: 1, sy: 1 }
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
@@ -46,9 +48,11 @@ loadingTask.promise
     textLayerDiv.style.width = `${cssWidth}px`;
     textLayerDiv.style.height = `${cssHeight}px`;
 
+    // NOTE: Grok put these here but they seem un-necessary
+    // Leaving commented out for now
     // Optional: force pointer events & selection
-    textLayerDiv.style.pointerEvents = 'all';
-    textLayerDiv.style.userSelect = 'text';
+    // textLayerDiv.style.pointerEvents = 'all';
+    // textLayerDiv.style.userSelect = 'text';
 
     const textLayer = new pdfjsLib.TextLayer({
       textContentSource: page.streamTextContent(),
