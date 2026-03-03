@@ -4,35 +4,34 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-var loadingTask = pdfjsLib.getDocument('../test-pdf.pdf')
+const SCALE = 2
+const OUTPUT_SCALE = window.devicePixelRatio || 1;
+const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
+const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
+// Support HiDPI-screens.
+const TRANSFORM = OUTPUT_SCALE !== 1
+  ? [OUTPUT_SCALE, 0, 0, OUTPUT_SCALE, 0, 0]
+  : undefined;
+
+
+const loadingTask = pdfjsLib.getDocument('../test-pdf.pdf')
 
 loadingTask.promise.then(function (pdf) {
   return pdf.getPage(1)
 })
   .then(function (page) {
-    var scale = 2;
-    var viewport = page.getViewport({ scale: scale, });
-    // Support HiDPI-screens.
-    var outputScale = window.devicePixelRatio || 1;
+    const viewport = page.getViewport({ scale: SCALE, });
 
-    var canvas: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
-    var context = canvas.getContext('2d');
+    CANVAS.width = Math.floor(viewport.width * OUTPUT_SCALE);
+    CANVAS.height = Math.floor(viewport.height * OUTPUT_SCALE);
+    CANVAS.style.width = Math.floor(viewport.width) + "px";
+    CANVAS.style.height = Math.floor(viewport.height) + "px";
 
-    canvas.width = Math.floor(viewport.width * outputScale);
-    canvas.height = Math.floor(viewport.height * outputScale);
-    canvas.style.width = Math.floor(viewport.width) + "px";
-    canvas.style.height = Math.floor(viewport.height) + "px";
-
-    var transform = outputScale !== 1
-      ? [outputScale, 0, 0, outputScale, 0, 0]
-      : null;
-
-    var renderContext = {
-      canvasContext: context,
-      transform: transform,
+    page.render({
+      canvasContext: CONTEXT,
+      transform: TRANSFORM,
       viewport: viewport
-    };
-    //@ts-ignore
-    page.render(renderContext);
+    })
+
   })
   .then(() => console.log('done'))
