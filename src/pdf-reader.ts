@@ -4,13 +4,14 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+const PDF_PATH = '../test-pdf.pdf'
 const SCALE = 2
 const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
 
-const loadingTask = pdfjsLib.getDocument('../test-pdf.pdf')
+const loadingTask = pdfjsLib.getDocument(PDF_PATH)
 
 loadingTask.promise
   .then(async (pdf) => pdf.getPage(1))
