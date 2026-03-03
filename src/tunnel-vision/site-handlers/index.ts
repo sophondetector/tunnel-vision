@@ -6,6 +6,7 @@ import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
 import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "./tv-handler-type"
+import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 
 // TODO make handlers able to discriminate by subdomain
 const GENERIC_HANDLER_KEY: string = "GENERIC"
@@ -23,6 +24,11 @@ const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
 export class HandlerManager {
   static getHandler(): TvHandler {
+
+    if (isPdfReader()) {
+      console.log("HandlerManager: it's PDF time")
+      return pdfReaderHandler
+    }
 
     const topLevelHost = HandlerManager.getTopLevelHost()
 
