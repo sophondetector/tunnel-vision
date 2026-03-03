@@ -5,12 +5,16 @@
   <meta charset="UTF-8">
   <title>Tunnel Vision PDF Reader</title>
   <script src="../../node_modules/pdfjs-dist/build/pdf.mjs" type="module"></script>
-  <script src="/src/pdf-reader.ts" type="module"></script>
+  <script src="/src/pdf-reader.ts" type="module" defer></script>
+  <link rel="stylesheet" href="https://unpkg.com/pdfjs-dist@4.10.38/web/pdf_viewer.css">
 </head>
 
 <body>
   <h1>Tunnel Vision PDF Reader</h1>
-  <canvas id="the-canvas"></canvas>
+  <div style="position: relative; display: inline-block;">
+    <canvas id="the-canvas"></canvas>
+    <div id="text-layer" class="textLayer"></div>
+  </div>
 </body>
 
 </html>
