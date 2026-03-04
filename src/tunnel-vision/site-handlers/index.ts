@@ -29,6 +29,9 @@ export class HandlerManager {
     }
 
     const topLevelHost = HandlerManager.getTopLevelHost()
+    if (topLevelHost === null) {
+      return null
+    }
 
     if (isActuallySubstack()) {
       console.log(`HandlerManager.getHandler: ${topLevelHost} is substack - using substack handler...`)
@@ -72,11 +75,16 @@ export class HandlerManager {
   static getScrollableElement(): Element | undefined | null {
     const handler = HandlerManager.getHandler()
     if (handler === null) return null
-
     return handler.getScrollableElement()
   }
 
-  static getTopLevelHost(): string {
-    return window.location.host.match(/\w+\.\w+$/g)![0]
+  static getTopLevelHost(): string | null {
+    const host = window.location.host
+    const res = host.match(/\w+\.\w+$/g)
+    if (res === null || res.length < 1) {
+      console.error(`getTopLevelHost: could not get top level host from ${host}`)
+      return null
+    }
+    return res[0]
   }
 }
