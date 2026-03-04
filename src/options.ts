@@ -1,15 +1,15 @@
 import { TvScreenState } from "./types";
 
-async function getCurrentTab() {
-  let queryOptions = { active: true, lastFocusedWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
-  return tab;
-}
-
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
 const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
+
+async function getCurrentTab() {
+  let queryOptions = { active: true, lastFocusedWindow: true }
+  let [tab] = await chrome.tabs.query(queryOptions)
+  return tab
+}
 
 toggle.addEventListener('click', async () => {
   const tab = await getCurrentTab()
@@ -18,7 +18,7 @@ toggle.addEventListener('click', async () => {
   })
 })
 
-// TODO FIXME fix "message port was closed before response was sent" error
+// FIXME: fix "message port was closed before response was sent" error
 slider.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
