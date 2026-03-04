@@ -1,59 +1,10 @@
 import { TvDirector } from "./tunnel-vision/index.js"
 
-export function initializeTV() {
-  const RESIZE_DEBOUNCE_MILLIS = 500
+const RESIZE_DEBOUNCE_MILLIS = 500
+let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
+let DIRECTOR: TvDirector | null = null
 
-  let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
-  let DIRECTOR: TvDirector | null = null
-
-  // TODO set control-panel messages as constants
-  // receives messages from options.ts control-panel
-  // @ts-ignore
-  chrome.runtime.onMessage.addListener(function (value: string, sender, sendResponse) {
-    if (DIRECTOR === null) {
-      throw new Error(`tv content.ts: Director is null!`)
-    }
-
-    // console.log('content.ts: value received: ', value)
-
-    try {
-
-      // TODO change these to some kind of enum
-      if (value === "toggle screen") {
-
-        DIRECTOR.toggleScreen()
-
-      } else if (value === "get state") {
-
-        const stateResponse = DIRECTOR.getScreenState()
-        sendResponse(stateResponse)
-
-      } else if (value.match(/^\d+$/)) {
-
-        if (!DIRECTOR.isOn()) return
-        const valueNum = Number(value)
-        DIRECTOR.setScreenOpacity(valueNum)
-
-        // if its a color
-      } else if (value.match(/^#[0-9a-f]{6}$/)) {
-
-        if (!DIRECTOR.isOn()) return
-        DIRECTOR.setScreenColor(value)
-
-      } else {
-
-        console.log(`tv content.ts: Unknown message received!!`)
-        console.log(`message value: ${value}`)
-        console.log(`message sender: ${sender}`)
-
-      }
-
-    } catch (err) {
-      console.error(`tv content.ts ERROR: Error trying to read input from control panel`)
-      console.error(err)
-    }
-  })
-
+function initializeControls() {
   // TODO alt+click+drag creates a highlight box
   // bring that in from grok-code.html
   document.addEventListener('keyup', (event) => {
@@ -101,16 +52,70 @@ export function initializeTV() {
     }
   })
 
+}
+
+function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
+  if (DIRECTOR === null) {
+    throw new Error(`initializeTV: Director is null!`)
+  }
+
+  try {
+    // TODO: set control-panel messages as constants
+    // TODO: change these to some kind of enum
+    if (value === "toggle screen") {
+
+      DIRECTOR.toggleScreen()
+
+    } else if (value === "get state") {
+
+      const stateResponse = DIRECTOR.getScreenState()
+      sendResponse(stateResponse)
+
+      //pure number means its opacity
+    } else if (value.match(/^\d+$/)) {
+
+      if (!DIRECTOR.isOn()) return
+      const valueNum = Number(value)
+      DIRECTOR.setScreenOpacity(valueNum)
+
+      // if its a color
+    } else if (value.match(/^#[0-9a-f]{6}$/)) {
+
+      if (!DIRECTOR.isOn()) return
+      DIRECTOR.setScreenColor(value)
+
+    } else {
+
+      console.log(`initializeTV: Unknown message received!!`)
+      console.log(`message value: ${value}`)
+      console.log(`message sender: ${sender}`)
+
+    }
+
+  } catch (err) {
+    console.error(`initializeTV ERROR: Error trying to read input from control panel`)
+    console.error(err)
+  }
+}
+
+function onresizeCallback() {
+  clearTimeout(DEBOUNCE_TIMEOUT_ID)
+  DEBOUNCE_TIMEOUT_ID = setTimeout(
+    () => DIRECTOR!.onResizeCallback(),
+    RESIZE_DEBOUNCE_MILLIS) as unknown as number
+}
+
+export function initializeTV() {
+  // receives messages from options.ts control-panel
+  // @ts-ignore
+  chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
+
+  initializeControls()
 
   DIRECTOR = new TvDirector()
   DIRECTOR.toggleScreenOff()
 
-  window.onresize = () => {
-    clearTimeout(DEBOUNCE_TIMEOUT_ID)
-    DEBOUNCE_TIMEOUT_ID = setTimeout(
-      () => DIRECTOR!.onResizeCallback(),
-      RESIZE_DEBOUNCE_MILLIS) as unknown as number
-  }
+  window.onresize = onresizeCallback
 
-  console.log(`tv init complete`)
+  console.log(`initializeTV: init complete`)
 }
