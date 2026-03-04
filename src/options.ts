@@ -11,6 +11,11 @@ async function getCurrentTab() {
   return tab
 }
 
+function urlIsPdf(url: string): boolean {
+  if (url.match(/\.pdf$/)) return true
+  return false
+}
+
 toggle.addEventListener('click', async () => {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, "toggle screen", function () {
@@ -40,12 +45,16 @@ colorPicker.addEventListener("input", async (event) => {
 
 getCurrentTab()
   .then(tab => {
+
+    if (tab.url && urlIsPdf(tab.url)) console.log("ITS A PDF")
+
     chrome.tabs.sendMessage(tab.id!, "get state", function (state: TvScreenState) {
       const opacityPercent = String(state.opacity * 100)
       slider.value = opacityPercent
       sliderReadout.textContent = `${opacityPercent}%`
       colorPicker.value = state.hexColor
     })
+
   })
 
 
