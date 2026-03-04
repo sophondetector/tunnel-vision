@@ -4,7 +4,7 @@ const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
 const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
-const pdfToggle = document.getElementById('pdf-toggle') as HTMLInputElement
+const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
 
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true }
