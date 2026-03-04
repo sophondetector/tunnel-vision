@@ -4,11 +4,12 @@ const TOGGLE_SCREEN = "toggle screen"
 const GET_STATE = "get state"
 
 const RESIZE_DEBOUNCE_MILLIS = 500
+
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let DIRECTOR: TvDirector | null = null
 
 function initializeControls() {
-  // TODO alt+click+drag creates a highlight box
+  // TODO: alt+click+drag creates a highlight box
   // bring that in from grok-code.html
   document.addEventListener('keyup', (event) => {
     if (DIRECTOR === null) return
@@ -59,37 +60,32 @@ function initializeControls() {
 
 function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
   if (DIRECTOR === null) {
-    throw new Error(`initializeTV: Director is null!`)
+    console.error(`controlPanelListenerCallback: Director is null!`)
+    return
   }
 
-  try {
-    if (value === TOGGLE_SCREEN) {
-      DIRECTOR.toggleScreen()
+  if (value === TOGGLE_SCREEN) {
+    DIRECTOR.toggleScreen()
 
-    } else if (value === GET_STATE) {
-      const stateResponse = DIRECTOR.getScreenState()
-      sendResponse(stateResponse)
+  } else if (value === GET_STATE) {
+    const stateResponse = DIRECTOR.getScreenState()
+    sendResponse(stateResponse)
 
-      //pure number means its opacity
-    } else if (value.match(/^\d+$/)) {
-      if (!DIRECTOR.isOn()) return
-      const valueNum = Number(value)
-      DIRECTOR.setScreenOpacity(valueNum)
+    //pure number means its opacity
+  } else if (value.match(/^\d+$/)) {
+    if (!DIRECTOR.isOn()) return
+    const valueNum = Number(value)
+    DIRECTOR.setScreenOpacity(valueNum)
 
-      // if its a color
-    } else if (value.match(/^#[0-9a-f]{6}$/)) {
-      if (!DIRECTOR.isOn()) return
-      DIRECTOR.setScreenColor(value)
+    // if its a color
+  } else if (value.match(/^#[0-9a-f]{6}$/)) {
+    if (!DIRECTOR.isOn()) return
+    DIRECTOR.setScreenColor(value)
 
-    } else {
-      console.log(`initializeTV: Unknown message received!!`)
-      console.log(`message value: ${value}`)
-      console.log(`message sender: ${sender}`)
-    }
-
-  } catch (err) {
-    console.error(`initializeTV ERROR: Error trying to read input from control panel`)
-    console.error(err)
+  } else {
+    console.error(`controlPanelListenerCallback: Unknown message received!!`)
+    console.log(`message value: ${value}`)
+    console.log(`message sender: ${sender}`)
   }
 }
 
