@@ -21,7 +21,7 @@ DOMAIN_HANDLER_MAP.set("jpost.com", jpostHandler)
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
 export class HandlerManager {
-  static getHandler(): TvHandler {
+  static getHandler(): TvHandler | null {
 
     if (isPdfReader()) {
       console.log("HandlerManager.getHander: it's PDF time")
@@ -45,10 +45,9 @@ export class HandlerManager {
       handler = genericHandler
     }
 
-    if (!handler) {
-      throw new Error(`HandlerManager.getHandler: could not get handler for ${topLevelHost}!`)
-    } else {
-      console.log(`HandlerManager.getHandler: got handler for ${topLevelHost}`)
+    if (handler === undefined) {
+      console.error(`HandlerManager.getHandler: could not get handler for ${topLevelHost}!`)
+      return null
     }
 
     return handler
@@ -56,6 +55,8 @@ export class HandlerManager {
 
   static getEleArray(): Array<Element> | null {
     const handler = HandlerManager.getHandler()
+    if (handler === null) return null
+
     let ea = handler.getTvElements()
     if (!ea || ea.length == 0) {
       console.warn(`getEleArray: hander failed: falling back on generic handler`)
@@ -68,8 +69,10 @@ export class HandlerManager {
     return ea
   }
 
-  static getScrollableElement(): Element | undefined {
+  static getScrollableElement(): Element | undefined | null {
     const handler = HandlerManager.getHandler()
+    if (handler === null) return null
+
     return handler.getScrollableElement()
   }
 
