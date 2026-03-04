@@ -1,5 +1,8 @@
 import { TvDirector } from "./tunnel-vision/index.js"
 
+const TOGGLE_SCREEN = "toggle screen"
+const GET_STATE = "get state"
+
 const RESIZE_DEBOUNCE_MILLIS = 500
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let DIRECTOR: TvDirector | null = null
@@ -60,36 +63,28 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
   }
 
   try {
-    // TODO: set control-panel messages as constants
-    // TODO: change these to some kind of enum
-    if (value === "toggle screen") {
-
+    if (value === TOGGLE_SCREEN) {
       DIRECTOR.toggleScreen()
 
-    } else if (value === "get state") {
-
+    } else if (value === GET_STATE) {
       const stateResponse = DIRECTOR.getScreenState()
       sendResponse(stateResponse)
 
       //pure number means its opacity
     } else if (value.match(/^\d+$/)) {
-
       if (!DIRECTOR.isOn()) return
       const valueNum = Number(value)
       DIRECTOR.setScreenOpacity(valueNum)
 
       // if its a color
     } else if (value.match(/^#[0-9a-f]{6}$/)) {
-
       if (!DIRECTOR.isOn()) return
       DIRECTOR.setScreenColor(value)
 
     } else {
-
       console.log(`initializeTV: Unknown message received!!`)
       console.log(`message value: ${value}`)
       console.log(`message sender: ${sender}`)
-
     }
 
   } catch (err) {
