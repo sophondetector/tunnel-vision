@@ -8,11 +8,9 @@ import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "./tv-handler-type"
 import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 
-// TODO make handlers able to discriminate by subdomain
-const GENERIC_HANDLER_KEY: string = "GENERIC"
+// TODO: make handlers able to discriminate by subdomain
 const DOMAIN_HANDLER_MAP: Map<string, TvHandler> = new Map()
 
-DOMAIN_HANDLER_MAP.set(GENERIC_HANDLER_KEY, genericHandler)
 DOMAIN_HANDLER_MAP.set("vatican.va", vaticanHandler)
 DOMAIN_HANDLER_MAP.set("wikipedia.org", wikipediaHandler)
 DOMAIN_HANDLER_MAP.set("mozilla.org", mdnHandler)
@@ -26,15 +24,14 @@ export class HandlerManager {
   static getHandler(): TvHandler {
 
     if (isPdfReader()) {
-      console.log("HandlerManager: it's PDF time")
+      console.log("HandlerManager.getHander: it's PDF time")
       return pdfReaderHandler
     }
 
     const topLevelHost = HandlerManager.getTopLevelHost()
 
     if (isActuallySubstack()) {
-      console.log(`HandlerManager.getHandler: ${topLevelHost} found to be actually substack...`)
-      console.log(`HandlerManager.getHandler: using substack handler`)
+      console.log(`HandlerManager.getHandler: ${topLevelHost} is substack - using substack handler...`)
       return substackHandler
     }
 
@@ -45,7 +42,7 @@ export class HandlerManager {
       handler = DOMAIN_HANDLER_MAP.get(topLevelHost)
     } else {
       console.log(`HandlerManager.getHandler: ${topLevelHost} not supported; using generic handler`)
-      handler = DOMAIN_HANDLER_MAP.get(GENERIC_HANDLER_KEY)
+      handler = genericHandler
     }
 
     if (!handler) {
