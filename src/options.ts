@@ -4,6 +4,7 @@ const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
 const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
+const pdfToggle = document.getElementById('pdf-toggle') as HTMLInputElement
 
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true }
@@ -46,7 +47,9 @@ colorPicker.addEventListener("input", async (event) => {
 getCurrentTab()
   .then(tab => {
 
-    if (tab.url && urlIsPdf(tab.url)) console.log("ITS A PDF")
+    if (tab.url && urlIsPdf(tab.url)) {
+      pdfToggle.style.backgroundColor = "lightgreen"
+    }
 
     chrome.tabs.sendMessage(tab.id!, "get state", function (state: TvScreenState) {
       const opacityPercent = String(state.opacity * 100)
