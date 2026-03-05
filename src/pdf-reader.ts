@@ -5,7 +5,7 @@ import { initializeTV } from './initialize-tv';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-const PDF_PATH = '../test-pdf.pdf'
+const PDF_PATH = '../test-stuff/test-pdf.pdf'
 const SCALE = 2
 // TODO FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
