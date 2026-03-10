@@ -79,7 +79,7 @@ export class TvDirector {
   // TODO is there a way I can dynamically determine a "scrollable interior" element?
   setScrollableEventListener(): void {
     const scrollEle = HandlerManager.getScrollableElement()
-    if (scrollEle === undefined) {
+    if (!scrollEle) {
       console.log('setScrollableEventListener: no scroll ele found, so not adding event listener')
       return
     }
