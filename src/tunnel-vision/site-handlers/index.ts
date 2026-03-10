@@ -7,6 +7,7 @@ import { wikipediaHandler } from "./wiki-handler"
 import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "./tv-handler-type"
 import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
+import { grokHandler } from "./grok-handler"
 
 // TODO: make handlers able to discriminate by subdomain
 const DOMAIN_HANDLER_MAP: Map<string, TvHandler> = new Map()
@@ -17,6 +18,7 @@ DOMAIN_HANDLER_MAP.set("mozilla.org", mdnHandler)
 DOMAIN_HANDLER_MAP.set("substack.com", substackHandler)
 DOMAIN_HANDLER_MAP.set("reddit.com", redditHandler)
 DOMAIN_HANDLER_MAP.set("jpost.com", jpostHandler)
+DOMAIN_HANDLER_MAP.set("grok.com", grokHandler)
 
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
