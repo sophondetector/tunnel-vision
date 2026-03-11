@@ -6,7 +6,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        app: "pages/index.html",
         pdfReader: "pages/pdf-reader.html"
       }
     }
