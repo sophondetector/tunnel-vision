@@ -18,9 +18,12 @@
     }
 
     body>div {
+      margin: 1ch;
+    }
+
+    main {
       border: black;
       border-style: solid;
-      margin: 1ch;
     }
   </style>
 </head>
@@ -34,10 +37,10 @@
   <div>
     <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
   </div>
-  <div style="position: relative; display: inline-block;">
+  <main>
     <canvas id="the-canvas"></canvas>
     <div id="text-layer" class="textLayer"></div>
-  </div>
+  </main>
 </body>
 
 </html>
