@@ -76,7 +76,7 @@ export class TvDirector {
     return TvScreen.getScreenState()
   }
 
-  // TODO is there a way I can dynamically determine a "scrollable interior" element?
+  // TODO: is there a way I can dynamically determine a "scrollable interior" element?
   setScrollableEventListener(): void {
     const scrollEle = HandlerManager.getScrollableElement()
     if (!scrollEle) {
@@ -193,10 +193,10 @@ export class TvDirector {
     TvScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
   }
 
-  // TODO callback for when page changes layout
-  // TODO this crashes sometimes; WHY!?!?!
-  // TODO on sizing down this will go to the range BEFORE rather than the range we want
-  // TODO how should null ranges here be handled?
+  // TODO: callback for when page changes layout
+  // TODO: this crashes sometimes; WHY!?!?!
+  // TODO: on sizing down this will go to the range BEFORE rather than the range we want
+  // TODO: how should null ranges here be handled?
   onResizeCallback(): void {
     // if same size -> return
     if (window.innerWidth === WIN_WIDTH) return
@@ -206,7 +206,7 @@ export class TvDirector {
     const rangeManager = this.getRangeManager()
     const prevRange = rangeManager.getCurrentRange()
     if (prevRange === undefined) {
-      console.log('TvDirector.onResizeCallback: could not get current range!')
+      console.error('TvDirector.onResizeCallback: could not get current range!')
       return
     }
     const prevNode = prevRange.startContainer
@@ -223,7 +223,7 @@ export class TvDirector {
       for (rangeIdx; rangeIdx > 0; rangeIdx--) {
         const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
         if (iterRange === undefined) {
-          console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+          console.warn(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
           continue
         }
         if (iterRange.isPointInRange(prevNode, prevOffset)) {
