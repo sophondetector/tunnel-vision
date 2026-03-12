@@ -9,12 +9,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // NOTE: use web path to make work with npm run build
 // or use relative path if just working with npm run dev
 
-// const PDF_PATH = '../test-stuff/test-pdf.pdf'
-// const PDF_PATH = 'https://nathanielhtaylor.com/pdf-version.pdf'
-const SCALE = 2
-// TODO FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
+// FIXME: If you reload the page it loads the last pdf, not the pdf associated with the page
+
+// FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
 const OUTPUT_SCALE = { sx: 1, sy: 1 }
+const SCALE = 2
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
