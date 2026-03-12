@@ -1,4 +1,4 @@
-import { TvScreenState, TvRect } from "../types"
+import { TvScreenState, TvRect } from "../types-and-consts"
 
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'

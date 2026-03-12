@@ -1,4 +1,4 @@
-import { TvScreenState, PDF_URL_KEY } from "./types";
+import { TvScreenState, PDF_URL_KEY } from "./types-and-consts";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
