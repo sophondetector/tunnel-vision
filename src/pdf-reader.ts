@@ -1,7 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
-import { initializeTV } from './initialize-tv';
+import { initializeTV, getDirector } from './initialize-tv';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -78,8 +78,13 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
 
   document.getElementById('page_num')!.textContent = PAGE_NUM.toString()
 
-  //FIXME: Works at first but when you scroll to next page the screen can't turn on and when you return to the previous page the ranges are no longer sequenced correctly
-  initializeTV()
+  // TODO: break this block into its own function - in general we must SEPARATE CONCERNS
+  const dir = getDirector()
+  if (!dir) {
+    console.error(`renderPage: ERROR could not get director`)
+    return
+  }
+  dir.init()
 }
 
 /**
@@ -118,11 +123,13 @@ function onNextPage() {
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
-
+// TODO: use local storage to import whatever PDF the user was looking at
 pdfjsLib.getDocument(PDF_PATH).promise
   .then((pdfDocProxy) => {
     PDF_DOC = pdfDocProxy
     document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
   })
+  // TODO: this pattern causes the first page to get ranged twice
+  .then(initializeTV)
   .then(() => renderPage(PAGE_NUM))
 

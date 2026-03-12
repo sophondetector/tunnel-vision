@@ -96,7 +96,11 @@ function onresizeCallback() {
     RESIZE_DEBOUNCE_MILLIS) as unknown as number
 }
 
-export function initializeTV() {
+export function initializeTV(): void {
+  if (DIRECTOR) {
+    console.error(`ERROR: there is already a TvDirector instantiated! aborting init...`)
+    return
+  }
   // receives messages from options.ts control-panel
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
@@ -109,4 +113,12 @@ export function initializeTV() {
   window.onresize = onresizeCallback
 
   console.log(`initializeTV: init complete`)
+}
+
+export function getDirector(): TvDirector | undefined {
+  if (!DIRECTOR) {
+    console.error(`getDirector: ERROR TvDirector has not been instantiated`)
+    return
+  }
+  return DIRECTOR
 }
