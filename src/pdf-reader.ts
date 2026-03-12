@@ -132,7 +132,6 @@ function onNextPage(): void {
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
-// TODO: use local storage to import whatever PDF the user was looking at
 getPDFUrlFromLocalStorage()
   .then((path) => PDF_PATH = path)
   .then(async () => {
