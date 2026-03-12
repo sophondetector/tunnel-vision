@@ -2,16 +2,9 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
-import { PDF_URL_KEY } from './types-and-consts';
+import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './types-and-consts';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
-
-// FIXME: If you reload the page it loads the last pdf, not the pdf associated with the page
-// TODO: implement the following pattern so reloading pdf pages works
-// first get tab
-// then query localStorage tab.id-tvpdf to see if there is a pdf url there
-// if there is open that pdf-url
-// else fetch the last pdfUrl and then upload that pdf-url to localStorage under the key tab.id-tvpdf
 
 // FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
@@ -24,9 +17,35 @@ let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 
-async function getPDFUrlFromLocalStorage(): Promise<string> {
-  const res = await chrome.storage.local.get(PDF_URL_KEY)
-  return res[PDF_URL_KEY]
+function id2Key(id: number): string {
+  return `${id}-tvpdf`
+}
+
+async function getLatestPDFUrl(): Promise<string> {
+  const res = await chrome.storage.local.get(LATEST_PDF_URL_KEY)
+  return res[LATEST_PDF_URL_KEY]
+}
+
+/* first get tab
+* then query localStorage tab.id-tvpdf to see if there is a pdf url there
+* if there is open that pdf-url
+* else fetch the last pdfUrl and then upload that pdf-url to localStorage under the key tab.id-tvpdf
+*/
+async function getPDFUrl(): Promise<string> {
+  const tab = await getCurrentTab()
+  const key = id2Key(tab.id!)
+
+  const obj = await chrome.storage.local.get(key)
+  const res = obj[key]
+
+  if (res) {
+    return res
+  }
+
+  const latestUrl = await getLatestPDFUrl()
+  await storePDFUrlInLocalStorage(key, latestUrl)
+
+  return latestUrl
 }
 
 async function renderPage(): Promise<void> {
@@ -134,7 +153,7 @@ function onNextPage(): void {
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
-getPDFUrlFromLocalStorage()
+getPDFUrl()
   .then((path) => PDF_PATH = path)
   .then(async () => {
     if (!PDF_PATH) {

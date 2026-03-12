@@ -1,4 +1,4 @@
-import { TvScreenState, PDF_URL_KEY } from "./types-and-consts";
+import { TvScreenState, getCurrentTab, storeLatestPDFUrlInLocalStorage } from "./types-and-consts";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
@@ -6,19 +6,9 @@ const sliderReadout = document.getElementById('slider-readout') as HTMLInputElem
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
 const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
 
-async function getCurrentTab() {
-  let queryOptions = { active: true, lastFocusedWindow: true }
-  let [tab] = await chrome.tabs.query(queryOptions)
-  return tab
-}
-
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
   return false
-}
-
-async function storeUrlInLocalStorage(url: string): Promise<void> {
-  await chrome.storage.local.set({ [PDF_URL_KEY]: url })
 }
 
 toggle.addEventListener('click', async () => {
@@ -54,7 +44,7 @@ getCurrentTab()
     if (tab.url && urlIsPdf(tab.url)) {
       pdfToggle.style.backgroundColor = "lightgreen"
       pdfToggle.addEventListener("click", async () => {
-        await storeUrlInLocalStorage(tab.url as string)
+        await storeLatestPDFUrlInLocalStorage(tab.url as string)
       })
     }
 
