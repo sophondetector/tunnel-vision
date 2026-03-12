@@ -62,8 +62,7 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
   textLayerDiv.style.width = `${cssWidth}px`;
   textLayerDiv.style.height = `${cssHeight}px`;
 
-  // NOTE: Grok put these here but they seem un-necessary
-  // Leaving commented out for now
+  // NOTE: Grok put these here but they seem un-necessary - leaving commented out for now
   // Optional: force pointer events & selection
   // textLayerDiv.style.pointerEvents = 'all';
   // textLayerDiv.style.userSelect = 'text';
@@ -77,8 +76,9 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
   await textLayer.render();
 
   document.getElementById('page_num')!.textContent = PAGE_NUM.toString()
+}
 
-  // TODO: break this block into its own function - in general we must SEPARATE CONCERNS
+async function initRanges(): Promise<void> {
   const dir = getDirector()
   if (!dir) {
     console.error(`renderPage: ERROR could not get director`)
@@ -88,14 +88,14 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
 }
 
 /**
-   * If another page rendering in progress, waits until the rendering is
-   * finished. Otherwise, executes rendering immediately.
-   */
+  * If another page rendering in progress, waits until the rendering is
+  * finished. Otherwise, executes rendering immediately.
+  */
 function queueRenderPage(num: number) {
   if (RENDERING) {
     PAGE_NUM_PENDING = num;
   } else {
-    renderPage(num);
+    renderPage(num).then(initRanges);
   }
 }
 
@@ -129,7 +129,6 @@ pdfjsLib.getDocument(PDF_PATH).promise
     PDF_DOC = pdfDocProxy
     document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
   })
-  // TODO: this pattern causes the first page to get ranged twice
-  .then(initializeTV)
   .then(() => renderPage(PAGE_NUM))
+  .then(initializeTV)
 
