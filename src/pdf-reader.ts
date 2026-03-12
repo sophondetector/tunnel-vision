@@ -26,11 +26,12 @@ async function getLatestPDFUrl(): Promise<string> {
   return res[LATEST_PDF_URL_KEY]
 }
 
-/* first get tab
-* then query localStorage tab.id-tvpdf to see if there is a pdf url there
-* if there is open that pdf-url
-* else fetch the last pdfUrl and then upload that pdf-url to localStorage under the key tab.id-tvpdf
-*/
+/* 
+ * first get tab
+ * query localStorage tab.id-tvpdf for pdf url
+ * if there is return that pdf url
+ * else fetch last pdf url then upload to localStorage w/ key `tab.id-tvpdf` 
+ * */
 async function getPDFUrl(): Promise<string> {
   const tab = await getCurrentTab()
   const key = id2Key(tab.id!)
