@@ -20,12 +20,20 @@
     body>div {
       border: black;
       border-style: solid;
+      margin: 1ch;
     }
   </style>
 </head>
 
 <body>
   <h1>Tunnel Vision PDF Reader</h1>
+  <div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+  <div>
+    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+  </div>
   <div style="position: relative; display: inline-block;">
     <canvas id="the-canvas"></canvas>
     <div id="text-layer" class="textLayer"></div>
