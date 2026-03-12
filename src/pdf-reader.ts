@@ -75,6 +75,10 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
 
   await textLayer.render();
 
+
+}
+
+function setPageNumText(): void {
   document.getElementById('page_num')!.textContent = PAGE_NUM.toString()
 }
 
@@ -95,7 +99,9 @@ function queueRenderPage(num: number) {
   if (RENDERING) {
     PAGE_NUM_PENDING = num;
   } else {
-    renderPage(num).then(initRanges);
+    renderPage(num)
+      .then(initRanges)
+      .then(setPageNumText)
   }
 }
 
@@ -131,4 +137,5 @@ pdfjsLib.getDocument(PDF_PATH).promise
   })
   .then(() => renderPage(PAGE_NUM))
   .then(initializeTV)
+  .then(setPageNumText)
 
