@@ -10,3 +10,5 @@ export interface TvRect {
   height: number
 }
 
+export const PDF_URL_KEY = "pdfUrl"
+

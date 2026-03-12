@@ -1,4 +1,4 @@
-import { TvScreenState } from "./types";
+import { TvScreenState, PDF_URL_KEY } from "./types";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
@@ -15,6 +15,10 @@ async function getCurrentTab() {
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
   return false
+}
+
+async function storeUrlInLocalStorage(url: string): Promise<void> {
+  await chrome.storage.local.set({ [PDF_URL_KEY]: url })
 }
 
 toggle.addEventListener('click', async () => {
@@ -49,6 +53,9 @@ getCurrentTab()
 
     if (tab.url && urlIsPdf(tab.url)) {
       pdfToggle.style.backgroundColor = "lightgreen"
+      pdfToggle.addEventListener("click", async () => {
+        await storeUrlInLocalStorage(tab.url as string)
+      })
     }
 
     chrome.tabs.sendMessage(tab.id!, "get state", function (state: TvScreenState) {

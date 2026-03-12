@@ -2,6 +2,7 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
+import { PDF_URL_KEY } from './types';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -9,7 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // or use relative path if just working with npm run dev
 
 // const PDF_PATH = '../test-stuff/test-pdf.pdf'
-const PDF_PATH = 'https://nathanielhtaylor.com/pdf-version.pdf'
+// const PDF_PATH = 'https://nathanielhtaylor.com/pdf-version.pdf'
 const SCALE = 2
 // TODO FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
@@ -17,8 +18,14 @@ const OUTPUT_SCALE = { sx: 1, sy: 1 }
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
+let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
+
+async function getPDFUrlFromLocalStorage(): Promise<string> {
+  const res = await chrome.storage.local.get(PDF_URL_KEY)
+  return res[PDF_URL_KEY]
+}
 
 async function renderPage(): Promise<void> {
   if (PDF_DOC === null) {
@@ -126,13 +133,21 @@ function onNextPage(): void {
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
 // TODO: use local storage to import whatever PDF the user was looking at
-pdfjsLib.getDocument(PDF_PATH).promise
-  .then((pdfDocProxy) => {
-    PDF_DOC = pdfDocProxy
-    document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
+getPDFUrlFromLocalStorage()
+  .then((path) => PDF_PATH = path)
+  .then(async () => {
+    if (!PDF_PATH) {
+      throw new Error(`pdf-reader.ts: ERROR PDF_PATH is null!`)
+    }
+    await pdfjsLib.getDocument(PDF_PATH).promise
+      .then((pdfDocProxy) => {
+        PDF_DOC = pdfDocProxy
+        document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
+      })
   })
   .then(renderPage)
   .then(renderTextLayer)
   .then(initializeTV)
   .then(setPageNumText)
+  .catch((err) => console.error(err))
 
