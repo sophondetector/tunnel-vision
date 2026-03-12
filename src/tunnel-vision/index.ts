@@ -21,6 +21,7 @@ export class TvDirector {
     }, NAV_DEBOUNCE_MILLIS * 5)
   }
 
+  // TODO: break injecting and setting ranges into two separate methods
   init(): void {
     TvScreen.inject()
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
