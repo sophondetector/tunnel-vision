@@ -6,10 +6,12 @@ import { PDF_URL_KEY } from './types-and-consts';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-// NOTE: use web path to make work with npm run build
-// or use relative path if just working with npm run dev
-
 // FIXME: If you reload the page it loads the last pdf, not the pdf associated with the page
+// TODO: implement the following pattern so reloading pdf pages works
+// first get tab
+// then query localStorage tab.id-tvpdf to see if there is a pdf url there
+// if there is open that pdf-url
+// else fetch the last pdfUrl and then upload that pdf-url to localStorage under the key tab.id-tvpdf
 
 // FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
