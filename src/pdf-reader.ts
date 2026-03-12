@@ -22,14 +22,14 @@ let PAGE_NUM_PENDING: number = 1
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 
-async function renderPage(PAGE_NUM: number): Promise<void> {
+async function renderPage(): Promise<void> {
   if (PDF_DOC === null) {
     console.warn(`renderPage: PDF_DOC is null!`)
     return
   }
 
   const page = await PDF_DOC.getPage(PAGE_NUM)
-  let viewport = page.getViewport({ scale: SCALE });
+  const viewport = page.getViewport({ scale: SCALE });
 
   // Canvas resolution (backing store) at device pixels
   CANVAS.width = Math.round(viewport.width * OUTPUT_SCALE.sx);
@@ -45,11 +45,19 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
     canvasContext: CONTEXT,
     viewport: viewport,
   }).promise
-    .then(function () {
-      RENDERING = false
-    })
+}
 
-  // Text layer setup
+async function renderTextLayer(): Promise<void> {
+  if (PDF_DOC === null) {
+    console.warn(`renderTextLayer: PDF_DOC is null!`)
+    return
+  }
+
+  const page = await PDF_DOC.getPage(PAGE_NUM)
+  const viewport = page.getViewport({ scale: SCALE });
+  const cssWidth = Math.floor(viewport.width);
+  const cssHeight = Math.floor(viewport.height);
+
   const textLayerDiv = document.querySelector('#text-layer') as HTMLDivElement
   textLayerDiv.innerHTML = '';
 
@@ -74,8 +82,6 @@ async function renderPage(PAGE_NUM: number): Promise<void> {
   });
 
   await textLayer.render();
-
-
 }
 
 function setPageNumText(): void {
@@ -95,37 +101,42 @@ async function initRanges(): Promise<void> {
   * If another page rendering in progress, waits until the rendering is
   * finished. Otherwise, executes rendering immediately.
   */
-function queueRenderPage(num: number) {
+function queueRenderPage(): void {
   if (RENDERING) {
-    PAGE_NUM_PENDING = num;
-  } else {
-    renderPage(num)
-      .then(initRanges)
-      .then(setPageNumText)
+    PAGE_NUM_PENDING = PAGE_NUM;
+    return
   }
+
+  RENDERING = true
+
+  renderPage()
+    .then(renderTextLayer)
+    .then(() => RENDERING = false)
+    .then(initRanges)
+    .then(setPageNumText)
 }
 
 /**
  * Displays previous page.
  */
-function onPrevPage() {
+function onPrevPage(): void {
   if (PAGE_NUM <= 1) {
     return;
   }
   PAGE_NUM--;
-  queueRenderPage(PAGE_NUM);
+  queueRenderPage();
 }
 document.getElementById('prev')!.addEventListener('click', onPrevPage);
 
 /**
  * Displays next page.
  */
-function onNextPage() {
+function onNextPage(): void {
   if (PAGE_NUM >= PDF_DOC!.numPages) {
     return;
   }
   PAGE_NUM++;
-  queueRenderPage(PAGE_NUM);
+  queueRenderPage();
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
@@ -135,7 +146,10 @@ pdfjsLib.getDocument(PDF_PATH).promise
     PDF_DOC = pdfDocProxy
     document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
   })
-  .then(() => renderPage(PAGE_NUM))
+  .then(() => RENDERING = true)
+  .then(renderPage)
+  .then(renderTextLayer)
+  .then(() => RENDERING = false)
   .then(initializeTV)
   .then(setPageNumText)
 
