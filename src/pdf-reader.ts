@@ -26,7 +26,7 @@ async function getLatestPDFUrl(): Promise<string> {
   return res[LATEST_PDF_URL_KEY]
 }
 
-/* 
+/**
  * first get tab
  * query localStorage tab.id-tvpdf for pdf url
  * if there is return that pdf url
