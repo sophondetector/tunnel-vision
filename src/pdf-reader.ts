@@ -31,7 +31,7 @@ async function getLatestPDFUrl(): Promise<string> {
  * query localStorage tab.id-tvpdf for pdf url
  * if there is return that pdf url
  * else fetch last pdf url then upload to localStorage w/ key `tab.id-tvpdf` 
- * */
+ */
 async function getPDFUrl(): Promise<string> {
   const tab = await getCurrentTab()
   const key = id2Key(tab.id!)
