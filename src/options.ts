@@ -1,4 +1,4 @@
-import { TvScreenState, getCurrentTab, storeLatestPDFUrlInLocalStorage } from "./types-and-consts";
+import { TvScreenState, getCurrentTab, storeLatestPDFUrlInLocalStorage } from "./common";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement

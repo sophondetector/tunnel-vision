@@ -1,7 +1,7 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { TvScreenState } from "../types-and-consts";
+import { TvScreenState } from "../common";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
