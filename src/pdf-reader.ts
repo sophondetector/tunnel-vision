@@ -139,11 +139,11 @@ getPDFUrlFromLocalStorage()
     if (!PDF_PATH) {
       throw new Error(`pdf-reader.ts: ERROR PDF_PATH is null!`)
     }
-    await pdfjsLib.getDocument(PDF_PATH).promise
-      .then((pdfDocProxy) => {
-        PDF_DOC = pdfDocProxy
-        document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
-      })
+    return pdfjsLib.getDocument(PDF_PATH).promise
+  })
+  .then((pdfDocProxy) => {
+    PDF_DOC = pdfDocProxy
+    document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
   })
   .then(renderPage)
   .then(renderTextLayer)
