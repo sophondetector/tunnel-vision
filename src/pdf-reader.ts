@@ -17,8 +17,6 @@ const OUTPUT_SCALE = { sx: 1, sy: 1 }
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
-let RENDERING: boolean = false
-let PAGE_NUM_PENDING: number = 1
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 
@@ -98,25 +96,6 @@ async function initRanges(): Promise<void> {
 }
 
 /**
-  * If another page rendering in progress, waits until the rendering is
-  * finished. Otherwise, executes rendering immediately.
-  */
-function queueRenderPage(): void {
-  if (RENDERING) {
-    PAGE_NUM_PENDING = PAGE_NUM;
-    return
-  }
-
-  RENDERING = true
-
-  renderPage()
-    .then(renderTextLayer)
-    .then(() => RENDERING = false)
-    .then(initRanges)
-    .then(setPageNumText)
-}
-
-/**
  * Displays previous page.
  */
 function onPrevPage(): void {
@@ -124,7 +103,10 @@ function onPrevPage(): void {
     return;
   }
   PAGE_NUM--;
-  queueRenderPage();
+  renderPage()
+    .then(renderTextLayer)
+    .then(initRanges)
+    .then(setPageNumText)
 }
 document.getElementById('prev')!.addEventListener('click', onPrevPage);
 
@@ -136,7 +118,10 @@ function onNextPage(): void {
     return;
   }
   PAGE_NUM++;
-  queueRenderPage();
+  renderPage()
+    .then(renderTextLayer)
+    .then(initRanges)
+    .then(setPageNumText)
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
 
@@ -146,10 +131,8 @@ pdfjsLib.getDocument(PDF_PATH).promise
     PDF_DOC = pdfDocProxy
     document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
   })
-  .then(() => RENDERING = true)
   .then(renderPage)
   .then(renderTextLayer)
-  .then(() => RENDERING = false)
   .then(initializeTV)
   .then(setPageNumText)
 
