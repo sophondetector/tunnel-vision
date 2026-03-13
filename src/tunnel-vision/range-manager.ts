@@ -119,11 +119,15 @@ export class RangeManager {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
-        LOG_RANGES && console.log(`RangeManager.getNextRange: range set to range at index ${this.RANGE_IDX}`)
+        if (LOG_RANGES) {
+          console.log(`RangeManager.getNextRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(iterRange)
+          console.log(iterRange.getBoundingClientRect())
+        }
         return iterRange
       }
     }
-    console.log(`RangeManger.getNextRange: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManger.getNextRange: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
   }
 
   getPrevRange(): Range | undefined {
@@ -131,16 +135,20 @@ export class RangeManager {
       console.error(`RangeManager.getPrevRange: this.RANGES is null`)
       return undefined
     }
-    // find the next visible range
+    // find the first previous visible range
     for (let newIdx = this.RANGE_IDX - 1; newIdx >= 0; newIdx--) {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
-        LOG_RANGES && console.log(`RangeManager.getPrevRange: range set to range at index ${this.RANGE_IDX}`)
+        if (LOG_RANGES) {
+          console.log(`RangeManager.getPrevRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(iterRange)
+          console.log(iterRange.getBoundingClientRect())
+        }
         return iterRange
       }
     }
-    console.log(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
