@@ -13,8 +13,15 @@
 
     body {
       display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-around;
+    }
+
+    #sidebar {
+      display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: center
     }
 
     body>div {
@@ -29,18 +36,23 @@
 </head>
 
 <body>
-  <h1>Tunnel Vision PDF Reader</h1>
-  <div>
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
+
+  <div id="sidebar">
+    <h1>Tunnel Vision PDF Reader</h1>
+    <div>
+      <button id="prev">Previous</button>
+      <button id="next">Next</button>
+    </div>
+    <div>
+      <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+    </div>
   </div>
-  <div>
-    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-  </div>
+
   <main>
     <canvas id="the-canvas"></canvas>
     <div id="text-layer" class="textLayer"></div>
   </main>
+
 </body>
 
 </html>
