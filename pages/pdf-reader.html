@@ -32,6 +32,20 @@
       border: black;
       border-style: solid;
     }
+
+    #debug-panel {
+      margin: 5ch;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: red;
+      border-style: solid;
+      padding: 2ch;
+    }
+
+    #debug-panel > button {
+      margin: 1ch;
+    }
   </style>
 </head>
 
@@ -45,6 +59,10 @@
     </div>
     <div>
       <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+    </div>
+    <div id="debug-panel">
+      <h2>Debug Panel</h2>
+      <button id="re-range">Re-Range</button>
     </div>
   </div>
 

@@ -6,6 +6,7 @@ import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+// FIXME: resize event listeners aren't firing on pdf-reader for some reason
 // FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
 const OUTPUT_SCALE = { sx: 1, sy: 1 }
@@ -153,6 +154,12 @@ function onNextPage(): void {
     .then(setPageNumText)
 }
 document.getElementById('next')!.addEventListener('click', onNextPage);
+
+document.getElementById('re-range')!.addEventListener('click', () => {
+  initRanges().then(() => {
+    console.log('re-range done')
+  })
+})
 
 getPDFUrl()
   .then((path) => PDF_PATH = path)
