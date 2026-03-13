@@ -125,10 +125,7 @@ async function initRanges(): Promise<void> {
   dir.init()
 }
 
-/**
- * Displays previous page.
- */
-function onPrevPage(): void {
+document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
     return;
   }
@@ -137,13 +134,9 @@ function onPrevPage(): void {
     .then(renderTextLayer)
     .then(initRanges)
     .then(setPageNumText)
-}
-document.getElementById('prev')!.addEventListener('click', onPrevPage);
+});
 
-/**
- * Displays next page.
- */
-function onNextPage(): void {
+document.getElementById('next')!.addEventListener('click', function () {
   if (PAGE_NUM >= PDF_DOC!.numPages) {
     return;
   }
@@ -152,10 +145,9 @@ function onNextPage(): void {
     .then(renderTextLayer)
     .then(initRanges)
     .then(setPageNumText)
-}
-document.getElementById('next')!.addEventListener('click', onNextPage);
+});
 
-document.getElementById('re-range')!.addEventListener('click', () => {
+document.getElementById('re-range')!.addEventListener('click', function () {
   initRanges().then(() => {
     console.log('re-range done')
   })
