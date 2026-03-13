@@ -142,7 +142,7 @@ export class RangeManager {
     console.log(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  // TODO refactor eleArray2Ranges to async generator to work with very large texts
+  // TODO: refactor eleArray2Ranges to async generator to work with very large texts
   static eleArray2Ranges(eleArray: Array<Element>): Array<Range> {
     const res: Array<Range> = []
     for (let idx = 0; idx < eleArray.length; idx++) {
