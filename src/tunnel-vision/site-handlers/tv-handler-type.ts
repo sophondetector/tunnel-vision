@@ -3,11 +3,9 @@ export interface TvHandler {
   getScrollableElement: () => Element | undefined
 }
 
-// TODO experiment with making ^^^ a class
+// TODO: add generalizable reRangeEvent listener
 
-// TODO add generalizable reRangeEvent listener
-
-// TODO use this mutation observer as a base to add a dynamic content observer 
+// TODO: use this mutation observer as a base to add a dynamic content observer 
 // lec = "body"
 // // create a new instance of `MutationObserver` named `observer`,
 // // passing it a callback function

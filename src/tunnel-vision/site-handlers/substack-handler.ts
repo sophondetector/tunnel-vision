@@ -9,8 +9,8 @@ export function isActuallySubstack(): boolean {
   return document.querySelector('link[href="https://substackcdn.com"]') ? true : false
 }
 
-// TODO event listener for article fetch
-// TODO dfs for the first element that satisfies this
+// TODO: event listener for article fetch
+// TODO: dfs for the first element that satisfies this
 function isScrollable(ele: Element): boolean {
   const map = ele.computedStyleMap()
   const overflowY = map.get('overflow-y')
