@@ -116,7 +116,7 @@ async function initRanges(): Promise<void> {
     console.error(`renderPage: ERROR could not get director`)
     return
   }
-  dir.init()
+  dir.initRanges()
 }
 
 document.getElementById('prev')!.addEventListener('click', function () {

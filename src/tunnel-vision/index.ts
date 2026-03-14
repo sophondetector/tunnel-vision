@@ -14,7 +14,7 @@ export class TvDirector {
 
   constructor() {
     this.inject()
-    this.init()
+    this.initRanges()
     this.setScrollableEventListener()
     this.setClickEventListener()
     this.setOnNav()
@@ -27,7 +27,7 @@ export class TvDirector {
     TvScreen.inject()
   }
 
-  init(): void {
+  initRanges(): void {
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
       console.error('TvDirector.init: null element array, exiting early')
@@ -52,7 +52,7 @@ export class TvDirector {
         if (!this.INITTED_ONCE) return
         console.log('TvDirector.onnavigatesuccess callback running')
         this.toggleScreenOff()
-        this.init()
+        this.initRanges()
       }, NAV_DEBOUNCE_MILLIS) as unknown as number
     }
   }
