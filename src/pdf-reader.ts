@@ -153,6 +153,10 @@ document.getElementById('re-range')!.addEventListener('click', function () {
   })
 })
 
+document.onclose = () => {
+  // TODO: delete tab entry from localStorage on close
+}
+
 getPDFUrl()
   .then((path) => PDF_PATH = path)
   .then(async () => {
