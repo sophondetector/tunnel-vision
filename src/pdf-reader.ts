@@ -6,10 +6,6 @@ import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-// NOTE: grok originally wanted the code to be this; it worked and then stopped working for some reason
-// forcing it to be one works fine
-// const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
-const OUTPUT_SCALE = { sx: 1, sy: 1 }
 const SCALE = 2
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
@@ -58,8 +54,8 @@ async function renderPage(): Promise<void> {
   const viewport = page.getViewport({ scale: SCALE });
 
   // Canvas resolution (backing store) at device pixels
-  CANVAS.width = Math.round(viewport.width * OUTPUT_SCALE.sx);
-  CANVAS.height = Math.round(viewport.height * OUTPUT_SCALE.sy);
+  CANVAS.width = Math.round(viewport.width);
+  CANVAS.height = Math.round(viewport.height);
 
   // IMPORTANT: CSS size = logical / CSS pixels (what text layer uses!)
   const cssWidth = Math.floor(viewport.width);
