@@ -6,8 +6,8 @@ import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-// FIXME: resize event listeners aren't firing on pdf-reader for some reason
-// FIXME: sometimes have to force sx/sy to be 1 to work - have no idea why
+// NOTE: grok originally wanted the code to be this; it worked and then stopped working for some reason
+// forcing it to be one works fine
 // const OUTPUT_SCALE = { sx: window.devicePixelRatio || 1, sy: window.devicePixelRatio || 1 }
 const OUTPUT_SCALE = { sx: 1, sy: 1 }
 const SCALE = 2
@@ -40,9 +40,7 @@ async function getPDFUrl(): Promise<string> {
   const obj = await chrome.storage.local.get(key)
   const res = obj[key]
 
-  if (res) {
-    return res
-  }
+  if (res) return res
 
   const latestUrl = await getLatestPDFUrl()
   await storePDFUrlInLocalStorage(key, latestUrl)
