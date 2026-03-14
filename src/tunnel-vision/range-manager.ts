@@ -190,7 +190,7 @@ export class RangeManager {
     // Safety limit to prevent infinite loops in pathological cases
     const MAX_ITERATIONS = 100_000;
     const BOTTOM_LIMIT = 5;           // pixels — when bottom jumps more than this → new line
-    const TOP_LIMIT = 100;
+    const TOP_LIMIT = 10;
 
     const ranges: Range[] = [];
     const lengths = textNodes.map(node => node.textContent?.length ?? 0);
@@ -233,11 +233,12 @@ export class RangeManager {
         // Start new line range
         const nextRange = new Range();
         nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1);
+        nextRange.setEnd(textNodes[nodeIndex], offsetInNode)
         ranges.push(nextRange);
 
         currentRange = nextRange;
-        previousBottom = currentBottom;
-        previousTop = currentTop
+        previousBottom = nextRange.getBoundingClientRect().bottom
+        previousTop = nextRange.getBoundingClientRect().top
       }
 
       charIndex++;
