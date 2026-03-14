@@ -1,5 +1,5 @@
 const TEXT_NODE_NAME = '#text'
-const LOG_RANGES = false
+const LOG_RANGES = true
 
 export class RangeManager {
   RANGES: Range[] | null = null
@@ -123,6 +123,7 @@ export class RangeManager {
           console.log(`RangeManager.getNextRange: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
+          console.log(iterRange.toString())
         }
         return iterRange
       }
@@ -144,6 +145,7 @@ export class RangeManager {
           console.log(`RangeManager.getPrevRange: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
+          console.log(iterRange.toString())
         }
         return iterRange
       }
@@ -153,24 +155,20 @@ export class RangeManager {
 
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
   static eleArray2Ranges(eleArray: Array<Element>): Array<Range> {
-    const res: Array<Range> = []
+    const textNodes: Array<Node> = []
     for (let idx = 0; idx < eleArray.length; idx++) {
-      const ele = eleArray[idx]
-      const iterRes = RangeManager.#ele2Ranges(ele)
-      res.push(...iterRes)
+      const iterEle = eleArray[idx]
+      const iterNodes = RangeManager.#getAllTextNodes(iterEle)
+      textNodes.push(...iterNodes)
     }
-    return res
+    const ranges = RangeManager.textNodes2Ranges(
+      textNodes.filter(RangeManager.nodeHasRealText)
+    )
+    return ranges
   }
 
   static nodeHasRealText(textNode: Node): boolean {
     return textNode.textContent!.trim().length > 0
-  }
-
-  static #ele2Ranges(ele: Element): Array<Range> {
-    const textNodesWithText = RangeManager.#getAllTextNodes(ele)
-      .filter(RangeManager.nodeHasRealText)
-    const ranges = RangeManager.textNodes2Ranges(textNodesWithText)
-    return ranges
   }
 
   static #getAllTextNodes(node: Node): Array<Node> {
@@ -192,6 +190,7 @@ export class RangeManager {
     // Safety limit to prevent infinite loops in pathological cases
     const MAX_ITERATIONS = 100_000;
     const LINE_BREAK_THRESHOLD = 5;           // pixels — when bottom jumps more than this → new line
+    const LINE_BREAK_TOP_THRESHOLD = 700;
 
     const ranges: Range[] = [];
     const lengths = textNodes.map(node => node.textContent?.length ?? 0);
@@ -209,6 +208,7 @@ export class RangeManager {
     currentRange.setStart(textNodes[0], 0);
 
     let previousBottom = currentRange.getBoundingClientRect().bottom;
+    let prevTop = currentRange.getBoundingClientRect().top
 
     while (charIndex < totalChars) {
       // Move to next text node when we reach the end of current one
@@ -222,9 +222,11 @@ export class RangeManager {
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
 
       const currentBottom = currentRange.getBoundingClientRect().bottom;
+      const curTop = currentRange.getBoundingClientRect().top
 
       // Did we cross into a new visual line?
-      if (currentBottom - previousBottom > LINE_BREAK_THRESHOLD) {
+      if (Math.abs(currentBottom - previousBottom) > LINE_BREAK_THRESHOLD ||
+        (Math.abs(curTop - prevTop)) > LINE_BREAK_TOP_THRESHOLD) {
         // Roll back one character — that one belongs to the next line
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
 
@@ -235,6 +237,7 @@ export class RangeManager {
 
         currentRange = nextRange;
         previousBottom = currentBottom;
+        prevTop = curTop
       }
 
       charIndex++;
