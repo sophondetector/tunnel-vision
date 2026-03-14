@@ -43,8 +43,8 @@ export class TvDirector {
   }
 
   setOnNav(): void {
-    //TODO this causes multiple runs of init when new pages load
-    //TODO replace this with a "milliseconds since last tree manipulation" debounce
+    //FIXME: this causes multiple runs of init when new pages load
+    //TODO: replace this with a "milliseconds since last tree manipulation" debounce
     //@ts-ignore
     window.navigation.onnavigatesuccess = () => {
       clearTimeout(NAV_DEBOUNCE)
