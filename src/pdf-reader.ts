@@ -153,8 +153,10 @@ document.getElementById('re-range')!.addEventListener('click', function () {
   })
 })
 
-document.onclose = () => {
-  // TODO: delete tab entry from localStorage on close
+// this deletes the localStorage entry when the window closes
+window.onbeforeunload = async () => {
+  const key = await getCurrentTab().then((tab) => id2Key(tab.id!))
+  await chrome.storage.local.remove(key)
 }
 
 getPDFUrl()
