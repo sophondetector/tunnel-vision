@@ -13,7 +13,9 @@ export class TvDirector {
   INITTED_ONCE: boolean = false
 
   constructor() {
+    this.inject()
     this.init()
+    this.setScrollableEventListener()
     this.setClickEventListener()
     this.setOnNav()
     setTimeout(() => {
@@ -21,19 +23,20 @@ export class TvDirector {
     }, NAV_DEBOUNCE_MILLIS * 5)
   }
 
-  // TODO: break injecting and setting ranges into two separate methods
-  init(): void {
+  inject() {
     TvScreen.inject()
+  }
+
+  init(): void {
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
-      console.log('TvDirector.init: null element array, exiting early')
+      console.error('TvDirector.init: null element array, exiting early')
       return
     }
     this.RANGE_MANAGER = new RangeManager(this.ELEMENT_ARRAY)
-    this.setScrollableEventListener()
     const range = this.RANGE_MANAGER.getFirstVisibleRange()
     if (range === undefined) {
-      console.log('TvDirector.init: could not get first visible range')
+      console.error('TvDirector.init: could not get first visible range')
       return
     }
     this.setWindowAroundRange(range)
@@ -195,9 +198,7 @@ export class TvDirector {
   }
 
   // TODO: callback for when page changes layout
-  // TODO: this crashes sometimes; WHY!?!?!
-  // TODO: on sizing down this will go to the range BEFORE rather than the range we want
-  // TODO: how should null ranges here be handled?
+  // FIXME: on sizing down this will go to the range BEFORE rather than the range we want
   onResizeCallback(): void {
     // if same size -> return
     if (window.innerWidth === WIN_WIDTH) return
