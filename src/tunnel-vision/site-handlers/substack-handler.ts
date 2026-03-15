@@ -9,7 +9,6 @@ export function isActuallySubstack(): boolean {
   return document.querySelector('link[href="https://substackcdn.com"]') ? true : false
 }
 
-// FIXME: clicking doesn't work on Grey Mirror 
 // TODO: event listener for article fetch
 // TODO: dfs for the first element that satisfies this
 function isScrollable(ele: Element): boolean {
@@ -19,19 +18,14 @@ function isScrollable(ele: Element): boolean {
 }
 
 function substackScrollableElement(): Element | undefined {
-  let scrollableEle;
   for (const lec of SCROLLABLE_ELE_LECS) {
     const ele = document.querySelector(lec)
     if (ele && isScrollable(ele)) {
-      scrollableEle = ele
-      break
+      return ele
     }
   }
-  if (!scrollableEle) {
-    console.log('substackScrollableElement: could not find scrollable element')
-    return undefined
-  }
-  return scrollableEle
+  console.error('substackScrollableElement: could not find scrollable element')
+  return undefined
 }
 
 function substackElementGetter(): Array<Element> | null {
