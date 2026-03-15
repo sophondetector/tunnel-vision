@@ -9,6 +9,7 @@ export function isActuallySubstack(): boolean {
   return document.querySelector('link[href="https://substackcdn.com"]') ? true : false
 }
 
+// FIXME: clicking doesn't work on Grey Mirror 
 // TODO: event listener for article fetch
 // TODO: dfs for the first element that satisfies this
 function isScrollable(ele: Element): boolean {
