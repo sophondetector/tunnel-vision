@@ -198,7 +198,6 @@ export class TvDirector {
   }
 
   // TODO: callback for when page changes layout
-  // FIXME: on sizing down this will go to the range BEFORE rather than the range we want
   onResizeCallback(): void {
     // if same size -> return
     if (window.innerWidth === WIN_WIDTH) return
@@ -235,17 +234,18 @@ export class TvDirector {
         }
       }
     }
+    // FIXME: on sizing down this will go to the range BEFORE rather than the range we want
 
     // if smaller window -> go forwards
     const rangeLen = rangeManager.getRangesLength()
     if (rangeLen === undefined) {
-      console.log(`TvDirector.onResizeCallback: WARNING - could not get range length!`)
+      console.error(`TvDirector.onResizeCallback: ERROR - could not get range length!`)
       return
     }
     for (rangeIdx; rangeIdx < rangeLen; rangeIdx++) {
       const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
       if (iterRange === undefined) {
-        console.log(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+        console.warn(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
