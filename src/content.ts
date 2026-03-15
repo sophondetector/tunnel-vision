@@ -8,13 +8,13 @@ initializeTV()
 // NOTE: THIS IS A "ROUGH AND READY" SOLUTION FOR SITES WHERE THE 
 // ELEMENT GETTER IS FIRING BEFORE THE SITE IS LOADED
 
-// const WAIT = 5000
+// const WAIT = 3000
 //
 // setTimeout(
 //   () => {
-//     console.log(`initting after ${WAIT} milliseconds`)
+//     console.log(`initing after ${WAIT} milliseconds`)
 //     initializeTV()
 //   },
-//   5000
+//   WAIT
 // )
 //
