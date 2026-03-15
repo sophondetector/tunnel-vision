@@ -109,7 +109,11 @@ export class TvDirector {
   }
 
   setClickEventListener(): void {
-    window.onclick = (event) => {
+    // NOTE: changed this from window.onclick = (event) => { etc ... }
+    // because window.onclick sets the event listener at the "bubbling" phase
+    // whereas we need to have it happen during the "capturing" phase to ensure
+    // it takes precedence over whatever listeners the site itself as set
+    const clickListener = (event: MouseEvent) => {
       if (!this.isOn()) return
 
       const rm = this.getRangeManager()
@@ -126,9 +130,12 @@ export class TvDirector {
           return
         }
       }
-
       console.log('TvDirector.clickListener: could not find clickable range')
     }
+
+    window.addEventListener('click', clickListener, {
+      capture: true
+    })
   }
 
   setScreenColor(color: string) {

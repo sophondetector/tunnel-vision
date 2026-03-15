@@ -1,7 +1,5 @@
 import { TvHandler } from "./tv-handler-type"
 
-// FIXME: Why doesn't clicking on ranges work on this site?
-
 function grokElementGetter(): Array<Element> | null {
   const content = document.querySelector('main')
   if (!content) return null
