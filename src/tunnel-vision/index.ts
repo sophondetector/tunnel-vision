@@ -211,7 +211,10 @@ export class TvDirector {
       return
     }
     const prevNode = prevRange.startContainer
-    const prevOffset = prevRange.startOffset
+    const prevOffset = Math.max(1, prevRange.startOffset)
+    // NOTE: making sure prevOffset is at least one fixes the
+    // bug where smaller window leads to range directly before
+    // we want getting picked
 
     rangeManager.initRanges(this.getElementArray())
     const newWidth = window.innerWidth
@@ -234,7 +237,6 @@ export class TvDirector {
         }
       }
     }
-    // FIXME: on sizing down this will go to the range BEFORE rather than the range we want
 
     // if smaller window -> go forwards
     const rangeLen = rangeManager.getRangesLength()
