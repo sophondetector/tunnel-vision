@@ -1,5 +1,5 @@
 const TEXT_NODE_NAME = '#text'
-const LOG_RANGES = true
+const LOG_RANGES = false
 
 export class RangeManager {
   RANGES: Range[] | null = null
