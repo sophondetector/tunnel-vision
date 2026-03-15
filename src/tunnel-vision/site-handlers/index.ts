@@ -22,12 +22,18 @@ DOMAIN_HANDLER_MAP.set("grok.com", grokHandler)
 
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
+let HANDLER: TvHandler | null = null
+
 export class HandlerManager {
   static getHandler(): TvHandler | null {
+    if (HANDLER) {
+      return HANDLER
+    }
 
     if (isPdfReader()) {
-      console.log("HandlerManager.getHander: it's PDF time")
-      return pdfReaderHandler
+      console.log("HandlerManager.getHandler: it's PDF time")
+      HANDLER = pdfReaderHandler
+      return HANDLER
     }
 
     const topLevelHost = HandlerManager.getTopLevelHost()
@@ -37,25 +43,24 @@ export class HandlerManager {
 
     if (isActuallySubstack()) {
       console.log(`HandlerManager.getHandler: ${topLevelHost} is substack - using substack handler...`)
-      return substackHandler
+      HANDLER = substackHandler
+      return HANDLER
     }
-
-    let handler: TvHandler | undefined
 
     if (SUPPORTED_DOMAINS.includes(topLevelHost)) {
       console.log(`HandlerManager.getHandler: ${topLevelHost} supported!`)
-      handler = DOMAIN_HANDLER_MAP.get(topLevelHost)
+      HANDLER = DOMAIN_HANDLER_MAP.get(topLevelHost) ?? null
     } else {
       console.log(`HandlerManager.getHandler: ${topLevelHost} not supported; using generic handler`)
-      handler = genericHandler
+      HANDLER = genericHandler
     }
 
-    if (handler === undefined) {
+    if (HANDLER === null) {
       console.error(`HandlerManager.getHandler: could not get handler for ${topLevelHost}!`)
       return null
     }
 
-    return handler
+    return HANDLER
   }
 
   static getEleArray(): Array<Element> | null {
@@ -64,7 +69,7 @@ export class HandlerManager {
 
     let ea = handler.getTvElements()
     if (!ea || ea.length == 0) {
-      console.warn(`getEleArray: hander failed: falling back on generic handler`)
+      console.warn(`getEleArray: handler failed: falling back on generic handler`)
       ea = genericHandler.getTvElements()
       if (!ea || ea.length == 0) {
         console.error(`getEleArray: generic handler fallback also failed`)
