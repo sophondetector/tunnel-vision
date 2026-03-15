@@ -18,7 +18,6 @@ toggle.addEventListener('click', async () => {
   })
 })
 
-// FIXME: fix "message port was closed before response was sent" error
 slider.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
