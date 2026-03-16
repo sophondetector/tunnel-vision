@@ -5,7 +5,9 @@ import { TvScreenState } from "../common";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
+let SELECTION_DEBOUNCE: number | undefined = undefined
 const NAV_DEBOUNCE_MILLIS = 300
+const SELECTION_DEBOUNCE_MILLIS = 300
 
 export class TvDirector {
   RANGE_MANAGER: RangeManager | null = null
@@ -18,6 +20,7 @@ export class TvDirector {
     this.setScrollableEventListener()
     this.setClickEventListener()
     this.setNavigateListener()
+    this.setSelectionListener()
     setTimeout(() => {
       this.INITTED_ONCE = true
     }, NAV_DEBOUNCE_MILLIS * 5)
@@ -40,6 +43,25 @@ export class TvDirector {
       return
     }
     this.setWindowAroundRange(range)
+  }
+
+  setSelectionListener(): void {
+    function selectionChangeListener(ev: Event) {
+      function inner() {
+        console.log(`Selection change!`)
+        console.log(ev)
+      }
+
+      clearTimeout(SELECTION_DEBOUNCE)
+
+      SELECTION_DEBOUNCE = setTimeout(
+        inner, SELECTION_DEBOUNCE_MILLIS
+      ) as unknown as number
+    }
+
+    document.addEventListener(
+      "selectionchange", selectionChangeListener, { capture: true }
+    )
   }
 
   setNavigateListener(): void {
