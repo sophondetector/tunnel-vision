@@ -108,7 +108,23 @@ export class TvScreen {
   }
 
   static moveViewingWindow(x: number, y: number, width: number, height: number): void {
+    TvScreen.emptyRects()
     RECTANGLES[0] = { x, y, width, height }
+  }
+
+  static emptyRects(): void {
+    while (RECTANGLES.length > 0) {
+      RECTANGLES.pop()
+    }
+  }
+
+  static setAroundMultipleRects(rects: DOMRectList) {
+    TvScreen.emptyRects()
+    for (const rect of rects) {
+      rect.x += window.scrollX
+      rect.y += window.scrollY
+      RECTANGLES.push(rect)
+    }
   }
 
   static inject(): void {

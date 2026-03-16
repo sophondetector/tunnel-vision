@@ -46,17 +46,26 @@ export class TvDirector {
   }
 
   setSelectionListener(): void {
-    function selectionChangeListener(ev: Event) {
-      function inner() {
-        console.log(`Selection change!`)
-        console.log(ev)
+    const selectionChangeListener = () => {
+      const inner = () => {
+        if (!TvScreen.isOn()) return
+
+        const sel = document.getSelection()
+        if (!sel || sel.rangeCount < 1) return
+
+        const rng = sel.getRangeAt(0)
+        const txt = rng.toString()
+        if (txt.length < 1) return
+
+        // FIXME: selection highlighting with window around selection is awkward and unreadable
+        // need to figure out how to nullify selection highlighting when TvScreen.isOn()
+        const boxes = rng.getClientRects()
+        TvScreen.setAroundMultipleRects(boxes)
       }
 
       clearTimeout(SELECTION_DEBOUNCE)
 
-      SELECTION_DEBOUNCE = setTimeout(
-        inner, SELECTION_DEBOUNCE_MILLIS
-      ) as unknown as number
+      SELECTION_DEBOUNCE = setTimeout(inner, SELECTION_DEBOUNCE_MILLIS) as unknown as number
     }
 
     document.addEventListener(
@@ -219,6 +228,7 @@ export class TvDirector {
     // creation process don't remain with the range
 
     // switching to the canvas api necessitated adding the window.scroll[XY]
+    // removing these adjustments causes the window to get "left behind" when scrolling
     const finalX = rect.left + window.scrollX
     const finalY = rect.top + window.scrollY
 
