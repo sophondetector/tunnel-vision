@@ -56,11 +56,13 @@ export class TvDirector {
         const rng = sel.getRangeAt(0)
         const txt = rng.toString()
         if (txt.length < 1) return
+        // FIXME: trying to carefully select text ends up just selecting the range
+        // this makes it basically impossible
 
         // FIXME: selection highlighting with window around selection is awkward and unreadable
         // need to figure out how to nullify selection highlighting when TvScreen.isOn()
         const boxes = rng.getClientRects()
-        TvScreen.setAroundMultipleRects(boxes)
+        TvScreen.setWindowAroundMultipleRects(boxes)
       }
 
       clearTimeout(SELECTION_DEBOUNCE)
