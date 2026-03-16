@@ -17,7 +17,7 @@ export class TvDirector {
     this.initRanges()
     this.setScrollableEventListener()
     this.setClickEventListener()
-    this.setOnNav()
+    this.setNavigateListener()
     setTimeout(() => {
       this.INITTED_ONCE = true
     }, NAV_DEBOUNCE_MILLIS * 5)
@@ -42,7 +42,7 @@ export class TvDirector {
     this.setWindowAroundRange(range)
   }
 
-  setOnNav(): void {
+  setNavigateListener(): void {
     //TODO: replace this with a "milliseconds since last tree manipulation" debounce
     //@ts-ignore
     window.navigation.onnavigatesuccess = () => {
