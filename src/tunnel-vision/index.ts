@@ -66,6 +66,8 @@ export class TvDirector {
     style.remove()
   }
 
+  // FIXME: when selecting next or previous range AFTER a selection
+  // jump to the next range before or after the selection
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
