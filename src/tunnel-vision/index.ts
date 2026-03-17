@@ -6,8 +6,11 @@ import { TvScreenState } from "../common";
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTION_DEBOUNCE: number | undefined = undefined
+let SELECTING = false
+
 const NAV_DEBOUNCE_MILLIS = 300
-const SELECTION_DEBOUNCE_MILLIS = 300
+const SELECTION_DEBOUNCE_MILLIS = 0
+const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
 export class TvDirector {
   RANGE_MANAGER: RangeManager | null = null
@@ -45,6 +48,24 @@ export class TvDirector {
     this.setWindowAroundRange(range)
   }
 
+  disableSelectionHighlighting(): void {
+    const style = document.createElement('style')
+    style.innerHTML = `
+    ::selection {
+      background-color: transparent
+    }
+    `
+    style.id = DISABLE_SELECTION_HIGHLIGHTING_ID
+    document.body.appendChild(style)
+    // console.log('tunnel-vision: highlighting disabled')
+  }
+
+  enableSelectionHighlighting(): void {
+    const style = document.getElementById(DISABLE_SELECTION_HIGHLIGHTING_ID)
+    if (!style) return
+    style.remove()
+  }
+
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
@@ -56,11 +77,8 @@ export class TvDirector {
         const rng = sel.getRangeAt(0)
         const txt = rng.toString()
         if (txt.length < 1) return
-        // FIXME: trying to carefully select text ends up just selecting the range
-        // this makes it basically impossible
+        SELECTING = true
 
-        // FIXME: selection highlighting with window around selection is awkward and unreadable
-        // need to figure out how to nullify selection highlighting when TvScreen.isOn()
         const boxes = rng.getClientRects()
         TvScreen.setWindowAroundMultipleRects(boxes)
       }
@@ -148,6 +166,12 @@ export class TvDirector {
     // it takes precedence over whatever listeners the site itself as set
     const clickListener = (event: MouseEvent) => {
       if (!this.isOn()) return
+      // NOTE: This is here to prevent the 'click' event listener from cancelling out the 
+      // selectionChangeListener
+      if (SELECTING) {
+        SELECTING = false
+        return
+      }
 
       const rm = this.getRangeManager()
       if (rm.RANGES === null) {
@@ -182,14 +206,20 @@ export class TvDirector {
   }
 
   toggleScreen(): void {
-    TvScreen.toggle()
+    if (TvScreen.isOn()) {
+      this.toggleScreenOff()
+      return
+    }
+    this.toggleScreenOn()
   }
 
   toggleScreenOn(): void {
+    this.disableSelectionHighlighting()
     TvScreen.turnOn()
   }
 
   toggleScreenOff(): void {
+    this.enableSelectionHighlighting()
     TvScreen.turnOff()
   }
 
