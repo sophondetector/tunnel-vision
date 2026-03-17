@@ -82,6 +82,7 @@ export class TvDirector {
         const txt = rng.toString()
         if (txt.length < 1) return
         SELECTING = true
+        SELECTION = true
 
         const boxes = rng.getClientRects()
         TvScreen.setWindowAroundMultipleRects(boxes)
@@ -262,20 +263,22 @@ export class TvDirector {
   }
 
   rangeAtSelectionTop() {
-    const topRange = this.getRangeManager().getRangeAtSelectionTop()
-    if (topRange === undefined) {
-      console.log('TvDirector.rangeAtSelectionTop: could not find top range')
-      return
-    }
+    const topRect = TvScreen.getTopRect()
+    const topBound = topRect.y - window.scrollY
+    const rm = this.getRangeManager()
+    const topRange = rm.rangeAtHeight(topBound) as Range
+    const newIdx = rm.range2RangeIdx(topRange) as number
+    rm.setRangeIdx(newIdx)
     this.setWindowAroundRange(topRange)
   }
 
   rangeAtSelectionBottom() {
-    const bottomRange = this.getRangeManager().getRangeAtSelectionBottom()
-    if (bottomRange === undefined) {
-      console.log('TvDirector.rangeAtSelectionBottom: could not find bottom range')
-      return
-    }
+    const bottomRect = TvScreen.getBottomRect()
+    const bottomBound = bottomRect.y - window.scrollY
+    const rm = this.getRangeManager()
+    const bottomRange = rm.rangeAtHeight(bottomBound) as Range
+    const newIdx = rm.range2RangeIdx(bottomRange) as number
+    rm.setRangeIdx(newIdx)
     this.setWindowAroundRange(bottomRange)
   }
 

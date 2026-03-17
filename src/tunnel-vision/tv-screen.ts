@@ -118,6 +118,15 @@ export class TvScreen {
     }
   }
 
+  static getTopRect(): TvRect {
+    return RECTANGLES[0]
+  }
+
+  static getBottomRect(): TvRect {
+    const len = RECTANGLES.length
+    return RECTANGLES[len - 1]
+  }
+
   static setWindowAroundMultipleRects(rects: DOMRectList) {
     TvScreen.emptyRects()
     for (const rect of rects) {
