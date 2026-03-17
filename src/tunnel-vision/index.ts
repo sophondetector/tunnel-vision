@@ -262,6 +262,7 @@ export class TvDirector {
     this.setWindowAroundRange(prevRange)
   }
 
+  // FIXME: this fails with text in multiple columns - add a rightward check as well
   rangeAtSelectionTop(): void {
     const topRect = TvScreen.getTopRect()
     const topBound = topRect.y - window.scrollY
