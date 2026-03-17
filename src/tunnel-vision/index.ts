@@ -254,6 +254,7 @@ export class TvDirector {
     return TvScreen.isOn()
   }
 
+  // TODO: autoscroll to keep up with range
   incRange(): void {
     if (SELECTION) {
       SELECTION = false
