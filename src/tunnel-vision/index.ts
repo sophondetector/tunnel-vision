@@ -69,8 +69,6 @@ export class TvDirector {
   }
 
   // FIXME: selection visualizer doesn't work properly in pdf-viewer
-  // FIXME: when selecting next or previous range AFTER a selection
-  // jump to the next range before or after the selection
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
