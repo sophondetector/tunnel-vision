@@ -153,6 +153,16 @@ export class RangeManager {
     console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
+  getRangeAtSelectionTop(): Range | undefined {
+    console.log('getRangeAtSelectionTop!')
+    return
+  }
+
+  getRangeAtSelectionBottom(): Range | undefined {
+    console.log('getRangeAtSelectionBottom!')
+    return
+  }
+
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
   static eleArray2Ranges(eleArray: Array<Element>): Array<Range> {
     const textNodes: Array<Node> = []

@@ -7,6 +7,7 @@ let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTION_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
+let SELECTION = false
 
 const NAV_DEBOUNCE_MILLIS = 300
 const SELECTION_DEBOUNCE_MILLIS = 0
@@ -66,6 +67,7 @@ export class TvDirector {
     style.remove()
   }
 
+  // FIXME: selection visualizer doesn't work properly in pdf-viewer
   // FIXME: when selecting next or previous range AFTER a selection
   // jump to the next range before or after the selection
   setSelectionListener(): void {
@@ -175,6 +177,8 @@ export class TvDirector {
         return
       }
 
+      SELECTION = false
+
       const rm = this.getRangeManager()
       if (rm.RANGES === null) {
         console.log(`TvDirector: RangeManager.RANGES is null!`)
@@ -230,6 +234,11 @@ export class TvDirector {
   }
 
   incRange(): void {
+    if (SELECTION) {
+      SELECTION = false
+      this.rangeAtSelectionBottom()
+      return
+    }
     const nextRange = this.getRangeManager().getNextRange()
     if (nextRange === undefined) {
       console.log('TvDirector.incRange: could not find next range')
@@ -239,6 +248,11 @@ export class TvDirector {
   }
 
   decRange(): void {
+    if (SELECTION) {
+      SELECTION = false
+      this.rangeAtSelectionTop()
+      return
+    }
     const prevRange = this.getRangeManager().getPrevRange()
     if (prevRange === undefined) {
       console.log('TvDirector.decRange: could not find previous range')
@@ -247,11 +261,31 @@ export class TvDirector {
     this.setWindowAroundRange(prevRange)
   }
 
+  rangeAtSelectionTop() {
+    const topRange = this.getRangeManager().getRangeAtSelectionTop()
+    if (topRange === undefined) {
+      console.log('TvDirector.rangeAtSelectionTop: could not find top range')
+      return
+    }
+    this.setWindowAroundRange(topRange)
+  }
+
+  rangeAtSelectionBottom() {
+    const bottomRange = this.getRangeManager().getRangeAtSelectionBottom()
+    if (bottomRange === undefined) {
+      console.log('TvDirector.rangeAtSelectionBottom: could not find bottom range')
+      return
+    }
+    this.setWindowAroundRange(bottomRange)
+  }
+
   shiftRangeUp(): void {
+    // SELECTION = true
     console.log('shift up!')
   }
 
   shiftRangeDown(): void {
+    // SELECTION = true
     console.log('shift down!')
   }
 
@@ -269,6 +303,7 @@ export class TvDirector {
     TvScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
   }
 
+  // FIXME: screen needs to change size when height but not width changes
   // TODO: callback for when page changes layout
   onResizeCallback(): void {
     // if same size -> return
