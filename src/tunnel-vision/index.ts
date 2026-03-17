@@ -54,10 +54,11 @@ export class TvDirector {
     const style = document.createElement('style')
     style.innerHTML = `
     ::selection {
-      background-color: transparent
+      background-color: transparent !important;
     }
     `
     style.id = DISABLE_SELECTION_HIGHLIGHTING_ID
+
     document.body.appendChild(style)
     // console.log('tunnel-vision: highlighting disabled')
   }
