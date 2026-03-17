@@ -14,7 +14,6 @@ To modify the logo do the following:
 
 ## Installation
 ### Building
-There's no "official" distribution yet, so you gotta install all the dev dependencies and then build it yourself.
 ```sh
 $ npm i -D
 $ npm run build
@@ -36,13 +35,11 @@ This will create the source code in the `dist/` folder. You can then install it 
 <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
 <div> You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
 <div> When the screen is on, you may <b>click on the line you wish to highlight.</b></div>
+<div> If you select text while the screen is off, that text will be highlit when the screen is turned on.</div>
 
 ## Plans
-* pdf mode built off of `pdfjs`
-* highlighting an arbitrary range of lines
 * highlighting by html element
 * click/drag to create a highlight box
-* click/drag to highlight an arbitrary range of lines
 
 ## Copyright
 Copyright (c) 2025 Nathaniel Taylor
