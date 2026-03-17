@@ -69,6 +69,7 @@ export class TvDirector {
     style.remove()
   }
 
+  // FIXME: collapse selection upon switch back to line-by-line mode
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
