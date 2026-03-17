@@ -4,8 +4,8 @@ const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
 const TV_SCREEN_BUFFER_RADIUS = 5
 
-// FIXME: change this to use DOMRect
 // tv Screen State Variables
+// FIXME: change this to use DOMRect
 const RECTANGLES: TvRect[] = []
 let COLOR_HEX = '#0000ff'
 const COLOR_RGBA = {
