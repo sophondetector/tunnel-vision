@@ -153,17 +153,18 @@ export class RangeManager {
     console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  rangeAtPoint(height: number): [Range | null, number | null] {
+  rangeAtPoint(top: number, left: number): [Range | null, number | null] {
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
-      const iterRange = this.rangeIdx2Range(idx)
-      const box = iterRange!.getBoundingClientRect()
-      if (box.y >= height) {
-        return [iterRange as Range, idx]
+      const iterRange = this.rangeIdx2Range(idx) as Range
+      const box = iterRange.getBoundingClientRect()
+      // left has to be BETWEEN box.left and box.right
+      if (box.y >= top && left >= box.left && left <= box.right) {
+        return [iterRange, idx]
       }
     }
-    console.error(`RangeManager.rangeAtHeight: ERROR could not get range at height ${height}`)
+    console.error(`RangeManager.rangeAtHeight: ERROR could not get range`)
     return [null, null]
   }
 

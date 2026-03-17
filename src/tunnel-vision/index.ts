@@ -270,22 +270,23 @@ export class TvDirector {
     this.setWindowAroundRange(prevRange)
   }
 
-  // FIXME: this fails with text in multiple columns - add a rightward check as well
   setRangeAtSelectionTop(): void {
     const topRect = TvScreen.getTopRect()
     const topBound = topRect.y - window.scrollY
-    this.setRangeAtPoint(topBound)
+    const leftBound = topRect.x - window.scrollX
+    this.setRangeAtPoint(topBound, leftBound)
   }
 
   setRangeAtSelectionBottom(): void {
     const bottomRect = TvScreen.getBottomRect()
     const bottomBound = bottomRect.y - window.scrollY
-    this.setRangeAtPoint(bottomBound)
+    const leftBound = bottomRect.x - window.scrollX
+    this.setRangeAtPoint(bottomBound, leftBound)
   }
 
-  setRangeAtPoint(top: number): void {
+  setRangeAtPoint(top: number, left: number): void {
     const rm = this.getRangeManager()
-    const [range, rangeIdx] = rm.rangeAtPoint(top)
+    const [range, rangeIdx] = rm.rangeAtPoint(top, left)
     if (!range || !rangeIdx) {
       console.error(`TvDirector.setRangeAtPoint: ERROR - could not get range`)
       return
