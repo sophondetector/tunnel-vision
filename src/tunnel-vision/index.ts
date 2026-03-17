@@ -72,10 +72,11 @@ export class TvDirector {
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
-        if (!TvScreen.isOn()) return
-
         const sel = document.getSelection()
-        if (!sel || sel.rangeCount < 1) return
+        if (!sel || sel.rangeCount < 1) {
+          SELECTION = false
+          return
+        }
 
         const rng = sel.getRangeAt(0)
         const txt = rng.toString()
@@ -226,8 +227,6 @@ export class TvDirector {
     this.toggleScreenOn()
   }
 
-  // FIXME: when there's a selection and the screen gets turned on
-  // that selection should be highlit
   toggleScreenOn(): void {
     this.disableSelectionHighlighting()
     TvScreen.turnOn()
