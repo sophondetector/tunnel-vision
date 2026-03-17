@@ -309,6 +309,7 @@ export class TvDirector {
     this.setWindowAroundRange(range)
   }
 
+  // TODO: implement shift-adding ranges
   shiftRangeUp(): void {
     // SELECTION = true
     console.log('shift up!')
