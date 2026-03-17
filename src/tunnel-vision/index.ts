@@ -226,6 +226,8 @@ export class TvDirector {
     this.toggleScreenOn()
   }
 
+  // FIXME: when there's a selection and the screen gets turned on
+  // that selection should be highlit
   toggleScreenOn(): void {
     this.disableSelectionHighlighting()
     TvScreen.turnOn()
