@@ -69,7 +69,15 @@ export class TvDirector {
     style.remove()
   }
 
-  // FIXME: collapse selection upon switch back to line-by-line mode
+  collapseSelection(): void {
+    SELECTION = false
+    const sel = document.getSelection()
+    if (!sel || sel.rangeCount < 1) {
+      return
+    }
+    sel.collapseToStart()
+  }
+
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
@@ -190,7 +198,7 @@ export class TvDirector {
         return
       }
 
-      SELECTION = false
+      this.collapseSelection()
 
       const rm = this.getRangeManager()
       if (rm.RANGES === null) {
@@ -250,6 +258,7 @@ export class TvDirector {
     if (SELECTION) {
       SELECTION = false
       this.setRangeAtSelectionBottom()
+      this.collapseSelection()
       return
     }
     const nextRange = this.getRangeManager().getNextRange()
@@ -264,6 +273,7 @@ export class TvDirector {
     if (SELECTION) {
       SELECTION = false
       this.setRangeAtSelectionTop()
+      this.collapseSelection()
       return
     }
     const prevRange = this.getRangeManager().getPrevRange()
