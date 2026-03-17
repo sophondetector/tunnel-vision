@@ -245,7 +245,7 @@ export class TvDirector {
   incRange(): void {
     if (SELECTION) {
       SELECTION = false
-      this.rangeAtSelectionBottom()
+      this.setRangeAtSelectionBottom()
       return
     }
     const nextRange = this.getRangeManager().getNextRange()
@@ -259,7 +259,7 @@ export class TvDirector {
   decRange(): void {
     if (SELECTION) {
       SELECTION = false
-      this.rangeAtSelectionTop()
+      this.setRangeAtSelectionTop()
       return
     }
     const prevRange = this.getRangeManager().getPrevRange()
@@ -271,30 +271,27 @@ export class TvDirector {
   }
 
   // FIXME: this fails with text in multiple columns - add a rightward check as well
-  rangeAtSelectionTop(): void {
+  setRangeAtSelectionTop(): void {
     const topRect = TvScreen.getTopRect()
     const topBound = topRect.y - window.scrollY
-    const rm = this.getRangeManager()
-    const [topRange, newIdx] = rm.rangeAtHeight(topBound)
-    if (!topRange || !newIdx) {
-      console.error(`TvDirector.rangeAtSelectionTop: ERROR - could not get range`)
-      return
-    }
-    rm.setRangeIdx(newIdx)
-    this.setWindowAroundRange(topRange)
+    this.setRangeAtPoint(topBound)
   }
 
-  rangeAtSelectionBottom(): void {
+  setRangeAtSelectionBottom(): void {
     const bottomRect = TvScreen.getBottomRect()
     const bottomBound = bottomRect.y - window.scrollY
+    this.setRangeAtPoint(bottomBound)
+  }
+
+  setRangeAtPoint(top: number): void {
     const rm = this.getRangeManager()
-    const [bottomRange, newIdx] = rm.rangeAtHeight(bottomBound)
-    if (!bottomRange || !newIdx) {
-      console.error(`TvDirector.rangeAtSelectionBottom: ERROR - could not get range`)
+    const [range, rangeIdx] = rm.rangeAtPoint(top)
+    if (!range || !rangeIdx) {
+      console.error(`TvDirector.setRangeAtPoint: ERROR - could not get range`)
       return
     }
-    rm.setRangeIdx(newIdx)
-    this.setWindowAroundRange(bottomRange)
+    rm.setRangeIdx(rangeIdx)
+    this.setWindowAroundRange(range)
   }
 
   shiftRangeUp(): void {
