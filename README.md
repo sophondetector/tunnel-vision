@@ -30,12 +30,12 @@ This will create the source code in the `dist/` folder. You can then install it 
 
 ## Usage
 <div> Press <b>alt-l</b> to turn the tv-screen on and off.</div>
-<div> You can also click Tunnel Vision icon and then click the <b>Tunnel Vision Screen On/Off</b> button.</div>
+<div>You can also click Tunnel Vision icon and then click the <b>Tunnel Vision Screen On/Off</b> button.</div>
 <div> <b>alt + up arrow</b> to move the highlighted range up.</div>
 <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
-<div> You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
-<div> When the screen is on, you may <b>click on the line you wish to highlight.</b></div>
-<div> If you select text while the screen is off, that text will be highlit when the screen is turned on.</div>
+<div>You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
+<div>When the screen is on, you may <b>click on the line you wish to highlight.</b></div>
+<div>If you select text while the screen is off, that text will be highlighted when the screen is turned on.</div>
 
 ## Plans
 * highlighting by html element
