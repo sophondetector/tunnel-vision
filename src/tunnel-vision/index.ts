@@ -86,6 +86,7 @@ export class TvDirector {
         SELECTION = true
 
         let boxes = Array.from(rng.getClientRects())
+
         // NOTE: this filter is here to fix a bug where ranges 
         // with zero width show up when selecting text in the pdf-reader
         if (isPdfReader()) {
