@@ -127,7 +127,7 @@ export class TvScreen {
     return RECTANGLES[len - 1]
   }
 
-  static setWindowAroundMultipleRects(rects: DOMRectList) {
+  static setWindowAroundMultipleRects(rects: Array<DOMRect>): void {
     TvScreen.emptyRects()
     for (const rect of rects) {
       rect.x += window.scrollX

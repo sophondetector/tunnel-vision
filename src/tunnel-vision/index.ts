@@ -2,6 +2,7 @@ import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
 import { TvScreenState } from "../common";
+import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
@@ -84,7 +85,13 @@ export class TvDirector {
         SELECTING = true
         SELECTION = true
 
-        const boxes = rng.getClientRects()
+        let boxes = Array.from(rng.getClientRects())
+        // NOTE: this filter is here to fix a bug where ranges 
+        // with zero width show up when selecting text in the pdf-reader
+        if (isPdfReader()) {
+          boxes = boxes.filter(box => box.left !== box.right)
+        }
+
         TvScreen.setWindowAroundMultipleRects(boxes)
       }
 
