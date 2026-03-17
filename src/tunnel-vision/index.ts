@@ -69,7 +69,6 @@ export class TvDirector {
     style.remove()
   }
 
-  // FIXME: selection visualizer doesn't work properly in pdf-viewer
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
