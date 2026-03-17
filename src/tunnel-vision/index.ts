@@ -80,7 +80,11 @@ export class TvDirector {
 
         const rng = sel.getRangeAt(0)
         const txt = rng.toString()
-        if (txt.length < 1) return
+        if (txt.length < 1) {
+          SELECTION = false
+          return
+        }
+
         SELECTING = true
         SELECTION = true
 
