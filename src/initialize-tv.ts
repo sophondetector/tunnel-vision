@@ -9,7 +9,6 @@ let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let DIRECTOR: TvDirector | null = null
 
 function initializeControls() {
-  // TODO: create highlight box around selection of text
   // TODO: alt+click+drag creates a highlight box
   // bring that in from grok-code.html
   document.addEventListener('keyup', (event) => {

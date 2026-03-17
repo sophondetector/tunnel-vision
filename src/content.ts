@@ -2,8 +2,6 @@ import { initializeTV } from "./initialize-tv";
 
 initializeTV()
 
-// TODO: when the user highlights text, create a screen around the highlight
-
 // TODO: integrate the below pattern into the initializeTV function
 // so the elementGetter doesn't fire until some condition is met
 
