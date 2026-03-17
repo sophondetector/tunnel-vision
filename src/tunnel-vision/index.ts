@@ -262,22 +262,28 @@ export class TvDirector {
     this.setWindowAroundRange(prevRange)
   }
 
-  rangeAtSelectionTop() {
+  rangeAtSelectionTop(): void {
     const topRect = TvScreen.getTopRect()
     const topBound = topRect.y - window.scrollY
     const rm = this.getRangeManager()
-    const topRange = rm.rangeAtHeight(topBound) as Range
-    const newIdx = rm.range2RangeIdx(topRange) as number
+    const [topRange, newIdx] = rm.rangeAtHeight(topBound)
+    if (!topRange || !newIdx) {
+      console.error(`TvDirector.rangeAtSelectionTop: ERROR - could not get range`)
+      return
+    }
     rm.setRangeIdx(newIdx)
     this.setWindowAroundRange(topRange)
   }
 
-  rangeAtSelectionBottom() {
+  rangeAtSelectionBottom(): void {
     const bottomRect = TvScreen.getBottomRect()
     const bottomBound = bottomRect.y - window.scrollY
     const rm = this.getRangeManager()
-    const bottomRange = rm.rangeAtHeight(bottomBound) as Range
-    const newIdx = rm.range2RangeIdx(bottomRange) as number
+    const [bottomRange, newIdx] = rm.rangeAtHeight(bottomBound)
+    if (!bottomRange || !newIdx) {
+      console.error(`TvDirector.rangeAtSelectionBottom: ERROR - could not get range`)
+      return
+    }
     rm.setRangeIdx(newIdx)
     this.setWindowAroundRange(bottomRange)
   }

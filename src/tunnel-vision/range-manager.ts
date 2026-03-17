@@ -153,18 +153,18 @@ export class RangeManager {
     console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  rangeAtHeight(height: number): Range | undefined {
+  rangeAtHeight(height: number): [Range | null, number | null] {
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
       const iterRange = this.rangeIdx2Range(idx)
       const box = iterRange!.getBoundingClientRect()
       if (box.y >= height) {
-        return iterRange as Range
+        return [iterRange as Range, idx]
       }
     }
     console.error(`RangeManager.rangeAtHeight: ERROR could not get range at height ${height}`)
-    return
+    return [null, null]
   }
 
   range2RangeIdx(range: Range): number | undefined {
