@@ -333,12 +333,8 @@ export class TvDirector {
     TvScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
   }
 
-  // FIXME: screen needs to change size when height but not width changes
   // TODO: callback for when page changes layout
   onResizeCallback(): void {
-    // if same size -> return
-    if (window.innerWidth === WIN_WIDTH) return
-
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
     const rangeManager = this.getRangeManager()
