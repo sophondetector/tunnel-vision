@@ -1,12 +1,11 @@
-import { TvScreenState, TvRect } from "../common"
+import { TvScreenState } from "../common"
 
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
 const TV_SCREEN_BUFFER_RADIUS = 5
 
 // tv Screen State Variables
-// FIXME: change this to use DOMRect
-const RECTANGLES: TvRect[] = []
+const RECTANGLES: DOMRect[] = []
 let COLOR_HEX = '#0000ff'
 const COLOR_RGBA = {
   r: 0,
@@ -110,7 +109,7 @@ export class TvScreen {
 
   static moveViewingWindow(x: number, y: number, width: number, height: number): void {
     TvScreen.emptyRects()
-    RECTANGLES[0] = { x, y, width, height }
+    RECTANGLES[0] = new DOMRect(x, y, width, height)
   }
 
   static emptyRects(): void {
@@ -119,11 +118,11 @@ export class TvScreen {
     }
   }
 
-  static getTopRect(): TvRect {
+  static getTopRect(): DOMRect {
     return RECTANGLES[0]
   }
 
-  static getBottomRect(): TvRect {
+  static getBottomRect(): DOMRect {
     const len = RECTANGLES.length
     return RECTANGLES[len - 1]
   }

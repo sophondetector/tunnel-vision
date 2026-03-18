@@ -3,13 +3,6 @@ export interface TvScreenState {
   hexColor: string
 }
 
-export interface TvRect {
-  x: number,
-  y: number,
-  width: number,
-  height: number
-}
-
 export const LATEST_PDF_URL_KEY = "latestTVPDF"
 
 export async function getCurrentTab() {
