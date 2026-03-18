@@ -153,7 +153,7 @@ export class RangeManager {
     console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  rangeAtPoint(top: number, left: number): [Range | null, number | null] {
+  rangeAtPoint(top: number, left: number): [Range, number] | [null, null] {
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
