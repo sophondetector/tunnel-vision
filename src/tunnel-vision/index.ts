@@ -78,43 +78,46 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
+  drawAroundSelection(): void {
+    const sel = document.getSelection()
+    if (!sel || sel.rangeCount < 1) {
+      SELECTION = false
+      return
+    }
+
+    const rng = sel.getRangeAt(0)
+    const txt = rng.toString()
+    if (txt.length < 1) {
+      SELECTION = false
+      return
+    }
+
+    SELECTING = true
+    SELECTION = true
+
+    let boxes = Array.from(rng.getClientRects())
+
+    // NOTE: this filter is here to fix a bug where ranges 
+    // with zero width show up when selecting text in the pdf-reader
+    if (isPdfReader()) {
+      boxes = boxes.filter(box => box.left !== box.right)
+    }
+
+    TvScreen.setWindowAroundMultipleRects(boxes)
+  }
+
   // FIXME: if you "click out" of a selection while the TVScreen is on
   // the previous selection will remain highlighted - change this so if you
   // "click out" the highlight defaults to the range at the top of the 
   // selection
   setSelectionListener(): void {
+    // TODO: remove the debouncer from setSelectionListener
     const selectionChangeListener = () => {
-      const inner = () => {
-        const sel = document.getSelection()
-        if (!sel || sel.rangeCount < 1) {
-          SELECTION = false
-          return
-        }
-
-        const rng = sel.getRangeAt(0)
-        const txt = rng.toString()
-        if (txt.length < 1) {
-          SELECTION = false
-          return
-        }
-
-        SELECTING = true
-        SELECTION = true
-
-        let boxes = Array.from(rng.getClientRects())
-
-        // NOTE: this filter is here to fix a bug where ranges 
-        // with zero width show up when selecting text in the pdf-reader
-        if (isPdfReader()) {
-          boxes = boxes.filter(box => box.left !== box.right)
-        }
-
-        TvScreen.setWindowAroundMultipleRects(boxes)
-      }
-
       clearTimeout(SELECTION_DEBOUNCE)
 
-      SELECTION_DEBOUNCE = setTimeout(inner, SELECTION_DEBOUNCE_MILLIS) as unknown as number
+      SELECTION_DEBOUNCE = setTimeout(
+        this.drawAroundSelection, SELECTION_DEBOUNCE_MILLIS
+      ) as unknown as number
     }
 
     document.addEventListener(
@@ -159,8 +162,6 @@ export class TvDirector {
     return TvScreen.getScreenState()
   }
 
-  // FIXME: in the pdf reader if you have a selection highlighted and you scroll 
-  // the highlight will switch to the last range
   // TODO: is there a way I can dynamically determine a "scrollable interior" element?
   setScrollableEventListener(): void {
     const scrollEle = HandlerManager.getScrollableElement()
@@ -171,6 +172,10 @@ export class TvDirector {
 
     scrollEle.addEventListener('scroll', () => {
       RangeManager.bind(this) // needed because by default this will refer to the HTMLElement
+      if (SELECTION) {
+        this.drawAroundSelection()
+        return
+      }
       const curr = this.getRangeManager().getCurrentRange()
       if (curr === undefined) {
         throw new Error('TvDirector.setScrollableEventListener: could not find current range!')
