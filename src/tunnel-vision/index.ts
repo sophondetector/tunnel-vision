@@ -78,6 +78,10 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
+  // FIXME: if you "click out" of a selection while the TVScreen is on
+  // the previous selection will remain highlighted - change this so if you
+  // "click out" the highlight defaults to the range at the top of the 
+  // selection
   setSelectionListener(): void {
     const selectionChangeListener = () => {
       const inner = () => {
@@ -155,6 +159,8 @@ export class TvDirector {
     return TvScreen.getScreenState()
   }
 
+  // FIXME: in the pdf reader if you have a selection highlighted and you scroll 
+  // the highlight will switch to the last range
   // TODO: is there a way I can dynamically determine a "scrollable interior" element?
   setScrollableEventListener(): void {
     const scrollEle = HandlerManager.getScrollableElement()
