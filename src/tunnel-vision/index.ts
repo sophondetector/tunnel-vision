@@ -78,7 +78,10 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
-  drawAroundSelection(): void {
+  // NOTE: we have to pass the current TvDirector (curDir) into its own method
+  // because if we don't then it's not available when running in the change
+  // selection listener
+  drawAroundSelection(curDir: TvDirector): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
       SELECTION = false
@@ -88,6 +91,7 @@ export class TvDirector {
     const rng = sel.getRangeAt(0)
     const txt = rng.toString()
     if (txt.length < 1) {
+      curDir.setRangeAtSelectionTop()
       SELECTION = false
       return
     }
@@ -106,17 +110,15 @@ export class TvDirector {
     TvScreen.setWindowAroundMultipleRects(boxes)
   }
 
-  // FIXME: if you "click out" of a selection while the TVScreen is on
-  // the previous selection will remain highlighted - change this so if you
-  // "click out" the highlight defaults to the range at the top of the 
-  // selection
   setSelectionListener(): void {
     // TODO: remove the debouncer from setSelectionListener
     const selectionChangeListener = () => {
       clearTimeout(SELECTION_DEBOUNCE)
 
       SELECTION_DEBOUNCE = setTimeout(
-        this.drawAroundSelection, SELECTION_DEBOUNCE_MILLIS
+        // NOTE: see note above drawAroundSelection definition for why we pass 'this'
+        () => this.drawAroundSelection(this),
+        SELECTION_DEBOUNCE_MILLIS
       ) as unknown as number
     }
 
@@ -173,7 +175,8 @@ export class TvDirector {
     scrollEle.addEventListener('scroll', () => {
       RangeManager.bind(this) // needed because by default this will refer to the HTMLElement
       if (SELECTION) {
-        this.drawAroundSelection()
+        // NOTE: see note above drawAroundSelection definition for why we pass 'this'
+        this.drawAroundSelection(this)
         return
       }
       const curr = this.getRangeManager().getCurrentRange()
@@ -313,7 +316,7 @@ export class TvDirector {
   setRangeAtPoint(top: number, left: number): void {
     const rm = this.getRangeManager()
     const [range, rangeIdx] = rm.rangeAtPoint(top, left)
-    if (!range || !rangeIdx) {
+    if (!range || (rangeIdx === null)) {
       console.error(`TvDirector.setRangeAtPoint: ERROR - could not get range`)
       return
     }
