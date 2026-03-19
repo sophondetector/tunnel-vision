@@ -161,6 +161,7 @@ export class RangeManager {
       const box = iterRange.getBoundingClientRect()
       // left has to be BETWEEN box.left and box.right
       if (top <= box.top && left >= box.left && left <= box.right) {
+        console.log(`top:\t\t${top}\nbox.top:\t${box.top}`)
         return [iterRange, idx]
       }
     }
