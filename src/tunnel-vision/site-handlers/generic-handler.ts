@@ -1,4 +1,4 @@
-import { TvHandler } from "./tv-handler-type"
+import { TvHandler, defaultBlankDelay } from "./tv-handler-type"
 
 function getArticleEle(): HTMLElement[] | null {
   const articles = Array.from(document.querySelectorAll('article'))
@@ -60,5 +60,6 @@ export function genericElementGetter(): Array<Element> | null {
 
 export const genericHandler: TvHandler = {
   getTvElements: genericElementGetter,
-  getScrollableElement: () => undefined
+  getScrollableElement: () => undefined,
+  initDelay: defaultBlankDelay
 }

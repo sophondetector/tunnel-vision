@@ -18,15 +18,24 @@ export class TvDirector {
   INITTED_ONCE: boolean = false
 
   constructor() {
-    this.inject()
-    this.initRanges()
-    this.setScrollableEventListener()
-    this.setClickEventListener()
-    this.setNavigateListener()
-    this.setSelectionListener()
-    setTimeout(() => {
-      this.INITTED_ONCE = true
-    }, NAV_DEBOUNCE_MILLIS * 5)
+    const handler = HandlerManager.getHandler()
+    if (!handler) {
+      console.error(`TvDirector.constructor: could not get handler!`)
+      return
+    }
+
+    handler.initDelay().then(() => {
+      this.inject()
+      this.initRanges()
+      this.setScrollableEventListener()
+      this.setClickEventListener()
+      this.setNavigateListener()
+      this.setSelectionListener()
+      this.toggleScreenOff()
+      setTimeout(() => {
+        this.INITTED_ONCE = true
+      }, NAV_DEBOUNCE_MILLIS * 5)
+    })
   }
 
   inject() {

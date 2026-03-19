@@ -1,6 +1,13 @@
 export interface TvHandler {
   getTvElements: () => Array<Element> | null
   getScrollableElement: () => Element | undefined
+  initDelay: () => Promise<void>
+}
+
+export function defaultBlankDelay(): Promise<void> {
+  return new Promise(res => {
+    res()
+  })
 }
 
 // TODO: add generalizable reRangeEvent listener

@@ -123,7 +123,6 @@ export function initializeTV(): void {
   initializeControls()
 
   DIRECTOR = new TvDirector()
-  DIRECTOR.toggleScreenOff()
 
   window.onresize = onresizeCallback
 

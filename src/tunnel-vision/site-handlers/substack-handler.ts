@@ -1,4 +1,4 @@
-import { TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
 
 const SCROLLABLE_ELE_LECS = [
   '#post-viewer > div > div > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.content-cFaSRD > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.post-XKrpvd',
@@ -44,5 +44,6 @@ function substackElementGetter(): Array<Element> | null {
 
 export const substackHandler: TvHandler = {
   getTvElements: substackElementGetter,
-  getScrollableElement: substackScrollableElement
+  getScrollableElement: substackScrollableElement,
+  initDelay: defaultBlankDelay
 }

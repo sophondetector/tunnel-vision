@@ -1,4 +1,4 @@
-import { TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
 
 export function isPdfReader(): boolean {
   return window.location.href.match(/pdf-reader.html$/g) ? true : false
@@ -14,5 +14,6 @@ function pdfReaderScrollableElement(): Element {
 
 export const pdfReaderHandler: TvHandler = {
   getTvElements: pdfReaderElementGetter,
-  getScrollableElement: pdfReaderScrollableElement
+  getScrollableElement: pdfReaderScrollableElement,
+  initDelay: defaultBlankDelay
 }
