@@ -11,11 +11,11 @@ export class RangeManager {
 
   initRanges(eleArray: Array<Element>): void {
     if (!eleArray) {
-      console.warn(`WARNING - RangeManager.initRanges: eleArray is ${eleArray}!`)
+      console.warn(`RangeManager.initRanges: eleArray is ${eleArray}!`)
       return
     }
     if (eleArray.length < 1) {
-      console.warn(`WARNING - RangeManager.initRanges: eleArray.length is zero!`)
+      console.warn(`RangeManager.initRanges: eleArray.length is zero!`)
       return
     }
     this.RANGES = RangeManager.eleArray2Ranges(eleArray)
@@ -40,12 +40,12 @@ export class RangeManager {
 
   rangeIdx2Range(rangeIdx: number): Range | undefined {
     if (this.RANGES === null) {
-      console.warn(`WARNING - RangeManager.rangeIdx2Range: this.RANGES is null!`)
+      console.warn(`RangeManager.rangeIdx2Range: this.RANGES is null!`)
       return undefined
     }
     const range = this.RANGES[rangeIdx]
     if (range === undefined) {
-      console.warn(`WARNING - RangeManager.rangeIdx2Range: this.RANGES[${rangeIdx}] is undefined!`)
+      console.warn(`RangeManager.rangeIdx2Range: this.RANGES[${rangeIdx}] is undefined!`)
       return undefined
     }
     return range
@@ -57,7 +57,7 @@ export class RangeManager {
 
   getRangesLength(): number | undefined {
     if (this.RANGES === null) {
-      console.warn(`WARNING - RangeManager.getRangesLength: this.RANGES is null!`)
+      console.warn(`RangeManager.getRangesLength: this.RANGES is null!`)
       return undefined
     }
     return this.RANGES!.length
