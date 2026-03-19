@@ -159,9 +159,10 @@ export class RangeManager {
     for (let idx = 0; idx < len; idx++) {
       const iterRange = this.rangeIdx2Range(idx) as Range
       const box = iterRange.getBoundingClientRect()
+      // console.log(`${idx}\t${top}\t${box.top}`)
       // left has to be BETWEEN box.left and box.right
       if (top <= box.top && left >= box.left && left <= box.right) {
-        console.log(`top:\t\t${top}\nbox.top:\t${box.top}`)
+        // console.log(`top:\t\t${top}\nbox.top:\t${box.top}`)
         return [iterRange, idx]
       }
     }
