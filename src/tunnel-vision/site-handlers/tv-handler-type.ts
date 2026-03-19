@@ -10,6 +10,36 @@ export function defaultBlankDelay(): Promise<void> {
   })
 }
 
+function isScrollable(el: Element): boolean {
+  return el.scrollHeight > el.clientHeight
+}
+
+// NOTE: FUNCTION FOR DISCOVERING THE SCROLLABLE ELEMENT
+// START SOMEWHERE DEEP IN THE PAGE AND RECURSE UPWARDS
+export function discoverScrollable(deepSelector: string, logElement: boolean = false): Element | undefined {
+
+  let ele = document.querySelector(deepSelector)
+  if (!ele) {
+    console.error(`discoverScrollable: selector ${deepSelector} did not return an element!`)
+    return undefined
+  }
+
+  while (!isScrollable(ele)) {
+    ele = ele.parentElement as Element
+    if (!ele) {
+      console.log('discoverScrollable: could not find scrollable ele')
+      return undefined
+    }
+  }
+
+  console.log(`discoverScrollable: found scrollable ele`)
+  if (logElement) {
+    console.log(ele)
+  }
+
+  return ele
+}
+
 // TODO: add generalizable reRangeEvent listener
 
 // TODO: use this mutation observer as a base to add a dynamic content observer 
