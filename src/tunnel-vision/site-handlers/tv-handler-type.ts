@@ -14,8 +14,8 @@ function isScrollable(el: Element): boolean {
   return el.scrollHeight > el.clientHeight
 }
 
-// NOTE: FUNCTION FOR DISCOVERING THE SCROLLABLE ELEMENT
-// START SOMEWHERE DEEP IN THE PAGE AND RECURSE UPWARDS
+// NOTE: function for discovering the scrollable element
+// start somewhere deep in the page and recurse upwards
 export function discoverScrollable(deepSelector: string, logElement: boolean = false): Element | undefined {
 
   let ele = document.querySelector(deepSelector)
