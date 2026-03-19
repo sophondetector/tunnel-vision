@@ -32,7 +32,7 @@ export class RangeManager {
     }
     const range = this.RANGES[this.RANGE_IDX]
     if (range === undefined) {
-      console.warn(`WARNING - RangeManager.getCurrentRange: range at index ${this.RANGE_IDX} (the current range) is undefined!`)
+      console.warn(`RangeManager.getCurrentRange: range at index ${this.RANGE_IDX} undefined!`)
       return undefined
     }
     return range
