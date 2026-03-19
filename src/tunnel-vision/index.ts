@@ -6,12 +6,10 @@ import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
-let SELECTION_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
 
 const NAV_DEBOUNCE_MILLIS = 300
-const SELECTION_DEBOUNCE_MILLIS = 0
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
 export class TvDirector {
@@ -111,19 +109,9 @@ export class TvDirector {
   }
 
   setSelectionListener(): void {
-    // TODO: remove the debouncer from setSelectionListener
-    const selectionChangeListener = () => {
-      clearTimeout(SELECTION_DEBOUNCE)
-
-      SELECTION_DEBOUNCE = setTimeout(
-        // NOTE: see note above drawAroundSelection definition for why we pass 'this'
-        () => this.drawAroundSelection(this),
-        SELECTION_DEBOUNCE_MILLIS
-      ) as unknown as number
-    }
-
+    // NOTE: see note above drawAroundSelection definition for why we pass 'this'
     document.addEventListener(
-      "selectionchange", selectionChangeListener, { capture: true }
+      "selectionchange", () => this.drawAroundSelection(this), { capture: true }
     )
   }
 
