@@ -160,7 +160,7 @@ export class RangeManager {
       const iterRange = this.rangeIdx2Range(idx) as Range
       const box = iterRange.getBoundingClientRect()
       // left has to be BETWEEN box.left and box.right
-      if (box.y >= top && left >= box.left && left <= box.right) {
+      if (top <= box.top && left >= box.left && left <= box.right) {
         return [iterRange, idx]
       }
     }
