@@ -18,6 +18,8 @@
     "vite": "^6.0.5"
   },
   "dependencies": {
-    "pdfjs-dist": "^4.10.38"
+    "@tailwindcss/vite": "^4.2.2",
+    "pdfjs-dist": "^4.10.38",
+    "tailwindcss": "^4.2.2"
   }
 }

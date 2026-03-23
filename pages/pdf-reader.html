@@ -6,55 +6,13 @@
   <title>Tunnel Vision PDF Reader</title>
   <script src="/src/pdf-reader.ts" type="module" defer></script>
   <link rel="stylesheet" href="https://unpkg.com/pdfjs-dist@4.10.38/web/pdf_viewer.css">
-  <style>
-    h1 {
-      font-family: serif;
-    }
-
-    body {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: space-around;
-    }
-
-    #sidebar {
-      display: flex;
-      flex-direction: column;
-      align-items: center
-    }
-
-    body>div {
-      margin: 1ch;
-    }
-
-    main {
-      border: 1px solid black;
-      height: 98vh;
-      overflow-y: auto;
-      position: relative;
-    }
-
-    #debug-panel {
-      margin: 5ch;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border: red;
-      border-style: solid;
-      padding: 2ch;
-    }
-
-    #debug-panel>button {
-      margin: 1ch;
-    }
-  </style>
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
 
   <div id="sidebar">
-    <h1>Tunnel Vision PDF Reader</h1>
+    <h1 class="text-3x1 font-bold underline">Tunnel Vision PDF Reader</h1>
     <div>
       <button id="prev">Previous</button>
       <button id="next">Next</button>

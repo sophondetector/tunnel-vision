@@ -5,75 +5,12 @@
   <meta charset="UTF-8">
   <title>Tunnel Vision</title>
   <script defer src="/src/options.ts" type="module"></script>
-  <style>
-    * {
-      font-family: serif;
-      background: whitesmoke
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      width: 600px;
-      margin: 10px;
-    }
-
-    h1 {
-      margin-bottom: 5px;
-    }
-
-    #control-panel {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 10px;
-      margin-bottom: 20px;
-    }
-
-    #control-panel>div {
-      display: flex;
-      justify-content: center;
-    }
-
-    #control-panel>div>div {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 1ch;
-    }
-
-    button {
-      font-size: large;
-      border-style: solid;
-      border-color: grey;
-      border-radius: 5%;
-      margin: 5px;
-      width: 30%;
-    }
-
-    #help {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: large;
-      margin-bottom: 20px;
-    }
-
-    #pdf-toggle > a {
-      text-decoration: none;
-      background: none;
-      color: black;
-    }
-
-  </style>
+  <link href="/src/style.css" rel="stylesheet">
 </head>
 
 <body>
 
-  <h1>Tunnel Vision</h1>
+  <h1 id="help" class="text-3x1 font-bold underline">Tunnel Vision</h1>
 
   <div id="control-panel">
     <div>
@@ -92,7 +29,7 @@
     </div>
   </div>
 
-  <div id="help">
+  <div>
     <div>
       <div>Press <b>alt-l</b> to turn the tunnel-vision-screen on and off.</div>
       <div>You can also click Tunnel Vision icon and then click the <b>Screen On/Off</b> button.</div>
