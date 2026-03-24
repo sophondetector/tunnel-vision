@@ -1,37 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="bg-gray-50">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tunnel Vision PDF Reader</title>
-  <script src="/src/pdf-reader.ts" type="module" defer></script>
-  <link rel="stylesheet" href="https://unpkg.com/pdfjs-dist@4.10.38/web/pdf_viewer.css">
+
+  <!-- Tailwind CDN --> 
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
   <link rel="stylesheet" href="/src/style.css">
+
+  <script defer src="/src/pdf-reader.ts" type="module"></script>
+
+  <!-- Keep pdf.js viewer base styles (important for textLayer, annotations, etc.) -->
+  <link rel="stylesheet" href="https://unpkg.com/pdfjs-dist@4.10.38/web/pdf_viewer.css">
+
+  <style>
+    :root {
+      --serif: 'Georgia', 'Times New Roman', serif;
+    }
+    body {
+      font-family: var(--serif);
+    }
+    h1, h2, h3 {
+      font-family: var(--serif);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    /* Make sure text layer uses same font for selectable text */
+    .textLayer {
+      font-family: var(--serif) !important;
+    }
+    /* Optional: better canvas container */
+    #viewerContainer {
+      background: #f9fafb;
+    }
+  </style>
 </head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
 
-<body>
+  <!-- Header / Top Bar (for mobile / small screens) -->
+  <header class="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between md:hidden">
+    <h1 class="text-xl font-semibold text-gray-900">Tunnel Vision PDF</h1>
+    <button id="sidebar-toggle" class="text-indigo-600 hover:text-indigo-800">
+      Menu
+    </button>
+  </header>
 
-  <div id="sidebar">
-    <h1 class="text-3x1 font-bold underline">Tunnel Vision PDF Reader</h1>
-    <div>
-      <button id="prev">Previous</button>
-      <button id="next">Next</button>
-    </div>
-    <div>
-      <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-    </div>
-    <div id="debug-panel">
-      <h2>Debug Panel</h2>
-      <button id="re-range">Re-Range</button>
-    </div>
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar (fixed on desktop, toggleable on mobile) -->
+    <aside id="sidebar" class="bg-white border-r border-gray-200 w-64 flex-shrink-0 overflow-y-auto md:block hidden md:sticky md:top-0 md:h-screen transition-all duration-300">
+      <div class="p-6 space-y-6">
+
+        <h1 class="text-2xl font-semibold text-gray-900 tracking-tight text-center md:text-left">
+          Tunnel Vision PDF Reader
+        </h1>
+
+        <!-- Navigation Controls -->
+        <div class="flex flex-col gap-3">
+          <div class="flex gap-2">
+            <button
+              id="prev"
+              class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition"
+            >
+              Previous
+            </button>
+            <button
+              id="next"
+              class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm"
+            >
+              Next
+            </button>
+          </div>
+
+          <div class="text-center text-sm text-gray-600">
+            Page: <span id="page_num" class="font-semibold text-indigo-700">1</span> /
+            <span id="page_count" class="font-semibold">?</span>
+          </div>
+        </div>
+
+        <!-- Zoom Controls (addressing the TODO) -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Zoom</label>
+          <div class="flex items-center gap-2">
+            <button
+              id="zoom-out"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition"
+            >
+              –
+            </button>
+            <span id="zoom-level" class="w-20 text-center font-medium text-indigo-700">100%</span>
+            <button
+              id="zoom-in"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition"
+            >
+              +
+            </button>
+            <button
+              id="zoom-fit"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition text-xs"
+            >
+              Fit
+            </button>
+          </div>
+        </div>
+
+        <!-- Debug (keep but styled subtly) -->
+        <div class="pt-4 border-t border-gray-200">
+          <h2 class="text-lg font-medium text-gray-800 mb-2">Debug</h2>
+          <button
+            id="re-range"
+            class="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg border border-red-200 transition"
+          >
+            Re-Range
+          </button>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Main Viewer Area -->
+    <main 
+        class="flex-1 overflow-auto bg-gray-100 flex items-start justify-center p-4 md:p-8"
+        style="position: relative"
+    >
+      <!-- pdf.js container wrapper -->
+      <div id="viewerContainer" class="relative max-w-5xl w-full bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200">
+        <canvas id="the-canvas" class="block mx-auto"></canvas>
+        <div id="text-layer" class="textLayer absolute inset-0 pointer-events-auto"></div>
+      </div>
+    </main>
+
   </div>
 
-  <!-- TODO: Make this zoomable -->
-  <main>
-    <canvas id="the-canvas"></canvas>
-    <div id="text-layer" class="textLayer"></div>
-  </main>
+  <!-- Optional: Mobile sidebar toggle script (minimal) -->
+  <script>
+    document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+      sidebar.classList.toggle('fixed');
+      sidebar.classList.toggle('inset-y-0');
+      sidebar.classList.toggle('left-0');
+      sidebar.classList.toggle('z-50');
+      sidebar.classList.toggle('bg-white');
+      sidebar.classList.toggle('shadow-xl');
+    });
+  </script>
 
 </body>
-
 </html>

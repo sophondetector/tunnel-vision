@@ -1,47 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="bg-gray-50">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tunnel Vision</title>
+
+  <link rel="stylesheet" href="/src/style.css">
+
   <script defer src="/src/options.ts" type="module"></script>
-  <link href="/src/style.css" rel="stylesheet">
+
+  <style>
+    /* Optional: override some Tailwind defaults for more elegant serif feel */
+    :root {
+      --serif: 'Georgia', 'Times New Roman', serif;
+    }
+    body {
+      font-family: var(--serif);
+    }
+    h1, h2, h3 {
+      font-family: var(--serif);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    .slider {
+      accent-color: #3b82f6;
+    }
+  </style>
 </head>
 
-<body>
+<body class="min-w-[360px] max-w-md mx-auto p-6 text-gray-800">
 
-  <h1 id="help" class="text-3x1 font-bold underline">Tunnel Vision</h1>
+  <!-- Header -->
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-semibold text-gray-900 tracking-tight">
+      Tunnel Vision
+    </h1>
+  </header>
 
-  <div id="control-panel">
-    <div>
-      <button id="tv-toggle">Screen On/Off</button>
-      <button id="pdf-toggle"><a href="./pdf-reader.html" target="_blank">PDF Reader</a></button>
+  <!-- Main Controls Card -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-7">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+
+      <!-- Toggle Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 flex-1">
+        <button
+          id="tv-toggle"
+          class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1"
+        >
+          Screen On / Off
+        </button>
+
+        <a
+          href="./pdf-reader.html"
+          target="_blank"
+          id="pdf-toggle"
+          class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition border border-gray-300 flex-1 text-center"
+        >
+          Open PDF Reader
+        </a>
+      </div>
+
     </div>
-    <div>
+
+    <!-- Sliders & Picker -->
+    <div class="mt-7 grid gap-6 sm:grid-cols-2">
+
+      <!-- Opacity -->
       <div>
-        <h3>Opacity <span id="slider-readout" style="font-size: larger">40%</span></h3>
-        <input type="range" min="1" max="100" value="50" class="slider" id="opacity-slider">
+        <label for="opacity-slider" class="block text-sm font-medium text-gray-700 mb-2 flex items-baseline justify-between">
+          <span>Overlay Opacity</span>
+          <span id="slider-readout" class="text-lg font-semibold text-indigo-700">40%</span>
+        </label>
+        <input
+          type="range"
+          min="1"
+          max="100"
+          value="50"
+          class="slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          id="opacity-slider"
+        >
       </div>
+
+      <!-- Color -->
       <div>
-        <h3>Color</h3>
-        <input type="color" id="color-picker" value="#0000ff">
+        <label for="color-picker" class="block text-sm font-medium text-gray-700 mb-2">
+          Highlight Color
+        </label>
+        <div class="flex items-center gap-3">
+          <input
+            type="color"
+            id="color-picker"
+            value="#0000ff"
+            class="w-12 h-12 rounded-md border border-gray-300 cursor-pointer p-1"
+          />
+          <span class="text-sm text-gray-500">Click to choose</span>
+        </div>
       </div>
+
     </div>
   </div>
 
-  <div>
-    <div>
-      <div>Press <b>alt-l</b> to turn the tunnel-vision-screen on and off.</div>
-      <div>You can also click Tunnel Vision icon and then click the <b>Screen On/Off</b> button.</div>
-      <div> <b>alt + up arrow</b> to move the highlighted range up.</div>
-      <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
-      <div>You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
-      <div>When the screen is on, you may click on the text to highlight that line.</div>
-      <div>You may click and drag a selection of text to highlight that selection.</div>
-      <div>If you select text while the screen is off, that text will be highlighted when the screen is turned on.</div>
-    </div>
+  <!-- Help / Instructions -->
+  <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-sm leading-relaxed text-gray-700 space-y-3">
+    <h3 class="text-lg font-medium text-gray-900 mb-3">How to use Tunnel Vision</h3>
+
+    <ul class="space-y-2.5 list-disc pl-5 marker:text-indigo-500">
+      <li>Press <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + L</kbd> to toggle the screen</li>
+      <li>Or click the extension icon and use the <strong>Screen On/Off</strong> button</li>
+      <li><kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + ↑</kbd> / <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + ↓</kbd> — move highlight</li>
+      <li>Also works with <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + J</kbd> / <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + K</kbd></li>
+    </ul>
+
+    <hr class="my-5 border-gray-200">
+
+    <ul class="space-y-2.5 list-disc pl-5 marker:text-indigo-500">
+      <li>When screen is <strong>on</strong>: click a line to highlight it</li>
+      <li>Click and drag to select a block of text</li>
+      <li>Select text while screen is <strong>off</strong> → it will be highlighted when turned on</li>
+    </ul>
   </div>
 
 </body>
-
 </html>
