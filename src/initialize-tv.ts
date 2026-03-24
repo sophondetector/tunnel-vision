@@ -120,10 +120,12 @@ export function initializeTV(): void {
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
 
+  // TODO: integrate initializeControls into TvDirector.constructor
   initializeControls()
 
   DIRECTOR = new TvDirector()
 
+  // TODO: integrate adding the onresizeCallback into TvDirector.constructor
   window.onresize = onresizeCallback
 
   console.log(`initializeTV: init complete`)
