@@ -9,6 +9,10 @@ import { TvHandler } from "./tv-handler-type"
 import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 
+function isFile(): boolean {
+  return (window.location.protocol === "file:")
+}
+
 // TODO: make handlers able to discriminate by subdomain
 const DOMAIN_HANDLER_MAP: Map<string, TvHandler> = new Map()
 
@@ -27,6 +31,15 @@ let HANDLER: TvHandler | null = null
 export class HandlerManager {
   static getHandler(): TvHandler | null {
     if (HANDLER) {
+      return HANDLER
+    }
+
+    // FIXME: this is very buggy when loading local *.md files and when viewing a folder
+    // There appears to be a race condition between injecting the #TvScreen div one the 
+    // one hand and ranging/fetching the first range on the other
+    if (isFile()) {
+      console.log(`HandlerManager.getHandler: returning generic handler for non pdf local file`)
+      HANDLER = genericHandler
       return HANDLER
     }
 

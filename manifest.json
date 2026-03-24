@@ -19,11 +19,15 @@
     "activeTab",
     "storage"
   ],
+  "host_permissions": [
+    "file:///*"
+  ],
   "content_scripts": [
     {
       "matches": [
         "http://*/*",
-        "https://*/*"
+        "https://*/*",
+        "file:///*"
       ],
       "js": [
         "src/content.ts"
