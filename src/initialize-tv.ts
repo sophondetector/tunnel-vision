@@ -50,23 +50,16 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 }
 
 export function initializeTV(): void {
-  if (DIRECTOR) {
-    console.error(`ERROR: there is already a TvDirector instantiated! aborting init...`)
-    return
-  }
   // receives messages from options.ts control-panel
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
-
-  DIRECTOR = new TvDirector()
-
+  getDirector()
   console.log(`initializeTV: init complete`)
 }
 
-export function getDirector(): TvDirector | undefined {
-  if (!DIRECTOR) {
-    console.error(`getDirector: ERROR TvDirector has not been instantiated`)
-    return
+export function getDirector(): TvDirector {
+  if (DIRECTOR === null) {
+    DIRECTOR = new TvDirector()
   }
   return DIRECTOR
 }
