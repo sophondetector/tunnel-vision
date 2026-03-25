@@ -6,7 +6,7 @@ const sliderReadout = document.getElementById('slider-readout') as HTMLInputElem
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
 const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
 const soundToggle = document.getElementById('sound-toggle') as HTMLButtonElement
-const soundToggleIndicator = document.getElementById('sound-toggle-indicator') as HTMLSpanElement
+const soundToggleDisplay = document.getElementById('sound-toggle-display') as HTMLSpanElement
 
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
@@ -15,10 +15,10 @@ function urlIsPdf(url: string): boolean {
 
 function displaySoundState(soundOn: boolean): void {
   if (soundOn) {
-    soundToggleIndicator.textContent = 'Sound is On'
+    soundToggleDisplay.textContent = 'Sound is On'
     return
   }
-  soundToggleIndicator.textContent = 'Sound is Off'
+  soundToggleDisplay.textContent = 'Sound is Off'
 }
 
 toggle.addEventListener('click', async () => {
