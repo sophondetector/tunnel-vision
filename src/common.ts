@@ -12,7 +12,6 @@ export async function getCurrentTab() {
   return tab
 }
 
-// FIXME: combine these two functions to resist spaghettification
 export async function storePDFUrlInLocalStorage(key: string, url: string): Promise<void> {
   await chrome.storage.local.set({ [key]: url })
 }
