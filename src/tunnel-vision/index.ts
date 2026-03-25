@@ -377,10 +377,10 @@ export class TvDirector {
   setWindowAroundRange(range: Range): void {
     const rect = range.getBoundingClientRect()
     const rectHeight = RangeManager.getMaxHeight(range)
-
-    this.scrollRectIntoView(rect, true)
     // we do the above because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
+
+    this.scrollRectIntoView(rect, true)
 
     // switching to the canvas api necessitated adding the window.scroll[XY]
     // removing these adjustments causes the window to get "left behind" when scrolling
