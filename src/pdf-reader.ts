@@ -156,13 +156,12 @@ document.getElementById('re-range')!.addEventListener('click', function () {
   })
 })
 
+// TODO: change this to an addEventListener which is added early
 // this deletes the localStorage entry when the window closes
 window.onbeforeunload = async () => {
   const key = await getCurrentTab().then((tab) => id2Key(tab.id!))
   await chrome.storage.local.remove(key)
 }
-
-// FIXME: resizing the sidebar causes the screen hole to get "left behind"
 
 //@ts-ignore
 RESIZER.addEventListener('mousedown', (e) => {
@@ -176,6 +175,15 @@ document.addEventListener('mousemove', (e) => {
   const newWidth = e.clientX;   // distance from left edge
   if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {   // min/max limits
     SIDEBAR.style.width = `${newWidth}px`;
+    const dir = getDirector()
+    // FIXME: is there a more performance friendly way to redraw the screen
+    // when the sidebar moves? when moving to next range the screen is in the 
+    // right position WITHOUT having to fire the onResizeCallback
+    if (!dir) {
+      console.log('mousemove callback: could not get director!')
+      return
+    }
+    dir.onResizeCallback()
   }
 });
 
