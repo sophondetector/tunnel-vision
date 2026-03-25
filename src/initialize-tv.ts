@@ -1,7 +1,5 @@
 import { TvDirector } from "./tunnel-vision/index.js"
 
-// TODO: add optional sound
-
 const TOGGLE_SCREEN = "toggle screen"
 const GET_STATE = "get state"
 
