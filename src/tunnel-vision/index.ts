@@ -500,6 +500,7 @@ export class TvDirector {
     })
   }
 
+  // FIXME: when sizing up the scroll to window doesn't work properly
   initializeOnResizeCallback(): void {
     window.onresize = () => {
       clearTimeout(DEBOUNCE_TIMEOUT_ID)
