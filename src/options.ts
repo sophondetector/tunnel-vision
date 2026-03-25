@@ -6,10 +6,19 @@ const sliderReadout = document.getElementById('slider-readout') as HTMLInputElem
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
 const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
 const soundToggle = document.getElementById('sound-toggle') as HTMLButtonElement
+const soundToggleIndicator = document.getElementById('sound-toggle-indicator') as HTMLSpanElement
 
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
   return false
+}
+
+function displaySoundState(soundOn: boolean): void {
+  if (soundOn) {
+    soundToggleIndicator.textContent = 'Sound is On'
+    return
+  }
+  soundToggleIndicator.textContent = 'Sound is Off'
 }
 
 toggle.addEventListener('click', async () => {
@@ -20,13 +29,9 @@ toggle.addEventListener('click', async () => {
 })
 
 soundToggle.addEventListener('click', () => {
-  toggleSound().then(soundIsOn).then((soundOn) => {
-    if (soundOn) {
-      soundToggle.textContent = 'Sound is On'
-      return
-    }
-    soundToggle.textContent = 'Sound is Off'
-  })
+  toggleSound()
+    .then(soundIsOn)
+    .then(displaySoundState)
 })
 
 slider.addEventListener("input", async (event) => {
@@ -67,12 +72,4 @@ getCurrentTab()
 
   })
   .then(soundIsOn)
-  .then((soundOn) => {
-    if (soundOn) {
-      soundToggle.textContent = 'Sound is On'
-      return
-    }
-    soundToggle.textContent = 'Sound is Off'
-  })
-
-
+  .then(displaySoundState)
