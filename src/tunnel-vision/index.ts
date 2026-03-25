@@ -46,7 +46,7 @@ export class TvDirector {
   initRanges(): void {
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
-      console.error('TvDirector.init: null element array, exiting early')
+      console.error('TvDirector.initRanges: null element array, exiting early')
       return
     }
     this.RANGE_MANAGER = new RangeManager(this.ELEMENT_ARRAY)
