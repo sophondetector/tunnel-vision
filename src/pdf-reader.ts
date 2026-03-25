@@ -186,7 +186,7 @@ document.addEventListener('mousemove', (e) => {
       console.log('mousemove callback: could not get director!')
       return
     }
-    dir.onResizeCallback()
+    dir.onResizeCallback(dir)
   }
 });
 

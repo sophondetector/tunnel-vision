@@ -9,7 +9,9 @@ let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
+let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 
+const RESIZE_DEBOUNCE_MILLIS = 500
 const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
@@ -27,6 +29,7 @@ export class TvDirector {
 
     handler.initDelay().then(() => {
       this.initializeControls()
+      this.initializeOnResizeCallback()
       this.inject()
       this.initRanges()
       this.setScrollableEventListener()
@@ -392,10 +395,10 @@ export class TvDirector {
   }
 
   // TODO: callback for when page changes layout
-  onResizeCallback(): void {
+  onResizeCallback(curDir: TvDirector): void {
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
-    const rangeManager = this.getRangeManager()
+    const rangeManager = curDir.getRangeManager()
     const prevRange = rangeManager.getCurrentRange()
     if (prevRange === undefined) {
       console.error('TvDirector.onResizeCallback: could not get current range!')
@@ -407,7 +410,7 @@ export class TvDirector {
     // bug where smaller window leads to range directly before
     // we want getting picked
 
-    rangeManager.initRanges(this.getElementArray())
+    rangeManager.initRanges(curDir.getElementArray())
     const newWidth = window.innerWidth
     const delta = WIN_WIDTH - newWidth
     WIN_WIDTH = newWidth
@@ -422,7 +425,7 @@ export class TvDirector {
           continue
         }
         if (iterRange.isPointInRange(prevNode, prevOffset)) {
-          this.setWindowAroundRange(iterRange)
+          curDir.setWindowAroundRange(iterRange)
           rangeManager.setRangeIdx(rangeIdx)
           return
         }
@@ -495,5 +498,14 @@ export class TvDirector {
           break;
       }
     })
+  }
+
+  initializeOnResizeCallback(): void {
+    window.onresize = () => {
+      clearTimeout(DEBOUNCE_TIMEOUT_ID)
+      DEBOUNCE_TIMEOUT_ID = setTimeout(
+        () => this.onResizeCallback(this),
+        RESIZE_DEBOUNCE_MILLIS) as unknown as number
+    }
   }
 }

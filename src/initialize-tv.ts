@@ -3,9 +3,6 @@ import { TvDirector } from "./tunnel-vision/index.js"
 const TOGGLE_SCREEN = "toggle screen"
 const GET_STATE = "get state"
 
-const RESIZE_DEBOUNCE_MILLIS = 500
-
-let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let DIRECTOR: TvDirector | null = null
 
 // NOTE: This must call sendResponse on every path to prevent the following error:
@@ -52,13 +49,6 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
   sendResponse()
 }
 
-function onresizeCallback() {
-  clearTimeout(DEBOUNCE_TIMEOUT_ID)
-  DEBOUNCE_TIMEOUT_ID = setTimeout(
-    () => DIRECTOR!.onResizeCallback(),
-    RESIZE_DEBOUNCE_MILLIS) as unknown as number
-}
-
 export function initializeTV(): void {
   if (DIRECTOR) {
     console.error(`ERROR: there is already a TvDirector instantiated! aborting init...`)
@@ -69,9 +59,6 @@ export function initializeTV(): void {
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
 
   DIRECTOR = new TvDirector()
-
-  // TODO: integrate adding the onresizeCallback into TvDirector.constructor
-  window.onresize = onresizeCallback
 
   console.log(`initializeTV: init complete`)
 }
