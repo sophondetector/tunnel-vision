@@ -12,5 +12,7 @@ function getAudio(): HTMLAudioElement {
 }
 
 export function playSound(): void {
-  getAudio().play();
+  const audio = getAudio()
+  audio.currentTime = 0
+  audio.play()
 }
