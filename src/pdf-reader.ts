@@ -4,6 +4,8 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
 import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './common';
 
+// TODO: make icon change color when (1) unavailable (2) ranged successfully or (3) tried to range but error
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const SCALE = 2
