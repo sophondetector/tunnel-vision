@@ -1,4 +1,12 @@
-import { TvScreenState, getCurrentTab, soundIsOn, storeLatestPDFUrlInLocalStorage, toggleSound } from "./common";
+import {
+  TvScreenState,
+  getCurrentTab,
+  soundIsOn,
+  storeLatestPDFUrlInLocalStorage,
+  toggleSound,
+  TOGGLE_SCREEN,
+  GET_STATE
+} from "./common";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
@@ -23,7 +31,7 @@ function displaySoundState(soundOn: boolean): void {
 
 toggle.addEventListener('click', async () => {
   const tab = await getCurrentTab()
-  chrome.tabs.sendMessage(tab.id!, "toggle screen", function () {
+  chrome.tabs.sendMessage(tab.id!, TOGGLE_SCREEN, function () {
     console.log("sent message to content.ts in open tab")
   })
 })
@@ -63,7 +71,7 @@ getCurrentTab()
       })
     }
 
-    chrome.tabs.sendMessage(tab.id!, "get state", function (state: TvScreenState) {
+    chrome.tabs.sendMessage(tab.id!, GET_STATE, function (state: TvScreenState) {
       const opacityPercent = String(state.opacity * 100)
       slider.value = opacityPercent
       sliderReadout.textContent = `${opacityPercent}%`

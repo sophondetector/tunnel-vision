@@ -6,6 +6,9 @@ export interface TvScreenState {
 export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_KEY = "TvSoundOnOff"
 
+export const TOGGLE_SCREEN = "toggle screen"
+export const GET_STATE = "get state"
+
 const TRUE = 'true'
 const FALSE = 'false'
 

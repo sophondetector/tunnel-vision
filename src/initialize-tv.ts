@@ -1,7 +1,5 @@
 import { TvDirector } from "./tunnel-vision/index.js"
-
-const TOGGLE_SCREEN = "toggle screen"
-const GET_STATE = "get state"
+import { GET_STATE, TOGGLE_SCREEN } from "./common.js"
 
 let DIRECTOR: TvDirector | null = null
 
