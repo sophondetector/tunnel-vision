@@ -6,6 +6,9 @@ export interface TvScreenState {
 export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_KEY = "TvSoundOnOff"
 
+const TRUE = 'true'
+const FALSE = 'false'
+
 export async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true }
   let [tab] = await chrome.tabs.query(queryOptions)
@@ -27,7 +30,7 @@ export async function soundIsOn(): Promise<boolean> {
     console.warn(`soundIsOn: could not retreive sound option`)
     return false
   }
-  if (curVal === 'true') return true
+  if (curVal === TRUE) return true
   return false
 }
 
@@ -40,9 +43,9 @@ export async function toggleSound(): Promise<void> {
 }
 
 export async function setSoundOn(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_KEY]: 'true' })
+  await chrome.storage.local.set({ [SOUND_KEY]: TRUE })
 }
 
 export async function setSoundOff(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_KEY]: 'false' })
+  await chrome.storage.local.set({ [SOUND_KEY]: FALSE })
 }
