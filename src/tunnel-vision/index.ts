@@ -1,8 +1,9 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { TvScreenState } from "../common";
+import { soundIsOn, TvScreenState } from "../common";
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
+import { playSound } from "./sound";
 
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
@@ -268,32 +269,44 @@ export class TvDirector {
 
   // TODO: autoscroll to keep up with range
   incRange(): void {
+    soundIsOn().then((soundOn) => {
+      if (soundOn) playSound()
+    })
+
     if (SELECTION) {
       SELECTION = false
       this.setRangeAtSelectionBottom()
       this.collapseSelection()
       return
     }
+
     const nextRange = this.getRangeManager().getNextRange()
     if (nextRange === undefined) {
       console.log('TvDirector.incRange: could not find next range')
       return
     }
+
     this.setWindowAroundRange(nextRange)
   }
 
   decRange(): void {
+    soundIsOn().then((soundOn) => {
+      if (soundOn) playSound()
+    })
+
     if (SELECTION) {
       SELECTION = false
       this.setRangeAtSelectionTop()
       this.collapseSelection()
       return
     }
+
     const prevRange = this.getRangeManager().getPrevRange()
     if (prevRange === undefined) {
       console.log('TvDirector.decRange: could not find previous range')
       return
     }
+
     this.setWindowAroundRange(prevRange)
   }
 

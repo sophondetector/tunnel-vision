@@ -1,10 +1,11 @@
-import { TvScreenState, getCurrentTab, storeLatestPDFUrlInLocalStorage } from "./common";
+import { TvScreenState, getCurrentTab, soundIsOn, storeLatestPDFUrlInLocalStorage, toggleSound } from "./common";
 
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
 const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
 const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
+const soundToggle = document.getElementById('sound-toggle') as HTMLButtonElement
 
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
@@ -15,6 +16,16 @@ toggle.addEventListener('click', async () => {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, "toggle screen", function () {
     console.log("sent message to content.ts in open tab")
+  })
+})
+
+soundToggle.addEventListener('click', () => {
+  toggleSound().then(soundIsOn).then((soundOn) => {
+    if (soundOn) {
+      soundToggle.textContent = 'Sound is On'
+      return
+    }
+    soundToggle.textContent = 'Sound is Off'
   })
 })
 
@@ -54,6 +65,14 @@ getCurrentTab()
       colorPicker.value = state.hexColor
     })
 
+  })
+  .then(soundIsOn)
+  .then((soundOn) => {
+    if (soundOn) {
+      soundToggle.textContent = 'Sound is On'
+      return
+    }
+    soundToggle.textContent = 'Sound is Off'
   })
 
 
