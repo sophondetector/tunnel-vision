@@ -1,3 +1,5 @@
+// TODO: add volume control
+
 const AUDIO_URL = 'src/tunnel-vision/click.mp3'
 
 let AUDIO: HTMLAudioElement | null = null
