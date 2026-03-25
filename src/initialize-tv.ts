@@ -8,56 +8,6 @@ const RESIZE_DEBOUNCE_MILLIS = 500
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let DIRECTOR: TvDirector | null = null
 
-function initializeControls() {
-  // TODO: alt+click+drag creates a highlight box
-  // bring that in from grok-code.html
-  document.addEventListener('keyup', (event) => {
-    if (DIRECTOR === null) return
-    switch (event.key) {
-      case "l":
-        event.altKey && DIRECTOR.toggleScreen()
-        break;
-      case "ArrowDown":
-      case "j":
-        if (DIRECTOR.isOn() && event.altKey) {
-          // event.shiftKey only works in the case of arrow keys
-          // shift + alt + j is handled as capital "J" case below
-          if (event.shiftKey) {
-            DIRECTOR.shiftRangeDown()
-            break
-          }
-          DIRECTOR.incRange()
-        }
-        break;
-      case "ArrowUp":
-      case "k":
-        if (DIRECTOR.isOn() && event.altKey) {
-          // event.shiftKey only works in the case of arrow keys
-          // shift + alt + k is handled as capital "K" case below
-          if (event.shiftKey) {
-            DIRECTOR.shiftRangeUp()
-            break
-          }
-          DIRECTOR.decRange()
-        }
-        break;
-      case "J":
-        if (DIRECTOR.isOn() && event.altKey) {
-          DIRECTOR.shiftRangeDown()
-        }
-        break
-      case "K":
-        if (DIRECTOR.isOn() && event.altKey) {
-          DIRECTOR.shiftRangeUp()
-        }
-        break
-      default:
-        break;
-    }
-  })
-
-}
-
 // NOTE: This must call sendResponse on every path to prevent the following error:
 // "Unchecked runtime.lastError: The message port closed before a response was received."
 function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
@@ -117,9 +67,6 @@ export function initializeTV(): void {
   // receives messages from options.ts control-panel
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
-
-  // TODO: integrate initializeControls into TvDirector.constructor
-  initializeControls()
 
   DIRECTOR = new TvDirector()
 

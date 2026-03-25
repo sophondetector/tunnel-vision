@@ -26,6 +26,7 @@ export class TvDirector {
     }
 
     handler.initDelay().then(() => {
+      this.initializeControls()
       this.inject()
       this.initRanges()
       this.setScrollableEventListener()
@@ -446,5 +447,53 @@ export class TvDirector {
         return
       }
     }
+  }
+
+  initializeControls() {
+    // TODO: alt+click+drag creates a highlight box
+    // bring that in from grok-code.html
+    document.addEventListener('keyup', (event) => {
+      switch (event.key) {
+        case "l":
+          event.altKey && this.toggleScreen()
+          break;
+        case "ArrowDown":
+        case "j":
+          if (this.isOn() && event.altKey) {
+            // event.shiftKey only works in the case of arrow keys
+            // shift + alt + j is handled as capital "J" case below
+            if (event.shiftKey) {
+              this.shiftRangeDown()
+              break
+            }
+            this.incRange()
+          }
+          break;
+        case "ArrowUp":
+        case "k":
+          if (this.isOn() && event.altKey) {
+            // event.shiftKey only works in the case of arrow keys
+            // shift + alt + k is handled as capital "K" case below
+            if (event.shiftKey) {
+              this.shiftRangeUp()
+              break
+            }
+            this.decRange()
+          }
+          break;
+        case "J":
+          if (this.isOn() && event.altKey) {
+            this.shiftRangeDown()
+          }
+          break
+        case "K":
+          if (this.isOn() && event.altKey) {
+            this.shiftRangeUp()
+          }
+          break
+        default:
+          break;
+      }
+    })
   }
 }
