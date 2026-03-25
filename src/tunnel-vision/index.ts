@@ -9,6 +9,8 @@ let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
 
+// FIXME: when the text turns white when selecting text while the screen is on this makes the text invisible
+
 const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
