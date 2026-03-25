@@ -170,6 +170,9 @@ RESIZER.addEventListener('mousedown', (e) => {
   document.body.style.userSelect = 'none';
 });
 
+// FIXME: when resizing with a selection the selection is destroyed and it defaults
+// to a range
+
 document.addEventListener('mousemove', (e) => {
   if (!IS_RESIZING) return;
   const newWidth = e.clientX;   // distance from left edge
