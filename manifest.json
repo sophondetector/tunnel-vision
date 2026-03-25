@@ -36,5 +36,15 @@
   ],
   "background": {
     "service_worker": "src/background.ts"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/tunnel-vision/click.mp3"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
 }
