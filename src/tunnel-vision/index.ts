@@ -267,7 +267,6 @@ export class TvDirector {
     return TvScreen.isOn()
   }
 
-  // TODO: autoscroll to keep up with range
   incRange(): void {
     soundIsOn().then((soundOn) => {
       if (soundOn) playSound()
@@ -346,9 +345,29 @@ export class TvDirector {
     console.log('shift down!')
   }
 
+  scrollRectIntoView(rect: DOMRect) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (rect.left < 0) dx = rect.left;
+    else if (rect.right > vw) dx = rect.right - vw;
+
+    if (rect.top < 0) dy = rect.top;
+    else if (rect.bottom > vh) dy = rect.bottom - vh;
+
+    if (dx || dy) {
+      window.scrollBy({ left: dx, top: dy, behavior: 'smooth' });
+    }
+  }
+
   setWindowAroundRange(range: Range): void {
     const rect = range.getBoundingClientRect()
     const rectHeight = RangeManager.getMaxHeight(range)
+
+    this.scrollRectIntoView(rect)
     // we do the above because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
 
