@@ -345,18 +345,29 @@ export class TvDirector {
     console.log('shift down!')
   }
 
-  scrollRectIntoView(rect: DOMRect) {
+  /**
+  * Scrolls the viewport so that the given DOMRect becomes fully visible.
+  * 
+  * If the rect is already completely inside the viewport, no scrolling occurs.
+  * Scrolls the minimal amount needed (horizontally and/or vertically) to bring
+  * the entire rect into view. Uses smooth scrolling.
+  * 
+  * @param {DOMRect} rect - The DOMRect to scroll into view (e.g. from element.getBoundingClientRect())
+  * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
+  */
+  scrollRectIntoView(rect: DOMRect, scrollToMiddle: boolean = true): void {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
     let dx = 0;
     let dy = 0;
+    let middleAdjust = scrollToMiddle ? Math.floor(vh / 2) : 0
 
     if (rect.left < 0) dx = rect.left;
     else if (rect.right > vw) dx = rect.right - vw;
 
-    if (rect.top < 0) dy = rect.top;
-    else if (rect.bottom > vh) dy = rect.bottom - vh;
+    if (rect.top < 0) dy = rect.top - middleAdjust;
+    else if (rect.bottom > vh) dy = rect.bottom - vh + middleAdjust;
 
     if (dx || dy) {
       window.scrollBy({ left: dx, top: dy, behavior: 'smooth' });
@@ -367,7 +378,7 @@ export class TvDirector {
     const rect = range.getBoundingClientRect()
     const rectHeight = RangeManager.getMaxHeight(range)
 
-    this.scrollRectIntoView(rect)
+    this.scrollRectIntoView(rect, true)
     // we do the above because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
 
