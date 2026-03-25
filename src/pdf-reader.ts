@@ -10,14 +10,16 @@ const SCALE = 2
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
+const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
+const RESIZER = document.getElementById('resizer') as HTMLElement;
+
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
-
-let IS_RESIZING = false;
 
 let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
+let IS_RESIZING = false;
 
 function id2Key(id: number): string {
   return `${id}-tvpdf`
@@ -158,11 +160,10 @@ window.onbeforeunload = async () => {
   await chrome.storage.local.remove(key)
 }
 
-const sidebar = document.getElementById('sidebar') as HTMLElement;
-const resizer = document.getElementById('resizer') as HTMLElement;
+// FIXME: resizing the sidebar causes the screen hole to get "left behind"
 
 //@ts-ignore
-resizer.addEventListener('mousedown', (e) => {
+RESIZER.addEventListener('mousedown', (e) => {
   IS_RESIZING = true;
   document.body.style.cursor = 'col-resize';
   document.body.style.userSelect = 'none';
@@ -172,7 +173,7 @@ document.addEventListener('mousemove', (e) => {
   if (!IS_RESIZING) return;
   const newWidth = e.clientX;   // distance from left edge
   if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {   // min/max limits
-    sidebar.style.width = `${newWidth}px`;
+    SIDEBAR.style.width = `${newWidth}px`;
   }
 });
 
