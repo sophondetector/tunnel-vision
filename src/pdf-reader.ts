@@ -9,7 +9,11 @@ import { Z_INDEX } from './tunnel-vision/tv-screen';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-const SCALE = 2
+const DEFAULT_SCALE = 2
+const MAX_SCALE = 4
+const MIN_SCALE = .5
+const SCALE_INC = .2
+
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
@@ -25,7 +29,6 @@ const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElemen
 const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
 const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
-//@ts-ignore
 const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
 
 const SIDEBAR_MIN_WIDTH = 100
@@ -35,6 +38,33 @@ let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
+let ZOOM_SCALE = DEFAULT_SCALE
+
+function zoomIn(): void {
+  if (ZOOM_SCALE >= MAX_SCALE) return
+  ZOOM_SCALE += SCALE_INC
+  displayZoomPercent()
+}
+
+function zoomOut(): void {
+  if (ZOOM_SCALE <= MIN_SCALE) return
+  ZOOM_SCALE -= SCALE_INC
+  displayZoomPercent()
+}
+
+function zoomFit(): void {
+  console.log(`zoom fit!`)
+  displayZoomPercent()
+}
+
+function getScalePercent(): number {
+  return (ZOOM_SCALE / MAX_SCALE) * 100
+}
+
+function displayZoomPercent(): void {
+  const numString = getScalePercent().toFixed()
+  ZOOM_DISPLAY.textContent = `${numString}%`
+}
 
 function id2Key(id: number): string {
   return `${id}-tvpdf`
@@ -73,7 +103,7 @@ async function renderPage(): Promise<void> {
   }
 
   const page = await PDF_DOC.getPage(PAGE_NUM)
-  const viewport = page.getViewport({ scale: SCALE });
+  const viewport = page.getViewport({ scale: ZOOM_SCALE });
 
   // Canvas resolution (backing store) at device pixels
   CANVAS.width = Math.round(viewport.width);
@@ -98,7 +128,7 @@ async function renderTextLayer(): Promise<void> {
   }
 
   const page = await PDF_DOC.getPage(PAGE_NUM)
-  const viewport = page.getViewport({ scale: SCALE });
+  const viewport = page.getViewport({ scale: ZOOM_SCALE });
   const cssWidth = Math.floor(viewport.width);
   const cssHeight = Math.floor(viewport.height);
 
@@ -141,20 +171,11 @@ async function initRanges(): Promise<void> {
   dir.initRanges()
 }
 
-ZOOM_IN.addEventListener('click', () => {
-  console.log(`zoom in`)
-  console.log(`scale: ${SCALE}`)
-})
+ZOOM_IN.addEventListener('click', zoomIn)
 
-ZOOM_OUT.addEventListener('click', () => {
-  console.log(`zoom out`)
-  console.log(`scale: ${SCALE}`)
-})
+ZOOM_OUT.addEventListener('click', zoomOut)
 
-ZOOM_FIT.addEventListener('click', () => {
-  console.log(`zoom fit`)
-  console.log(`scale: ${SCALE}`)
-})
+ZOOM_FIT.addEventListener('click', zoomFit)
 
 document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
@@ -274,6 +295,7 @@ getPDFUrl()
   .then(renderTextLayer)
   .then(initializeTV)
   .then(setPageNumText)
+  .then(displayZoomPercent)
   .then(async () => {
     const dir = getDirector()
     const isOn = await dir.soundIsOn()
