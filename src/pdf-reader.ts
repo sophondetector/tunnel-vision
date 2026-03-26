@@ -17,6 +17,9 @@ const SCALE_INC = .2
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
+const SIDEBAR_MIN_WIDTH = 100
+const SIDEBAR_MAX_WIDTH = 1000
+
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 
@@ -30,9 +33,6 @@ const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
 const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
 const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
-
-const SIDEBAR_MIN_WIDTH = 100
-const SIDEBAR_MAX_WIDTH = 1000
 
 let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
