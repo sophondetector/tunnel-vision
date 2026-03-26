@@ -15,6 +15,15 @@ const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 
+// FIXME: make it so the sidebar isn't blocked out by the screen
+const TOGGLE = document.getElementById('tv-toggle') as HTMLButtonElement
+const SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
+const SLIDER_READOUT = document.getElementById('slider-readout') as HTMLInputElement
+const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
+const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
+const SOUND_TOGGLE_DISPLAY = document.getElementById('sound-toggle-display') as HTMLSpanElement
+// TODO: change sound-toggle-display to sound-display
+
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
 
@@ -170,6 +179,39 @@ RESIZER.addEventListener('mousedown', (e) => {
   document.body.style.userSelect = 'none';
 });
 
+TOGGLE.addEventListener('click', () => {
+  const dir = getDirector()
+  dir.toggleScreen()
+})
+
+SOUND_TOGGLE.addEventListener('click', async () => {
+  const dir = getDirector()
+  await dir.toggleSound()
+  const isOn = await dir.soundIsOn()
+  if (isOn) {
+    SOUND_TOGGLE_DISPLAY.textContent = 'Sound is On'
+    return
+  }
+  SOUND_TOGGLE_DISPLAY.textContent = 'Sound is Off'
+})
+
+// TODO: change "slider" to "opacity"
+SLIDER.addEventListener('input', (event) => {
+  //@ts-ignore
+  const value = event.target.value
+  const dir = getDirector()
+  dir.setScreenOpacity(value)
+  // TODO: change "slider-readout" to "opacity-display"
+  SLIDER_READOUT.textContent = `${value}%`
+})
+
+COLOR_PICKER.addEventListener('input', (event) => {
+  const dir = getDirector()
+  //@ts-ignore
+  const value = event.target.value
+  dir.setScreenColor(value)
+})
+
 // FIXME: when resizing with a selection the selection is destroyed and it defaults
 // to a range
 
@@ -212,5 +254,14 @@ getPDFUrl()
   .then(renderTextLayer)
   .then(initializeTV)
   .then(setPageNumText)
+  .then(async () => {
+    const dir = getDirector()
+    const isOn = await dir.soundIsOn()
+    if (isOn) {
+      SOUND_TOGGLE_DISPLAY.textContent = 'Sound is On'
+      return
+    }
+    SOUND_TOGGLE_DISPLAY.textContent = 'Sound is Off'
+  })
   .catch((err) => console.error(err))
 

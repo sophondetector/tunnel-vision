@@ -1,7 +1,7 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { soundIsOn, TvScreenState } from "../common";
+import { soundIsOn, toggleSound, TvScreenState } from "../common";
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
@@ -247,6 +247,14 @@ export class TvDirector {
   setScreenOpacity(opacity: number) {
     if (!this.isOn()) return
     TvScreen.setScreenOpacity(opacity)
+  }
+
+  soundIsOn(): Promise<boolean> {
+    return soundIsOn()
+  }
+
+  toggleSound(): Promise<void> {
+    return toggleSound()
   }
 
   toggleScreen(): void {
