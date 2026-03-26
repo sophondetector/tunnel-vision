@@ -43,13 +43,19 @@ let ZOOM_SCALE = DEFAULT_SCALE
 function zoomIn(): void {
   if (ZOOM_SCALE >= MAX_SCALE) return
   ZOOM_SCALE += SCALE_INC
-  displayZoomPercent()
+  renderPage()
+    .then(renderTextLayer)
+    .then(initRanges)
+    .then(displayZoomPercent)
 }
 
 function zoomOut(): void {
   if (ZOOM_SCALE <= MIN_SCALE) return
   ZOOM_SCALE -= SCALE_INC
-  displayZoomPercent()
+  renderPage()
+    .then(renderTextLayer)
+    .then(initRanges)
+    .then(displayZoomPercent)
 }
 
 function zoomFit(): void {
