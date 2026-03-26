@@ -16,7 +16,7 @@ const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 
-const TOGGLE = document.getElementById('tv-toggle') as HTMLButtonElement
+const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
@@ -178,7 +178,7 @@ RESIZER.addEventListener('mousedown', (e) => {
   document.body.style.userSelect = 'none';
 });
 
-TOGGLE.addEventListener('click', () => {
+SCREEN_TOGGLE.addEventListener('click', () => {
   const dir = getDirector()
   dir.toggleScreen()
 })

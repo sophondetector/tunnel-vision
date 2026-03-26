@@ -8,7 +8,7 @@ import {
   GET_STATE
 } from "./common";
 
-const TOGGLE = document.getElementById('tv-toggle') as HTMLButtonElement
+const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
@@ -29,7 +29,7 @@ function displaySoundState(soundOn: boolean): void {
   SOUND_DISPLAY.textContent = 'Sound is Off'
 }
 
-TOGGLE.addEventListener('click', async () => {
+SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TOGGLE_SCREEN, function () {
     console.log("sent message to content.ts in open tab")
