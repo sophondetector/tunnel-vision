@@ -8,13 +8,14 @@ import {
   GET_STATE
 } from "./common";
 
+// TODO: change all these to capital case
 const toggle = document.getElementById('tv-toggle') as HTMLButtonElement
 const slider = document.getElementById('opacity-slider') as HTMLInputElement
-const sliderReadout = document.getElementById('slider-readout') as HTMLInputElement
+const opacityDisplay = document.getElementById('opacity-display') as HTMLInputElement
 const colorPicker = document.getElementById('color-picker') as HTMLInputElement
 const pdfToggle = document.getElementById('pdf-toggle') as HTMLButtonElement
 const soundToggle = document.getElementById('sound-toggle') as HTMLButtonElement
-const soundToggleDisplay = document.getElementById('sound-toggle-display') as HTMLSpanElement
+const soundDisplay = document.getElementById('sound-display') as HTMLSpanElement
 
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
@@ -23,10 +24,10 @@ function urlIsPdf(url: string): boolean {
 
 function displaySoundState(soundOn: boolean): void {
   if (soundOn) {
-    soundToggleDisplay.textContent = 'Sound is On'
+    soundDisplay.textContent = 'Sound is On'
     return
   }
-  soundToggleDisplay.textContent = 'Sound is Off'
+  soundDisplay.textContent = 'Sound is Off'
 }
 
 toggle.addEventListener('click', async () => {
@@ -47,7 +48,7 @@ slider.addEventListener("input", async (event) => {
   const value = event.target.value
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, `${value}`, function () {
-    sliderReadout.textContent = `${value}%`
+    opacityDisplay.textContent = `${value}%`
     console.log(`sent screen opacity value ${value} to content.ts in open tab`)
   })
 })
@@ -74,7 +75,7 @@ getCurrentTab()
     chrome.tabs.sendMessage(tab.id!, GET_STATE, function (state: TvScreenState) {
       const opacityPercent = String(state.opacity * 100)
       slider.value = opacityPercent
-      sliderReadout.textContent = `${opacityPercent}%`
+      opacityDisplay.textContent = `${opacityPercent}%`
       colorPicker.value = state.hexColor
     })
 

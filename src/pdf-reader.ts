@@ -17,12 +17,11 @@ const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 
 const TOGGLE = document.getElementById('tv-toggle') as HTMLButtonElement
-const SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
-const SLIDER_READOUT = document.getElementById('slider-readout') as HTMLInputElement
+const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
+const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
-const SOUND_TOGGLE_DISPLAY = document.getElementById('sound-toggle-display') as HTMLSpanElement
-// TODO: change sound-toggle-display to sound-display
+const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
@@ -189,20 +188,18 @@ SOUND_TOGGLE.addEventListener('click', async () => {
   await dir.toggleSound()
   const isOn = await dir.soundIsOn()
   if (isOn) {
-    SOUND_TOGGLE_DISPLAY.textContent = 'Sound is On'
+    SOUND_DISPLAY.textContent = 'Sound is On'
     return
   }
-  SOUND_TOGGLE_DISPLAY.textContent = 'Sound is Off'
+  SOUND_DISPLAY.textContent = 'Sound is Off'
 })
 
-// TODO: change "slider" to "opacity"
-SLIDER.addEventListener('input', (event) => {
+OPACITY_SLIDER.addEventListener('input', (event) => {
   //@ts-ignore
   const value = event.target.value
   const dir = getDirector()
   dir.setScreenOpacity(value)
-  // TODO: change "slider-readout" to "opacity-display"
-  SLIDER_READOUT.textContent = `${value}%`
+  OPACITY_DISPLAY.textContent = `${value}%`
 })
 
 COLOR_PICKER.addEventListener('input', (event) => {
@@ -261,10 +258,10 @@ getPDFUrl()
     const dir = getDirector()
     const isOn = await dir.soundIsOn()
     if (isOn) {
-      SOUND_TOGGLE_DISPLAY.textContent = 'Sound is On'
+      SOUND_DISPLAY.textContent = 'Sound is On'
       return
     }
-    SOUND_TOGGLE_DISPLAY.textContent = 'Sound is Off'
+    SOUND_DISPLAY.textContent = 'Sound is Off'
   })
   .catch((err) => console.error(err))
 
