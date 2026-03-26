@@ -22,6 +22,11 @@ const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputE
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
+const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
+const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
+const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
+//@ts-ignore
+const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
 
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
@@ -135,6 +140,21 @@ async function initRanges(): Promise<void> {
   }
   dir.initRanges()
 }
+
+ZOOM_IN.addEventListener('click', () => {
+  console.log(`zoom in`)
+  console.log(`scale: ${SCALE}`)
+})
+
+ZOOM_OUT.addEventListener('click', () => {
+  console.log(`zoom out`)
+  console.log(`scale: ${SCALE}`)
+})
+
+ZOOM_FIT.addEventListener('click', () => {
+  console.log(`zoom fit`)
+  console.log(`scale: ${SCALE}`)
+})
 
 document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
