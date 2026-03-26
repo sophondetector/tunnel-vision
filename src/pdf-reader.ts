@@ -40,23 +40,29 @@ let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
 let ZOOM_SCALE = DEFAULT_SCALE
+let RANGE_IDX: number = 0
 
-// FIXME: zooming in or out causes the range to default back to one
 function zoomIn(): void {
   if (ZOOM_SCALE >= MAX_SCALE) return
   ZOOM_SCALE += SCALE_INC
+  const dir = getDirector()
+  RANGE_IDX = dir.getRangeIdx()
   renderPage()
     .then(renderTextLayer)
     .then(initRanges)
+    .then(() => dir.setRangeIdx(RANGE_IDX))
     .then(displayZoomPercent)
 }
 
 function zoomOut(): void {
   if (ZOOM_SCALE <= MIN_SCALE) return
   ZOOM_SCALE -= SCALE_INC
+  const dir = getDirector()
+  RANGE_IDX = dir.getRangeIdx()
   renderPage()
     .then(renderTextLayer)
     .then(initRanges)
+    .then(() => dir.setRangeIdx(RANGE_IDX))
     .then(displayZoomPercent)
 }
 

@@ -167,6 +167,19 @@ export class TvDirector {
     return TvScreen.getScreenState()
   }
 
+  getRangeIdx(): number {
+    const rm = this.RANGE_MANAGER as RangeManager
+    const idx = rm.getRangeIdx()
+    return idx
+  }
+
+  setRangeIdx(idx: number): void {
+    const rm = this.RANGE_MANAGER as RangeManager
+    rm.setRangeIdx(idx)
+    const range = rm.getCurrentRange() as Range
+    this.setWindowAroundRange(range)
+  }
+
   // TODO: is there a way I can dynamically determine a "scrollable interior" element?
   setScrollableEventListener(): void {
     const scrollEle = HandlerManager.getScrollableElement()
