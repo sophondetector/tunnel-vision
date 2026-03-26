@@ -32,7 +32,7 @@ const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElemen
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
-const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
+// const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
 const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
 
 let PDF_PATH: null | string = null
@@ -59,10 +59,11 @@ function zoomOut(): void {
     .then(displayZoomPercent)
 }
 
-function zoomFit(): void {
-  console.log(`zoom fit!`)
-  displayZoomPercent()
-}
+// TODO: implement zoomFit
+// function zoomFit(): void {
+//   console.log(`zoom fit!`)
+//   displayZoomPercent()
+// }
 
 function getScalePercent(): number {
   return (ZOOM_SCALE / MAX_SCALE) * 100
@@ -182,7 +183,7 @@ ZOOM_IN.addEventListener('click', zoomIn)
 
 ZOOM_OUT.addEventListener('click', zoomOut)
 
-ZOOM_FIT.addEventListener('click', zoomFit)
+// ZOOM_FIT.addEventListener('click', zoomFit)
 
 document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
