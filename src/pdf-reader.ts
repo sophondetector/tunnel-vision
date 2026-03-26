@@ -74,6 +74,16 @@ function displayZoomPercent(): void {
   ZOOM_DISPLAY.textContent = `${numString}%`
 }
 
+async function displaySound(): Promise<void> {
+  const dir = getDirector()
+  const isOn = await dir.soundIsOn()
+  if (isOn) {
+    SOUND_DISPLAY.textContent = 'Sound is On'
+    return
+  }
+  SOUND_DISPLAY.textContent = 'Sound is Off'
+}
+
 function id2Key(id: number): string {
   return `${id}-tvpdf`
 }
@@ -234,13 +244,7 @@ SCREEN_TOGGLE.addEventListener('click', () => {
 
 SOUND_TOGGLE.addEventListener('click', async () => {
   const dir = getDirector()
-  await dir.toggleSound()
-  const isOn = await dir.soundIsOn()
-  if (isOn) {
-    SOUND_DISPLAY.textContent = 'Sound is On'
-    return
-  }
-  SOUND_DISPLAY.textContent = 'Sound is Off'
+  dir.toggleSound().then(displaySound)
 })
 
 OPACITY_SLIDER.addEventListener('input', (event) => {
@@ -304,14 +308,6 @@ getPDFUrl()
   .then(initializeTV)
   .then(setPageNumText)
   .then(displayZoomPercent)
-  .then(async () => {
-    const dir = getDirector()
-    const isOn = await dir.soundIsOn()
-    if (isOn) {
-      SOUND_DISPLAY.textContent = 'Sound is On'
-      return
-    }
-    SOUND_DISPLAY.textContent = 'Sound is Off'
-  })
+  .then(displaySound)
   .catch((err) => console.error(err))
 
