@@ -15,6 +15,11 @@ const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
 const PDF_TOGGLE = document.getElementById('pdf-toggle') as HTMLButtonElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
+const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
+const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
+
+const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
+const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
 
 function urlIsPdf(url: string): boolean {
   if (url.match(/\.pdf$/)) return true
@@ -28,6 +33,20 @@ function displaySoundState(soundOn: boolean): void {
   }
   SOUND_DISPLAY.textContent = 'Sound is Off'
 }
+
+function showHelp(): void {
+  HELP_DIV.classList.remove("hidden")
+  CONTROL_PANEL_DIV.classList.add("hidden")
+}
+
+function showControlPanel(): void {
+  CONTROL_PANEL_DIV.classList.remove("hidden")
+  HELP_DIV.classList.add("hidden")
+}
+
+HELP_TOGGLE.addEventListener('click', showHelp)
+
+CONTROL_PANEL_TOGGLE.addEventListener('click', showControlPanel)
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()

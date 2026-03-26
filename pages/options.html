@@ -1,137 +1,105 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="bg-gray-50">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tunnel Vision</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tunnel Vision</title>
 
-  <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/style.css" />
 
-  <script defer src="/src/options.ts" type="module"></script>
+    <script defer src="/src/options.ts" type="module"></script>
 
-  <style>
-    /* Optional: override some Tailwind defaults for more elegant serif feel */
-    :root {
-      --serif: 'Georgia', 'Times New Roman', serif;
-    }
-    body {
-      font-family: var(--serif);
-    }
-    h1, h2, h3 {
-      font-family: var(--serif);
-      font-weight: 600;
-      letter-spacing: -0.025em;
-    }
-    .slider {
-      accent-color: #3b82f6;
-    }
-  </style>
-</head>
+    <style>
+      /* Optional: override some Tailwind defaults for more elegant serif feel */
+      :root {
+        --serif: 'Georgia', 'Times New Roman', serif;
+      }
+      body {
+        font-family: var(--serif);
+      }
+      h1, h2, h3 {
+        font-family: var(--serif);
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+      .slider {
+        accent-color: #3b82f6;
+      }
+    </style>
+  </head>
 
-<body class="min-w-[360px] max-w-md mx-auto p-6 text-gray-800">
+  <body class="mx-auto max-w-md min-w-[360px] p-6 text-gray-800">
+    <!-- Main Controls Card -->
+    <div id="control-panel-div" class="mb-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <!-- Header -->
+      <header class="mb-8 text-center">
+        <h1 class="text-3xl font-semibold tracking-tight text-gray-900">Tunnel Vision</h1>
+      </header>
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <!-- Toggle Buttons -->
+        <div class="flex flex-1 flex-col gap-3 sm:flex-row">
+          <button id="screen-toggle" class="flex-1 rounded-lg bg-indigo-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-indigo-700">Screen On / Off</button>
 
-  <!-- Header -->
-  <header class="text-center mb-8">
-    <h1 class="text-3xl font-semibold text-gray-900 tracking-tight">
-      Tunnel Vision
-    </h1>
-  </header>
+          <a href="./pdf-reader.html" target="_blank" id="pdf-toggle" class="flex-1 rounded-lg border border-gray-300 bg-gray-100 px-5 py-3 text-center font-medium text-gray-800 transition hover:bg-gray-200"> Open PDF Reader </a>
 
-  <!-- Main Controls Card -->
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-7">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-
-      <!-- Toggle Buttons -->
-      <div class="flex flex-col sm:flex-row gap-3 flex-1">
-        <button
-          id="screen-toggle"
-          class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1"
-        >
-          Screen On / Off
-        </button>
-
-        <a
-          href="./pdf-reader.html"
-          target="_blank"
-          id="pdf-toggle"
-          class="px-5 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition border border-gray-300 flex-1 text-center"
-        >
-          Open PDF Reader
-        </a>
-
-        <button
-          id="sound-toggle"
-          class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1"
-        >
-          <span>Sound On / Off</span>
-          <span> | </span>
-          <span id="sound-display">Sound is On</span>
-        </button>
-
-      </div>
-
-    </div>
-
-    <!-- Sliders & Picker -->
-    <div class="mt-7 grid gap-6 sm:grid-cols-2">
-
-      <!-- Opacity -->
-      <div>
-        <label for="opacity-slider" class="block text-sm font-medium text-gray-700 mb-2 flex items-baseline justify-between">
-          <span>Overlay Opacity</span>
-          <span id="opacity-display" class="text-lg font-semibold text-indigo-700">40%</span>
-        </label>
-        <input
-          type="range"
-          min="1"
-          max="100"
-          value="50"
-          class="slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          id="opacity-slider"
-        >
-      </div>
-
-      <!-- Color -->
-      <div>
-        <label for="color-picker" class="block text-sm font-medium text-gray-700 mb-2">
-          Highlight Color
-        </label>
-        <div class="flex items-center gap-3">
-          <input
-            type="color"
-            id="color-picker"
-            value="#0000ff"
-            class="w-12 h-12 rounded-md border border-gray-300 cursor-pointer p-1"
-          />
-          <span class="text-sm text-gray-500">Click to choose</span>
+          <button id="sound-toggle" class="flex-1 rounded-lg bg-indigo-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-indigo-700">
+            <span>Sound On / Off</span>
+            <span> | </span>
+            <span id="sound-display">Sound is On</span>
+          </button>
         </div>
       </div>
 
+      <!-- Sliders & Picker -->
+      <div class="mt-7 grid gap-6 sm:grid-cols-2">
+        <!-- Opacity -->
+        <div>
+          <label for="opacity-slider" class="mb-2 block flex items-baseline justify-between text-sm font-medium text-gray-700">
+            <span>Overlay Opacity</span>
+            <span id="opacity-display" class="text-lg font-semibold text-indigo-700">40%</span>
+          </label>
+          <input type="range" min="1" max="100" value="50" class="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200" id="opacity-slider" />
+        </div>
+
+        <!-- Color and Help Button -->
+
+        <div>
+          <label for="color-picker" class="mb-2 block text-sm font-medium text-gray-700"> Highlight Color </label>
+          <div class="flex items-center gap-3">
+            <input type="color" id="color-picker" value="#0000ff" class="h-12 w-12 cursor-pointer rounded-md border border-gray-300 p-1" />
+            <span class="text-sm text-gray-500">Click to choose</span>
+          </div>
+        </div>
+
+        <button id="help-toggle" class="rounded-lg bg-indigo-600 px-5 py-1 font-medium text-white shadow-sm hover:bg-indigo-700">
+          <span>Help</span>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- TODO: hide help behind a modal -->
+    <!-- Help / Instructions -->
+    <div id="help-div" class="hidden space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-6 text-sm leading-relaxed text-gray-700">
+      <h3 class="mb-3 text-lg font-medium text-gray-900">How to use Tunnel Vision</h3>
 
-  <!-- Help / Instructions -->
-  <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-sm leading-relaxed text-gray-700 space-y-3">
-    <h3 class="text-lg font-medium text-gray-900 mb-3">How to use Tunnel Vision</h3>
+      <button id="control-panel-toggle" class="flex-1 rounded-lg bg-indigo-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-indigo-700">
+        <span>Close Help</span>
+      </button>
 
-    <ul class="space-y-2.5 list-disc pl-5 marker:text-indigo-500">
-      <li>Press <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + L</kbd> to toggle the screen</li>
-      <li>Press Sound On/Off button to toggle the sound which plays when moving up/down a line</li>
-      <li>Or click the extension icon and use the <strong>Screen On/Off</strong> button</li>
-      <li><kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + ↑</kbd> / <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + ↓</kbd> — move highlight</li>
-      <li>Also works with <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + J</kbd> / <kbd class="font-mono font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Alt + K</kbd></li>
-    </ul>
+      <ul class="list-disc space-y-2.5 pl-5 marker:text-indigo-500">
+        <li>Press <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + L</kbd> to toggle the screen</li>
+        <li>Press Sound On/Off button to toggle the sound which plays when moving up/down a line</li>
+        <li>Or click the extension icon and use the <strong>Screen On/Off</strong> button</li>
+        <li><kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↑</kbd> / <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↓</kbd> — move highlight</li>
+        <li>Also works with <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + J</kbd> / <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + K</kbd></li>
+      </ul>
 
-    <hr class="my-5 border-gray-200">
+      <hr class="my-5 border-gray-200" />
 
-    <ul class="space-y-2.5 list-disc pl-5 marker:text-indigo-500">
-      <li>When screen is <strong>on</strong>: click a line to highlight it</li>
-      <li>Click and drag to select a block of text</li>
-      <li>Select text while screen is <strong>off</strong> → it will be highlighted when turned on</li>
-    </ul>
-  </div>
-
-</body>
+      <ul class="list-disc space-y-2.5 pl-5 marker:text-indigo-500">
+        <li>When screen is <strong>on</strong>: click a line to highlight it</li>
+        <li>Click and drag to select a block of text</li>
+        <li>Select text while screen is <strong>off</strong> → it will be highlighted when turned on</li>
+      </ul>
+    </div>
+  </body>
 </html>
