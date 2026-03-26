@@ -229,12 +229,13 @@ document.getElementById('re-range')!.addEventListener('click', function () {
   })
 })
 
-// TODO: change this to an addEventListener which is added early
-// this deletes the localStorage entry when the window closes
-window.onbeforeunload = async () => {
-  const key = await getCurrentTab().then((tab) => id2Key(tab.id!))
+window.addEventListener('beforeunload', async () => {
+  const tab = await getCurrentTab() as chrome.tabs.Tab
+  const key = id2Key(tab.id as number)
   await chrome.storage.local.remove(key)
-}
+}, {
+  capture: true
+})
 
 //@ts-ignore
 RESIZER.addEventListener('mousedown', (e) => {
