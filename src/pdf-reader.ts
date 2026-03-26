@@ -3,6 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist'
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
 import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './common';
+import { Z_INDEX } from './tunnel-vision/tv-screen';
 
 // TODO: make icon change color when (1) unavailable (2) ranged successfully or (3) tried to range but error
 
@@ -15,7 +16,6 @@ const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 
-// FIXME: make it so the sidebar isn't blocked out by the screen
 const TOGGLE = document.getElementById('tv-toggle') as HTMLButtonElement
 const SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const SLIDER_READOUT = document.getElementById('slider-readout') as HTMLInputElement
@@ -237,6 +237,9 @@ document.addEventListener('mouseup', () => {
   document.body.style.cursor = 'default';
   document.body.style.userSelect = 'auto';
 });
+
+SIDEBAR.style.zIndex = (Number(Z_INDEX) + 1).toString()
+RESIZER.style.zIndex = (Number(Z_INDEX) + 1).toString()
 
 getPDFUrl()
   .then((path) => PDF_PATH = path)

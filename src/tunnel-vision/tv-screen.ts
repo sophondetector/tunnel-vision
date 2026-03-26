@@ -3,6 +3,8 @@ import { TvScreenState } from "../common"
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
 const TV_SCREEN_BUFFER_RADIUS = 5
+// NOTE: we export this so the pdf-reader can import it and add one to it so the pdf-reader sidebar can stay on top of the the screen
+export const Z_INDEX = `99999999`
 
 // tv Screen State Variables
 const RECTANGLES: DOMRect[] = []
@@ -27,7 +29,7 @@ export class TvScreen {
     canvas.style.position = `fixed`
     canvas.style.overflow = `auto`
     canvas.style.pointerEvents = `none` // this ensures mouse clicks "fall through" to the main content
-    canvas.style.zIndex = `99999999`
+    canvas.style.zIndex = Z_INDEX
 
     canvas.style.top = `0px`
     canvas.style.left = `0px`
