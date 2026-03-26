@@ -41,6 +41,7 @@ let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
 let ZOOM_SCALE = DEFAULT_SCALE
 
+// FIXME: zooming in or out causes the range to default back to one
 function zoomIn(): void {
   if (ZOOM_SCALE >= MAX_SCALE) return
   ZOOM_SCALE += SCALE_INC
