@@ -1,5 +1,7 @@
 import { TvHandler, defaultBlankDelay } from "./tv-handler-type"
 
+// FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
+
 function getArticleEle(): HTMLElement[] | null {
   const articles = Array.from(document.querySelectorAll('article'))
   if (articles.length > 0) {
