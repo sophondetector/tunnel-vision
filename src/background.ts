@@ -1,8 +1,9 @@
 import { setSoundOn } from "./common"
+import { ICON_STATES } from "./common";
 
 chrome.runtime.onInstalled.addListener(setSoundOn)
 
-function setIconRed() {
+function setIconError() {
   chrome.action.setIcon({
     path: {
       "16": "images/red/icon-16.png",
@@ -13,7 +14,7 @@ function setIconRed() {
   });
 }
 
-function setIconDefault() {
+function setIconReady() {
   chrome.action.setIcon({
     path: {
       "16": "images/icon-16.png",
@@ -24,19 +25,22 @@ function setIconDefault() {
   });
 }
 
+// TODO: create greyed out unavailable icon
+function setIconUnavailable() {
+  setIconError()
+}
+
+// FIXME: this only receives a message when the tab first loads a page - it needs to poll the active tab every time the active tab changes
+
 // every time active tab changes
 // ask the active tab for the director state
 // change icon to reflect that state
 chrome.runtime.onMessage.addListener(
   (msg, sender, sendResponse) => {
-    if (msg === "RED") {
-      setIconRed()
-    } else if (msg === "DEFAULT") {
-      setIconDefault()
-    } else {
-      console.log(msg)
-      console.log(sender)
-    }
+    if (msg === ICON_STATES.READY) setIconReady()
+    else if (msg === ICON_STATES.ERROR) setIconError()
+    else if (msg === ICON_STATES.UNAVAILABLE) setIconUnavailable()
+    console.log(sender)
     sendResponse()
   }
 )
