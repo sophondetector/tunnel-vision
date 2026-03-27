@@ -47,11 +47,11 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
   sendResponse()
 }
 
-export function initializeTV(): void {
+export async function initializeTV(): Promise<void> {
   // receives messages from options.ts control-panel
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
-  getDirector()
+  DIRECTOR = new TvDirector()
   console.log(`initializeTV: init complete`)
 }
 
