@@ -9,6 +9,12 @@ export const SOUND_KEY = "TvSoundOnOff"
 export const TOGGLE_SCREEN = "toggle screen"
 export const GET_STATE = "get state"
 
+export const ICON_STATES = {
+  UNAVAILABLE: "UNAVAILABLE",
+  READY: "READY",
+  ERROR: "ERROR"
+}
+
 const TRUE = 'true'
 const FALSE = 'false'
 
@@ -30,7 +36,7 @@ export async function soundIsOn(): Promise<boolean> {
   const res = await chrome.storage.local.get(SOUND_KEY)
   const curVal = res[SOUND_KEY]
   if (curVal === undefined) {
-    console.warn(`soundIsOn: could not retreive sound option`)
+    console.warn(`soundIsOn: could not retrieve sound option`)
     return false
   }
   if (curVal === TRUE) return true
