@@ -1,12 +1,5 @@
 #! /usr/bin/env bash
 
-
-# # Strong red tint
-# magick input.png -fill red -colorize 50 output-red.png
-#
-# # Strong green tint
-# magick input.png -fill green -colorize 50 output-green.png
-
 BASE_IMAGE="logo/Base-Logo.png"
 OUTPUT_DIR="public/images"
 
