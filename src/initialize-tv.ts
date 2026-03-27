@@ -52,12 +52,14 @@ export async function initializeTV(): Promise<void> {
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
   DIRECTOR = new TvDirector()
+  await DIRECTOR.init()
   console.log(`initializeTV: init complete`)
 }
 
-export function getDirector(): TvDirector {
+export async function getDirector(): Promise<TvDirector> {
   if (DIRECTOR === null) {
     DIRECTOR = new TvDirector()
+    await DIRECTOR.init()
   }
   return DIRECTOR
 }

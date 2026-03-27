@@ -21,13 +21,19 @@ export class TvDirector {
   INITTED_ONCE: boolean = false
 
   constructor() {
-    const handler = HandlerManager.getHandler()
-    if (!handler) {
-      console.error(`TvDirector.constructor: could not get handler!`)
-      return
-    }
+    console.log('TvDirector: new Director constructed')
+  }
 
-    handler.initDelay().then(() => {
+  async init(): Promise<void> {
+    try {
+
+      const handler = HandlerManager.getHandler()
+      if (!handler) {
+        throw new Error(`TvDirector.constructor: could not get handler!`)
+      }
+
+      await handler.initDelay()
+
       this.initializeControls()
       this.initializeOnResizeCallback()
       this.inject()
@@ -37,10 +43,18 @@ export class TvDirector {
       this.setNavigateListener()
       this.setSelectionListener()
       this.toggleScreenOff()
+
       setTimeout(() => {
         this.INITTED_ONCE = true
       }, NAV_DEBOUNCE_MILLIS * 5)
-    })
+
+    } catch (err) {
+
+      // TODO: make this unloading more comprehensive
+      this.toggleScreenOff()
+      throw err
+
+    }
   }
 
   inject() {

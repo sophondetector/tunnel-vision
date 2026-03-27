@@ -41,10 +41,10 @@ let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
 let ZOOM_SCALE = DEFAULT_SCALE
 
-function zoomIn(): void {
+async function zoomIn(): Promise<void> {
   if (ZOOM_SCALE >= MAX_SCALE) return
   ZOOM_SCALE += SCALE_INC
-  const dir = getDirector()
+  const dir = await getDirector()
   const idx = dir.getRangeIdx()
   renderPage()
     .then(renderTextLayer)
@@ -53,10 +53,10 @@ function zoomIn(): void {
     .then(displayZoomPercent)
 }
 
-function zoomOut(): void {
+async function zoomOut(): Promise<void> {
   if (ZOOM_SCALE <= MIN_SCALE) return
   ZOOM_SCALE -= SCALE_INC
-  const dir = getDirector()
+  const dir = await getDirector()
   const idx = dir.getRangeIdx()
   renderPage()
     .then(renderTextLayer)
@@ -81,7 +81,7 @@ function displayZoomPercent(): void {
 }
 
 async function displaySound(): Promise<void> {
-  const dir = getDirector()
+  const dir = await getDirector()
   const isOn = await dir.soundIsOn()
   if (isOn) {
     SOUND_DISPLAY.textContent = 'Sound is On'
@@ -187,7 +187,7 @@ function setPageNumText(): void {
 }
 
 async function initRanges(): Promise<void> {
-  const dir = getDirector()
+  const dir = await getDirector()
   if (!dir) {
     console.error(`renderPage: ERROR could not get director`)
     return
@@ -244,26 +244,26 @@ RESIZER.addEventListener('mousedown', (e) => {
   document.body.style.userSelect = 'none';
 });
 
-SCREEN_TOGGLE.addEventListener('click', () => {
-  const dir = getDirector()
+SCREEN_TOGGLE.addEventListener('click', async () => {
+  const dir = await getDirector()
   dir.toggleScreen()
 })
 
 SOUND_TOGGLE.addEventListener('click', async () => {
-  const dir = getDirector()
+  const dir = await getDirector()
   dir.toggleSound().then(displaySound)
 })
 
-OPACITY_SLIDER.addEventListener('input', (event) => {
+OPACITY_SLIDER.addEventListener('input', async (event) => {
   //@ts-ignore
   const value = event.target.value
-  const dir = getDirector()
+  const dir = await getDirector()
   dir.setScreenOpacity(value)
   OPACITY_DISPLAY.textContent = `${value}%`
 })
 
-COLOR_PICKER.addEventListener('input', (event) => {
-  const dir = getDirector()
+COLOR_PICKER.addEventListener('input', async (event) => {
+  const dir = await getDirector()
   //@ts-ignore
   const value = event.target.value
   dir.setScreenColor(value)
@@ -272,12 +272,12 @@ COLOR_PICKER.addEventListener('input', (event) => {
 // FIXME: when resizing with a selection the selection is destroyed and it defaults
 // to a range
 
-document.addEventListener('mousemove', (e) => {
+document.addEventListener('mousemove', async (e) => {
   if (!IS_RESIZING) return;
   const newWidth = e.clientX;   // distance from left edge
   if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {   // min/max limits
     SIDEBAR.style.width = `${newWidth}px`;
-    const dir = getDirector()
+    const dir = await getDirector()
     // FIXME: is there a more performance friendly way to redraw the screen
     // when the sidebar moves? when moving to next range the screen is in the 
     // right position WITHOUT having to fire the onResizeCallback
