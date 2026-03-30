@@ -6,17 +6,17 @@ export interface TvScreenState {
 export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_KEY = "TvSoundOnOff"
 
-export const TOGGLE_SCREEN = "toggle screen"
-// FIXME: rename this GET_SCREEN_STATE
-export const GET_STATE = "get state"
+export enum MESSAGES {
+  TOGGLE_SCREEN = "TOGGLE_SCREEN",
+  GET_SCREEN_STATE = "GET_SCREEN_STATE",
+  GET_DIRECTOR_STATE = "GET_ICON_STATE"
+}
 
-// FIXME: Make this an enum
-export const ICON_STATES = {
-  GET_ICON_STATE: "GET_ICON_STATE",
-  INITIALIZING: "INITIALIZING",
-  UNAVAILABLE: "UNAVAILABLE",
-  READY: "READY",
-  ERROR: "ERROR"
+export enum DIRECTOR_STATE {
+  INITIALIZING = "INITIALIZING",
+  UNAVAILABLE = "UNAVAILABLE",
+  READY = "READY",
+  ERROR = "ERROR"
 }
 
 const TRUE = 'true'

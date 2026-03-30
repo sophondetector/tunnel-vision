@@ -1,5 +1,5 @@
-import { setSoundOn } from "./common"
-import { ICON_STATES } from "./common";
+import { MESSAGES, setSoundOn } from "./common"
+import { DIRECTOR_STATE } from "./common";
 
 chrome.runtime.onInstalled.addListener(setSoundOn)
 
@@ -34,26 +34,28 @@ function setIconInitializing(): void {
   setIconReady()
 }
 
-function setIconBasedOnState(state: string, tabId: number): void {
-  if (state === ICON_STATES.READY) {
+function setIconBasedOnState(state: DIRECTOR_STATE, tabId: number): void {
+  if (state === DIRECTOR_STATE.READY) {
     setIconReady()
-  } else if (state === ICON_STATES.ERROR) {
+  } else if (state === DIRECTOR_STATE.ERROR) {
     setIconError()
-  } else if (state === ICON_STATES.UNAVAILABLE) {
+  } else if (state === DIRECTOR_STATE.UNAVAILABLE) {
     setIconUnavailable()
-  } else if (state === ICON_STATES.INITIALIZING) {
+  } else if (state === DIRECTOR_STATE.INITIALIZING) {
     setIconInitializing()
   } else {
     console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
   }
 }
 
+// FIXME: opening a pdf in the chrome pdf viewer causes an error state when it should be ready
+
 // Listener 1: Tab switch
 chrome.tabs.onActivated.addListener((activeInfo) => {
   const tabId = activeInfo.tabId
   // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
   // this response is undefined which causes an error
-  chrome.tabs.sendMessage(tabId, ICON_STATES.GET_ICON_STATE, (response) => {
+  chrome.tabs.sendMessage(tabId, MESSAGES.GET_DIRECTOR_STATE, (response) => {
     setIconBasedOnState(response, tabId)
   })
 });

@@ -4,8 +4,7 @@ import {
   soundIsOn,
   storeLatestPDFUrlInLocalStorage,
   toggleSound,
-  TOGGLE_SCREEN,
-  GET_STATE
+  MESSAGES
 } from "./common";
 
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
@@ -50,7 +49,7 @@ CONTROL_PANEL_TOGGLE.addEventListener('click', showControlPanel)
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()
-  chrome.tabs.sendMessage(tab.id!, TOGGLE_SCREEN, function () {
+  chrome.tabs.sendMessage(tab.id!, MESSAGES.TOGGLE_SCREEN, function () {
     console.log("sent message to content.ts in open tab")
   })
 })
@@ -90,7 +89,7 @@ getCurrentTab()
       })
     }
 
-    chrome.tabs.sendMessage(tab.id!, GET_STATE, function (state: TvScreenState) {
+    chrome.tabs.sendMessage(tab.id!, MESSAGES.GET_SCREEN_STATE, function (state: TvScreenState) {
       const opacityPercent = String(state.opacity * 100)
       OPACITY_SLIDER.value = opacityPercent
       OPACITY_DISPLAY.textContent = `${opacityPercent}%`
