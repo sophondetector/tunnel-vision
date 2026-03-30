@@ -1,5 +1,5 @@
 import { TvDirector } from "./tunnel-vision/index.js"
-import { GET_STATE, TOGGLE_SCREEN } from "./common.js"
+import { GET_STATE, TOGGLE_SCREEN, ICON_STATES } from "./common.js"
 
 let DIRECTOR: TvDirector | null = null
 
@@ -14,6 +14,8 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 
   if (value === TOGGLE_SCREEN) {
     DIRECTOR.toggleScreen()
+    sendResponse()
+    return
 
   } else if (value === GET_STATE) {
     const stateResponse = DIRECTOR.getScreenState()
@@ -28,6 +30,8 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     }
     const valueNum = Number(value)
     DIRECTOR.setScreenOpacity(valueNum)
+    sendResponse()
+    return
 
     // if its a color
   } else if (value.match(/^#[0-9a-f]{6}$/)) {
@@ -36,23 +40,33 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
       return
     }
     DIRECTOR.setScreenColor(value)
+    sendResponse()
+    return
 
+  } else if (value === ICON_STATES.GET_ICON_STATE) {
+    const icon_state = DIRECTOR.getIconState()
+    sendResponse(icon_state)
+    return
 
   } else {
     console.error(`controlPanelListenerCallback: Unknown message received!!`)
     console.log(`message value: ${value}`)
     console.log(`message sender: ${sender}`)
+    sendResponse()
+    return
   }
-
-  sendResponse()
 }
 
 export async function initializeTV(): Promise<void> {
   // receives messages from options.ts control-panel
+  // OR receives messages from background.ts asking for icon state
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
   DIRECTOR = new TvDirector()
   await DIRECTOR.init()
+  const iconState = DIRECTOR.getIconState()
+  chrome.runtime.sendMessage(iconState)
+  // TODO: if state is error grey out the control panel
   console.log(`initializeTV: init complete`)
 }
 

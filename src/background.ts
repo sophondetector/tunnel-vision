@@ -30,17 +30,62 @@ function setIconUnavailable() {
   setIconError()
 }
 
-// FIXME: this only receives a message when the tab first loads a page - it needs to poll the active tab every time the active tab changes
+function setIconInitializing(): void {
+  setIconReady()
+}
 
-// every time active tab changes
-// ask the active tab for the director state
-// change icon to reflect that state
-chrome.runtime.onMessage.addListener(
-  (msg, sender, sendResponse) => {
-    if (msg === ICON_STATES.READY) setIconReady()
-    else if (msg === ICON_STATES.ERROR) setIconError()
-    else if (msg === ICON_STATES.UNAVAILABLE) setIconUnavailable()
-    console.log(sender)
-    sendResponse()
+function setIconBasedOnState(state: string, tabId: number): void {
+  if (state === ICON_STATES.READY) {
+    setIconReady()
+    return
+  } else if (state === ICON_STATES.ERROR) {
+    setIconError()
+    return
+  } else if (state === ICON_STATES.UNAVAILABLE) {
+    setIconUnavailable()
+    return
+  } else if (state === ICON_STATES.INITIALIZING) {
+    setIconInitializing()
+    return
+  } else {
+    console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
   }
-)
+}
+
+// Run this code when the active tab changes or its content updates
+async function handleActiveTabChange(tabId: number) {
+  try {
+    // Optional: Only proceed if this tab is still the active one
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (activeTab.id !== tabId) return;
+
+    // ask tab for director state
+    // change icon based on that state
+
+    chrome.tabs.sendMessage(tabId, ICON_STATES.GET_ICON_STATE, (response) => {
+      setIconBasedOnState(response, tabId)
+    })
+
+  } catch (err) {
+    console.error("Error handling active tab change:", err);
+  }
+}
+
+// Listener 1: Tab switch
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  await handleActiveTabChange(activeInfo.tabId);
+});
+
+// Listener 2: Navigation / reload / URL change in current tab
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Only act when the tab is fully loaded and it is the active tab
+  if (changeInfo.status === "complete" && tab.active) {
+    await handleActiveTabChange(tabId);
+  }
+});
+
+chrome.runtime.onMessage.addListener(async (message, sender) => {
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (activeTab.id !== sender.tab?.id) return;
+  setIconBasedOnState(message, sender.tab?.id as number)
+})

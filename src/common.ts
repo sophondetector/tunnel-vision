@@ -7,9 +7,13 @@ export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_KEY = "TvSoundOnOff"
 
 export const TOGGLE_SCREEN = "toggle screen"
+// FIXME: rename this GET_SCREEN_STATE
 export const GET_STATE = "get state"
 
+// FIXME: Make this an enum
 export const ICON_STATES = {
+  GET_ICON_STATE: "GET_ICON_STATE",
+  INITIALIZING: "INITIALIZING",
   UNAVAILABLE: "UNAVAILABLE",
   READY: "READY",
   ERROR: "ERROR"

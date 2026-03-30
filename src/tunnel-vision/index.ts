@@ -1,7 +1,7 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { soundIsOn, toggleSound, TvScreenState } from "../common";
+import { soundIsOn, toggleSound, TvScreenState, ICON_STATES } from "../common";
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
@@ -19,9 +19,18 @@ export class TvDirector {
   RANGE_MANAGER: RangeManager | null = null
   ELEMENT_ARRAY: Array<Element> | null = null
   INITTED_ONCE: boolean = false
+  ICON_STATE: string = ICON_STATES.INITIALIZING
 
   constructor() {
     console.log('TvDirector: new Director constructed')
+  }
+
+  getIconState(): string {
+    return this.ICON_STATE
+  }
+
+  setIconState(state: string): void {
+    this.ICON_STATE = state
   }
 
   async init(): Promise<void> {
@@ -48,12 +57,15 @@ export class TvDirector {
         this.INITTED_ONCE = true
       }, NAV_DEBOUNCE_MILLIS * 5)
 
+      this.setIconState(ICON_STATES.READY)
+
     } catch (err) {
+
+      this.setIconState(ICON_STATES.ERROR)
 
       // TODO: make this unloading more comprehensive
       this.toggleScreenOff()
       throw err
-
     }
   }
 
@@ -64,14 +76,12 @@ export class TvDirector {
   initRanges(): void {
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
-      console.error('TvDirector.initRanges: null element array, exiting early')
-      return
+      throw new Error('TvDirector.initRanges: null element array, exiting early')
     }
     this.RANGE_MANAGER = new RangeManager(this.ELEMENT_ARRAY)
     const range = this.RANGE_MANAGER.getFirstVisibleRange()
     if (range === undefined) {
-      console.error('TvDirector.init: could not get first visible range')
-      return
+      throw new Error('TvDirector.init: could not get first visible range')
     }
     this.setWindowAroundRange(range)
   }
