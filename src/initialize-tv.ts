@@ -59,7 +59,6 @@ export async function initializeTV(): Promise<void> {
   await DIRECTOR.init()
   const dirState = DIRECTOR.getDirectorState()
   chrome.runtime.sendMessage(dirState)
-  // TODO: if state is error grey out the control panel
   console.log(`initializeTV: init complete - TvDirector state is ${dirState}`)
 }
 

@@ -4,7 +4,8 @@ import {
   soundIsOn,
   storeLatestPDFUrlInLocalStorage,
   toggleSound,
-  TvMessage
+  TvMessage,
+  TvDirectorState
 } from "./common";
 
 const HIDDEN = "hidden"
@@ -20,9 +21,28 @@ const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
 const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
 const COLOR_CONTROL = document.getElementById("color-control") as HTMLDivElement
 const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
+const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
 
 const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
 const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
+
+function showErrorHeader(): void {
+  ERROR_HEADER.classList.remove(HIDDEN)
+}
+
+function greyOutEle(ele: HTMLElement): void {
+  ele.style.transition = 'filter 0.3s ease, opacity 0.3s ease';
+  ele.style.filter = 'grayscale(100%)';
+  ele.style.opacity = '0.5';
+  ele.style.pointerEvents = 'none';  // Disable interactions
+}
+
+function greyOutControls(): void {
+  greyOutEle(SCREEN_TOGGLE)
+  greyOutEle(OPACITY_DISPLAY)
+  greyOutEle(OPACITY_SLIDER)
+  greyOutEle(COLOR_PICKER)
+}
 
 function hidePdf(): void {
   PDF_TOGGLE.classList.add(HIDDEN)
@@ -111,6 +131,13 @@ getCurrentTab()
       OPACITY_SLIDER.value = opacityPercent
       OPACITY_DISPLAY.textContent = `${opacityPercent}%`
       COLOR_PICKER.value = state.hexColor
+    })
+
+    chrome.tabs.sendMessage(tab.id!, TvMessage.GET_DIRECTOR_STATE, function (state: TvDirectorState) {
+      if (state === TvDirectorState.ERROR) {
+        greyOutControls()
+        showErrorHeader()
+      }
     })
 
   })
