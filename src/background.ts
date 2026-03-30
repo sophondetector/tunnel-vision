@@ -61,7 +61,8 @@ async function handleActiveTabChange(tabId: number) {
 
     // ask tab for director state
     // change icon based on that state
-
+    // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
+    // this response is undefined which causes an error
     chrome.tabs.sendMessage(tabId, ICON_STATES.GET_ICON_STATE, (response) => {
       setIconBasedOnState(response, tabId)
     })
