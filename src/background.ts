@@ -33,6 +33,10 @@ function setIconInitializing(): void {
   setIconReady()
 }
 
+function setIconPdf(): void {
+  setIconReady()
+}
+
 function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
   if (state === TvDirectorState.READY) {
     setIconReady()
@@ -42,12 +46,12 @@ function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
     setIconUnavailable()
   } else if (state === TvDirectorState.INITIALIZING) {
     setIconInitializing()
+  } else if (state === TvDirectorState.PDF) {
+    setIconPdf()
   } else {
     console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
   }
 }
-
-// FIXME: opening a pdf in the chrome pdf viewer causes an error state when it should be ready
 
 // Listener 1: Tab switch
 chrome.tabs.onActivated.addListener((activeInfo) => {

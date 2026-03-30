@@ -87,6 +87,7 @@ getCurrentTab()
       PDF_TOGGLE.addEventListener("click", async () => {
         await storeLatestPDFUrlInLocalStorage(tab.url as string)
       })
+      // TODO: grey out rest of controls because they aren't available 
     }
 
     chrome.tabs.sendMessage(tab.id!, TvMessage.GET_SCREEN_STATE, function (state: TvScreenState) {

@@ -13,7 +13,8 @@ export enum TvDirectorState {
   INITIALIZING = "INITIALIZING",
   UNAVAILABLE = "UNAVAILABLE",
   READY = "READY",
-  ERROR = "ERROR"
+  ERROR = "ERROR",
+  PDF = "PDF"
 }
 
 export const LATEST_PDF_URL_KEY = "latestTVPDF"

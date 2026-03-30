@@ -15,6 +15,10 @@ const RESIZE_DEBOUNCE_MILLIS = 500
 const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
+function isPdf(): boolean {
+  return window.location.pathname.match(/\.pdf$/) ? true : false
+}
+
 export class TvDirector {
   RANGE_MANAGER: RangeManager | null = null
   ELEMENT_ARRAY: Array<Element> | null = null
@@ -35,6 +39,12 @@ export class TvDirector {
 
   async init(): Promise<void> {
     try {
+
+      if (isPdf()) {
+        console.log(`TvDirector.init: its a pdf - exiting early`)
+        this.setDirectorState(TvDirectorState.PDF)
+        return
+      }
 
       const handler = HandlerManager.getHandler()
       if (!handler) {
