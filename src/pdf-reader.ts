@@ -5,7 +5,6 @@ import { initializeTV, getDirector } from './initialize-tv';
 import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './common';
 import { Z_INDEX } from './tunnel-vision/tv-screen';
 
-// TODO: make icon change color when (1) unavailable (2) ranged successfully or (3) tried to range but error
 // FIXME: auto scrolling the range into view doesn't work in the pdf viewer
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
