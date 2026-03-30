@@ -37,44 +37,25 @@ function setIconInitializing(): void {
 function setIconBasedOnState(state: string, tabId: number): void {
   if (state === ICON_STATES.READY) {
     setIconReady()
-    return
   } else if (state === ICON_STATES.ERROR) {
     setIconError()
-    return
   } else if (state === ICON_STATES.UNAVAILABLE) {
     setIconUnavailable()
-    return
   } else if (state === ICON_STATES.INITIALIZING) {
     setIconInitializing()
-    return
   } else {
     console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
   }
 }
 
-// Run this code when the active tab changes or its content updates
-async function handleActiveTabChange(tabId: number) {
-  try {
-    // Optional: Only proceed if this tab is still the active one
-    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (activeTab.id !== tabId) return;
-
-    // ask tab for director state
-    // change icon based on that state
-    // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
-    // this response is undefined which causes an error
-    chrome.tabs.sendMessage(tabId, ICON_STATES.GET_ICON_STATE, (response) => {
-      setIconBasedOnState(response, tabId)
-    })
-
-  } catch (err) {
-    console.error("Error handling active tab change:", err);
-  }
-}
-
 // Listener 1: Tab switch
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  await handleActiveTabChange(activeInfo.tabId);
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  const tabId = activeInfo.tabId
+  // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
+  // this response is undefined which causes an error
+  chrome.tabs.sendMessage(tabId, ICON_STATES.GET_ICON_STATE, (response) => {
+    setIconBasedOnState(response, tabId)
+  })
 });
 
 // Listener 2: Listen for state change from initializeTV
