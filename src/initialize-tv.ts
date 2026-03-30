@@ -67,7 +67,7 @@ export async function initializeTV(): Promise<void> {
   const iconState = DIRECTOR.getIconState()
   chrome.runtime.sendMessage(iconState)
   // TODO: if state is error grey out the control panel
-  console.log(`initializeTV: init complete`)
+  console.log(`initializeTV: init complete with state ${iconState}`)
 }
 
 export async function getDirector(): Promise<TvDirector> {

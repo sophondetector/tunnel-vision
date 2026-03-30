@@ -60,12 +60,11 @@ export class TvDirector {
       this.setIconState(ICON_STATES.READY)
 
     } catch (err) {
-
+      console.error(`TvDirector.init: aborting due to error ${err}`)
       this.setIconState(ICON_STATES.ERROR)
-
       // TODO: make this unloading more comprehensive
       this.toggleScreenOff()
-      throw err
+      return
     }
   }
 
