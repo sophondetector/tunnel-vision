@@ -14,11 +14,11 @@ const MAX_SCALE = 4
 const MIN_SCALE = .5
 const SCALE_INC = .2
 
-const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
-const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
-
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
+
+const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
+const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
