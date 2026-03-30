@@ -1,7 +1,7 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { soundIsOn, toggleSound, TvScreenState, DIRECTOR_STATE } from "../common";
+import { soundIsOn, toggleSound, TvScreenState, TvDirectorState } from "../common";
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
@@ -19,17 +19,17 @@ export class TvDirector {
   RANGE_MANAGER: RangeManager | null = null
   ELEMENT_ARRAY: Array<Element> | null = null
   INITTED_ONCE: boolean = false
-  STATE: DIRECTOR_STATE = DIRECTOR_STATE.INITIALIZING
+  STATE: TvDirectorState = TvDirectorState.INITIALIZING
 
   constructor() {
     console.log('TvDirector: new Director constructed')
   }
 
-  getDirectorState(): DIRECTOR_STATE {
+  getDirectorState(): TvDirectorState {
     return this.STATE
   }
 
-  setDirectorState(state: DIRECTOR_STATE): void {
+  setDirectorState(state: TvDirectorState): void {
     this.STATE = state
   }
 
@@ -57,11 +57,11 @@ export class TvDirector {
         this.INITTED_ONCE = true
       }, NAV_DEBOUNCE_MILLIS * 5)
 
-      this.setDirectorState(DIRECTOR_STATE.READY)
+      this.setDirectorState(TvDirectorState.READY)
 
     } catch (err) {
       console.error(`TvDirector.init: aborting due to error ${err}`)
-      this.setDirectorState(DIRECTOR_STATE.ERROR)
+      this.setDirectorState(TvDirectorState.ERROR)
       // TODO: make this unloading more comprehensive
       this.toggleScreenOff()
       return

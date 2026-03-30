@@ -3,26 +3,26 @@ export interface TvScreenState {
   hexColor: string
 }
 
-export const LATEST_PDF_URL_KEY = "latestTVPDF"
-export const SOUND_KEY = "TvSoundOnOff"
-
-export enum MESSAGES {
+export enum TvMessage {
   TOGGLE_SCREEN = "TOGGLE_SCREEN",
   GET_SCREEN_STATE = "GET_SCREEN_STATE",
-  GET_DIRECTOR_STATE = "GET_ICON_STATE"
+  GET_DIRECTOR_STATE = "GET_DIRECTOR_STATE"
 }
 
-export enum DIRECTOR_STATE {
+export enum TvDirectorState {
   INITIALIZING = "INITIALIZING",
   UNAVAILABLE = "UNAVAILABLE",
   READY = "READY",
   ERROR = "ERROR"
 }
 
+export const LATEST_PDF_URL_KEY = "latestTVPDF"
+export const SOUND_KEY = "TvSoundOnOff"
+
 const TRUE = 'true'
 const FALSE = 'false'
 
-export async function getCurrentTab() {
+export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   let queryOptions = { active: true, lastFocusedWindow: true }
   let [tab] = await chrome.tabs.query(queryOptions)
   return tab

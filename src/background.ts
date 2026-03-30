@@ -1,5 +1,4 @@
-import { MESSAGES, setSoundOn } from "./common"
-import { DIRECTOR_STATE } from "./common";
+import { TvDirectorState, TvMessage, setSoundOn } from "./common"
 
 chrome.runtime.onInstalled.addListener(setSoundOn)
 
@@ -34,14 +33,14 @@ function setIconInitializing(): void {
   setIconReady()
 }
 
-function setIconBasedOnState(state: DIRECTOR_STATE, tabId: number): void {
-  if (state === DIRECTOR_STATE.READY) {
+function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
+  if (state === TvDirectorState.READY) {
     setIconReady()
-  } else if (state === DIRECTOR_STATE.ERROR) {
+  } else if (state === TvDirectorState.ERROR) {
     setIconError()
-  } else if (state === DIRECTOR_STATE.UNAVAILABLE) {
+  } else if (state === TvDirectorState.UNAVAILABLE) {
     setIconUnavailable()
-  } else if (state === DIRECTOR_STATE.INITIALIZING) {
+  } else if (state === TvDirectorState.INITIALIZING) {
     setIconInitializing()
   } else {
     console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
@@ -55,7 +54,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
   const tabId = activeInfo.tabId
   // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
   // this response is undefined which causes an error
-  chrome.tabs.sendMessage(tabId, MESSAGES.GET_DIRECTOR_STATE, (response) => {
+  chrome.tabs.sendMessage(tabId, TvMessage.GET_DIRECTOR_STATE, (response) => {
     setIconBasedOnState(response, tabId)
   })
 });

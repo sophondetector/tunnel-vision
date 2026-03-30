@@ -1,5 +1,5 @@
 import { TvDirector } from "./tunnel-vision/index.js"
-import { MESSAGES } from "./common.js"
+import { TvMessage } from "./common.js"
 
 let DIRECTOR: TvDirector | null = null
 
@@ -12,11 +12,11 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     return
   }
 
-  if (value === MESSAGES.TOGGLE_SCREEN) {
+  if (value === TvMessage.TOGGLE_SCREEN) {
     DIRECTOR.toggleScreen()
     sendResponse()
 
-  } else if (value === MESSAGES.GET_SCREEN_STATE) {
+  } else if (value === TvMessage.GET_SCREEN_STATE) {
     const stateResponse = DIRECTOR.getScreenState()
     sendResponse(stateResponse)
 
@@ -38,7 +38,7 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     DIRECTOR.setScreenColor(value)
     sendResponse()
 
-  } else if (value === MESSAGES.GET_DIRECTOR_STATE) {
+  } else if (value === TvMessage.GET_DIRECTOR_STATE) {
     const dirState = DIRECTOR.getDirectorState()
     sendResponse(dirState)
 
