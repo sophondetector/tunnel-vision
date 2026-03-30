@@ -1,5 +1,5 @@
-import { TvDirector } from "./tunnel-vision/index.js"
-import { TvMessage } from "./common.js"
+import { TvDirector } from "./tunnel-vision"
+import { TvMessage } from "./common"
 
 let DIRECTOR: TvDirector | null = null
 
