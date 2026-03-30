@@ -56,8 +56,6 @@ function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
 // Listener 1: Tab switch
 chrome.tabs.onActivated.addListener((activeInfo) => {
   const tabId = activeInfo.tabId
-  // FIXME: when tab is forbidden to run extensions (such as chrome://extensions)
-  // this response is undefined which causes an error
   chrome.tabs.sendMessage(tabId, TvMessage.GET_DIRECTOR_STATE, (response) => {
     setIconBasedOnState(response, tabId)
   })
