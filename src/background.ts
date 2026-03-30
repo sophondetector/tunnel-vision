@@ -77,14 +77,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   await handleActiveTabChange(activeInfo.tabId);
 });
 
-// Listener 2: Navigation / reload / URL change in current tab
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  // Only act when the tab is fully loaded and it is the active tab
-  if (changeInfo.status === "complete" && tab.active) {
-    await handleActiveTabChange(tabId);
-  }
-});
-
+// Listener 2: Listen for state change from initializeTV
 chrome.runtime.onMessage.addListener(async (message, sender) => {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (activeTab.id !== sender.tab?.id) return;
