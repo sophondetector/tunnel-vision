@@ -467,6 +467,15 @@ export class TvDirector {
     void getComputedStyle(document.documentElement).height;
   };
 
+  /**
+   * Pauses execution for the specified number of milliseconds
+   * @param {number} ms - The number of milliseconds to pause
+   * @returns {Promise<void>}
+   */
+  async sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     await curDir.forceLayout()
     await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
