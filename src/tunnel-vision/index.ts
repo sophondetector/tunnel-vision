@@ -58,7 +58,7 @@ export class TvDirector {
       this.inject()
       this.initRanges()
       this.setScrollableEventListener()
-      this.setClickEventListener()
+      this.setMouseUpListener()
       this.setNavigateListener()
       this.setSelectionListener()
       this.toggleScreenOff()
@@ -243,12 +243,12 @@ export class TvDirector {
     )
   }
 
-  setClickEventListener(): void {
+  setMouseUpListener(): void {
     // NOTE: changed this from window.onclick = (event) => { etc ... }
     // because window.onclick sets the event listener at the "bubbling" phase
     // whereas we need to have it happen during the "capturing" phase to ensure
     // it takes precedence over whatever listeners the site itself has set
-    const clickListener = (event: MouseEvent) => {
+    const mouseUpListener = (event: MouseEvent) => {
       if (!this.isOn()) return
       // NOTE: This is here to prevent the 'click' event listener from cancelling out the 
       // selectionChangeListener
@@ -276,7 +276,7 @@ export class TvDirector {
       console.error('TvDirector.clickListener: could not find clickable range')
     }
 
-    window.addEventListener('mouseup', clickListener, {
+    window.addEventListener('mouseup', mouseUpListener, {
       capture: true
     })
   }
