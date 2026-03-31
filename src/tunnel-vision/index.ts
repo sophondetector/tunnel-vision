@@ -273,7 +273,7 @@ export class TvDirector {
         const rng = rm.RANGES[idx]
         if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
           rm.setRangeIdx(idx)
-          this.setWindowAroundRange(rng)
+          this.setWindowAroundRange(rng, false)
           return
         }
       }
@@ -389,7 +389,7 @@ export class TvDirector {
       return
     }
     rm.setRangeIdx(rangeIdx)
-    this.setWindowAroundRange(range)
+    this.setWindowAroundRange(range, false)
   }
 
   // TODO: implement shift-adding ranges
@@ -433,7 +433,7 @@ export class TvDirector {
     }
   }
 
-  setWindowAroundRange(range: Range): void {
+  setWindowAroundRange(range: Range, scrollIntoView: boolean = true): void {
     if (!this.isOn()) return
 
     const rect = range.getBoundingClientRect()
@@ -441,7 +441,7 @@ export class TvDirector {
     // we do the above because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
 
-    this.scrollRectIntoView(rect, true)
+    if (scrollIntoView) this.scrollRectIntoView(rect, true)
 
     // switching to the canvas api necessitated adding the window.scroll[XY]
     // removing these adjustments causes the window to get "left behind" when scrolling
