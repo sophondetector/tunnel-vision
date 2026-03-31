@@ -467,6 +467,15 @@ export class TvDirector {
     // we want getting picked
 
     rangeManager.initRanges(curDir.getElementArray())
+
+    // FIXME: when sizing UP the selection window goes to a point BEFORE where it should
+    // This only happens when you MAKE a selection at the smaller size and then go to a bigger size
+    // If you make a selection at a bigger size, size down, and then size back up it works correctly
+    if (SELECTION) {
+      curDir.drawAroundSelection()
+      return
+    }
+
     const newWidth = window.innerWidth
     const delta = WIN_WIDTH - newWidth
     WIN_WIDTH = newWidth
