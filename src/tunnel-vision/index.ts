@@ -452,6 +452,7 @@ export class TvDirector {
   }
 
   // TODO: callback for when page changes layout
+
   onResizeCallback(curDir: TvDirector): void {
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
