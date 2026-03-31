@@ -138,6 +138,7 @@ export class TvDirector {
       return
     }
 
+    // NOTE: we set SELECTING = true because if not the mouseup event listener cancels this and set it to a range
     SELECTING = true
     SELECTION = true
 
