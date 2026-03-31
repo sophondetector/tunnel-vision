@@ -90,7 +90,7 @@ export class TvScreen {
     }
   }
 
-  static setScreenSize(width: number, height: number): void {
+  static async setScreenSize(width: number, height: number): Promise<void> {
     const screenEle = TvScreen.getScreenEle()
     screenEle.width = width
     screenEle.height = height

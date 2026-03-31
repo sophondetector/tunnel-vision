@@ -453,8 +453,8 @@ export class TvDirector {
 
   // TODO: callback for when page changes layout
 
-  onResizeCallback(curDir: TvDirector): void {
-    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
+  async onResizeCallback(curDir: TvDirector): Promise<void> {
+    await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
     const rangeManager = curDir.getRangeManager()
     const prevRange = rangeManager.getCurrentRange()
@@ -468,7 +468,11 @@ export class TvDirector {
     // bug where smaller window leads to range directly before
     // we want getting picked
 
-    rangeManager.initRanges(curDir.getElementArray())
+    await rangeManager.initRanges(curDir.getElementArray())
+
+    const newWidth = window.innerWidth
+    const delta = WIN_WIDTH - newWidth
+    WIN_WIDTH = newWidth
 
     // FIXME: when sizing UP the selection window goes to a point BEFORE where it should
     // This only happens when you MAKE a selection at the smaller size and then go to a bigger size
@@ -477,10 +481,6 @@ export class TvDirector {
       curDir.drawAroundSelection()
       return
     }
-
-    const newWidth = window.innerWidth
-    const delta = WIN_WIDTH - newWidth
-    WIN_WIDTH = newWidth
 
     let rangeIdx = rangeManager.getRangeIdx()
     // if bigger window -> go backwards

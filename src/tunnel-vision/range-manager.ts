@@ -9,7 +9,7 @@ export class RangeManager {
     this.initRanges(eleArray)
   }
 
-  initRanges(eleArray: Array<Element>): void {
+  async initRanges(eleArray: Array<Element>): Promise<void> {
     if (!eleArray) {
       console.warn(`RangeManager.initRanges: eleArray is ${eleArray}!`)
       return
