@@ -5,15 +5,15 @@ import { soundIsOn, toggleSound, TvScreenState, TvDirectorState } from "../commo
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
+// const RESIZE_DEBOUNCE_MILLIS = 500
+const NAV_DEBOUNCE_MILLIS = 300
+const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
+
 let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
 // let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
-
-// const RESIZE_DEBOUNCE_MILLIS = 500
-const NAV_DEBOUNCE_MILLIS = 300
-const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
