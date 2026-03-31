@@ -265,7 +265,7 @@ export class TvDirector {
 
       const rm = this.getRangeManager()
       if (rm.RANGES === null) {
-        console.log(`TvDirector: RangeManager.RANGES is null!`)
+        console.error(`TvDirector: RangeManager.RANGES is null!`)
         return
       }
 
@@ -277,10 +277,10 @@ export class TvDirector {
           return
         }
       }
-      console.log('TvDirector.clickListener: could not find clickable range')
+      console.error('TvDirector.clickListener: could not find clickable range')
     }
 
-    window.addEventListener('click', clickListener, {
+    window.addEventListener('mouseup', clickListener, {
       capture: true
     })
   }
