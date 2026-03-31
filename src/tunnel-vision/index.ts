@@ -124,10 +124,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
-  // NOTE: we have to pass the current TvDirector (curDir) into its own method
-  // because if we don't then it's not available when running in the change
-  // selection listener
-  drawAroundSelection(curDir: TvDirector): void {
+  drawAroundSelection(): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
       SELECTION = false
@@ -137,7 +134,6 @@ export class TvDirector {
     const rng = sel.getRangeAt(0)
     const txt = rng.toString()
     if (txt.length < 1) {
-      curDir.setRangeAtSelectionTop()
       SELECTION = false
       return
     }
@@ -159,7 +155,7 @@ export class TvDirector {
   setSelectionListener(): void {
     // NOTE: see note above drawAroundSelection definition for why we pass 'this'
     document.addEventListener(
-      "selectionchange", () => this.drawAroundSelection(this), { capture: true }
+      "selectionchange", this.drawAroundSelection, { capture: true }
     )
   }
 
@@ -224,8 +220,7 @@ export class TvDirector {
     scrollEle.addEventListener('scroll', () => {
       RangeManager.bind(this) // needed because by default this will refer to the HTMLElement
       if (SELECTION) {
-        // NOTE: see note above drawAroundSelection definition for why we pass 'this'
-        this.drawAroundSelection(this)
+        this.drawAroundSelection()
         return
       }
       const curr = this.getRangeManager().getCurrentRange()
@@ -389,7 +384,7 @@ export class TvDirector {
       return
     }
     rm.setRangeIdx(rangeIdx)
-    this.setWindowAroundRange(range, false)
+    this.setWindowAroundRange(range)
   }
 
   // TODO: implement shift-adding ranges
