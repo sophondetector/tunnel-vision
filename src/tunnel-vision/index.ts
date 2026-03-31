@@ -26,7 +26,7 @@ export class TvDirector {
   STATE: TvDirectorState = TvDirectorState.INITIALIZING
 
   constructor() {
-    console.log('TvDirector: new Director constructed')
+    console.log('TvDirector: new TvDirector constructed')
   }
 
   getDirectorState(): TvDirectorState {
