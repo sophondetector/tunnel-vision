@@ -9,9 +9,9 @@ let WIN_WIDTH = window.innerWidth
 let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
-let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
+// let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 
-const RESIZE_DEBOUNCE_MILLIS = 500
+// const RESIZE_DEBOUNCE_MILLIS = 500
 const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
@@ -569,11 +569,24 @@ export class TvDirector {
 
   // FIXME: when sizing up the scroll to window doesn't work properly
   initializeOnResizeCallback(): void {
-    window.onresize = () => {
-      clearTimeout(DEBOUNCE_TIMEOUT_ID)
-      DEBOUNCE_TIMEOUT_ID = setTimeout(
-        () => this.onResizeCallback(this),
-        RESIZE_DEBOUNCE_MILLIS) as unknown as number
-    }
+    // window.onresize = () => {
+    //   clearTimeout(DEBOUNCE_TIMEOUT_ID)
+    //   DEBOUNCE_TIMEOUT_ID = setTimeout(
+    //     () => this.onResizeCallback(this),
+    //     RESIZE_DEBOUNCE_MILLIS) as unknown as number
+    // }
+
+    // window.addEventListener('resize', () => {
+    //   clearTimeout(DEBOUNCE_TIMEOUT_ID)
+    //   DEBOUNCE_TIMEOUT_ID = setTimeout(
+    //     () => this.onResizeCallback(this),
+    //     RESIZE_DEBOUNCE_MILLIS) as unknown as number
+    // }, {
+    //   capture: true
+    // })
+
+    window.addEventListener('resize', () => this.onResizeCallback(this), {
+      capture: true
+    })
   }
 }
