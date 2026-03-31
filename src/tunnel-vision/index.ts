@@ -427,6 +427,11 @@ export class TvDirector {
     }
   }
 
+  /**
+  * This sets the TvScreen viewing window around a given Range 
+  * @param {Range} range - The range of text you want to set the window around
+  * @param {boolean} scrollIntoView - Whether or not you want to scroll the window to the range - default is `true`
+  */
   setWindowAroundRange(range: Range, scrollIntoView: boolean = true): void {
     if (!this.isOn()) return
 
