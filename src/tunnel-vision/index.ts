@@ -268,7 +268,7 @@ export class TvDirector {
         const rng = rm.RANGES[idx]
         if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
           rm.setRangeIdx(idx)
-          this.setWindowAroundRange(rng, false)
+          this.setWindowAroundRange(rng)
           return
         }
       }
