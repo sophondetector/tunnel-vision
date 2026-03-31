@@ -246,7 +246,7 @@ export class TvDirector {
     // NOTE: changed this from window.onclick = (event) => { etc ... }
     // because window.onclick sets the event listener at the "bubbling" phase
     // whereas we need to have it happen during the "capturing" phase to ensure
-    // it takes precedence over whatever listeners the site itself as set
+    // it takes precedence over whatever listeners the site itself has set
     const clickListener = (event: MouseEvent) => {
       if (!this.isOn()) return
       // NOTE: This is here to prevent the 'click' event listener from cancelling out the 
