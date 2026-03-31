@@ -434,6 +434,8 @@ export class TvDirector {
   }
 
   setWindowAroundRange(range: Range): void {
+    if (!this.isOn()) return
+
     const rect = range.getBoundingClientRect()
     const rectHeight = RangeManager.getMaxHeight(range)
     // we do the above because sometimes the "extraneous" rects from the range
