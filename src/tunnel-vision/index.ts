@@ -398,7 +398,6 @@ export class TvDirector {
     console.log('shift down!')
   }
 
-  // FIXME: this fires even when the screen is off
   /**
   * Scrolls the viewport so that the given DOMRect becomes fully visible.
   * 
