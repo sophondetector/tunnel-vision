@@ -2,8 +2,12 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
-import { getCurrentTab, LATEST_PDF_URL_KEY, storePDFUrlInLocalStorage } from './common';
-import { Z_INDEX } from './tunnel-vision/tv-screen';
+import {
+  getCurrentTab,
+  LATEST_PDF_URL_KEY,
+  storePDFUrlInLocalStorage,
+  TV_SCREEN_Z_INDEX
+} from './common';
 
 // FIXME: auto scrolling the range into view doesn't work in the pdf viewer
 
@@ -345,8 +349,8 @@ document.addEventListener('mouseup', () => {
   document.body.style.userSelect = 'auto';
 });
 
-SIDEBAR.style.zIndex = (Number(Z_INDEX) + 1).toString()
-RESIZER.style.zIndex = (Number(Z_INDEX) + 1).toString()
+SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
+RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 
 getPDFUrl()
   .then((path) => PDF_PATH = path)

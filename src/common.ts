@@ -3,6 +3,9 @@ export interface TvScreenState {
   hexColor: string
 }
 
+// NOTE: we export this so the pdf-reader can import it and add one to it so the pdf-reader sidebar can stay on top of the the screen
+export const TV_SCREEN_Z_INDEX = `99999999`
+
 export enum TvMessage {
   TOGGLE_SCREEN = "TOGGLE_SCREEN",
   GET_SCREEN_STATE = "GET_SCREEN_STATE",
