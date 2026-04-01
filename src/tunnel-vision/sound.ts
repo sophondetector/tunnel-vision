@@ -1,4 +1,4 @@
-// TODO: add volume control
+import { getSoundVol } from "../common";
 
 const AUDIO_URL = 'src/tunnel-vision/click.mp3'
 
@@ -11,8 +11,13 @@ function getAudio(): HTMLAudioElement {
   return AUDIO
 }
 
+// TODO: push on-off into this function
 export function playSound(): void {
   const audio = getAudio()
-  audio.currentTime = 0
-  audio.play()
+  getSoundVol()
+    .then((vol) => {
+      audio.volume = vol / 100
+      audio.currentTime = 0
+      audio.play()
+    })
 }

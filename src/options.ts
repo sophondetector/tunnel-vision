@@ -4,27 +4,36 @@ import {
   soundIsOn,
   storeLatestPDFUrlInLocalStorage,
   toggleSound,
+  setSoundVol,
+  getSoundVol,
   TvMessage,
   TvDirectorState
 } from "./common";
+import { playSound } from "./tunnel-vision/sound";
 
 const HIDDEN = "hidden"
 
-const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
-const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
-const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
-const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
-const PDF_TOGGLE = document.getElementById('pdf-toggle') as HTMLButtonElement
-const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
-const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
-const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
-const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
-const COLOR_CONTROL = document.getElementById("color-control") as HTMLDivElement
-const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
-const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
-
-const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
 const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
+const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
+
+const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
+const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
+const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
+const PDF_TOGGLE = document.getElementById('pdf-toggle') as HTMLButtonElement
+const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
+
+const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
+const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLSpanElement
+const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
+
+const COLOR_CONTROL = document.getElementById("color-control") as HTMLDivElement
+const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
+
+const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
+const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
+
+const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
+const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
 function showErrorHeader(): void {
   ERROR_HEADER.classList.remove(HIDDEN)
@@ -104,6 +113,14 @@ OPACITY_SLIDER.addEventListener("input", async (event) => {
   })
 })
 
+VOLUME_SLIDER.addEventListener("input", async (event) => {
+  //@ts-ignore
+  const value = event.target.value
+  await setSoundVol(value)
+  VOLUME_DISPLAY.textContent = `${value}%`
+  playSound()
+})
+
 COLOR_PICKER.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
@@ -143,3 +160,8 @@ getCurrentTab()
   })
   .then(soundIsOn)
   .then(displaySoundState)
+  .then(getSoundVol)
+  .then((vol) => {
+    VOLUME_DISPLAY.textContent = `${vol}%`
+    VOLUME_SLIDER.value = String(vol)
+  })

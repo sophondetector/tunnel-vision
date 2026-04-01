@@ -21,7 +21,8 @@ export enum TvDirectorState {
 }
 
 export const LATEST_PDF_URL_KEY = "latestTVPDF"
-export const SOUND_KEY = "TvSoundOnOff"
+export const SOUND_ON_KEY = "TvSoundOnOff"
+export const SOUND_VOLUME_KEY = "TvSoundVolume"
 
 const TRUE = 'true'
 const FALSE = 'false'
@@ -41,8 +42,8 @@ export async function storeLatestPDFUrlInLocalStorage(url: string): Promise<void
 }
 
 export async function soundIsOn(): Promise<boolean> {
-  const res = await chrome.storage.local.get(SOUND_KEY)
-  const curVal = res[SOUND_KEY]
+  const res = await chrome.storage.local.get(SOUND_ON_KEY)
+  const curVal = res[SOUND_ON_KEY]
   if (curVal === undefined) {
     console.warn(`soundIsOn: could not retrieve sound option`)
     return false
@@ -60,9 +61,19 @@ export async function toggleSound(): Promise<void> {
 }
 
 export async function setSoundOn(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_KEY]: TRUE })
+  await chrome.storage.local.set({ [SOUND_ON_KEY]: TRUE })
 }
 
 export async function setSoundOff(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_KEY]: FALSE })
+  await chrome.storage.local.set({ [SOUND_ON_KEY]: FALSE })
+}
+
+export async function setSoundVol(volumeLevel: number): Promise<void> {
+  await chrome.storage.local.set({ [SOUND_VOLUME_KEY]: volumeLevel })
+}
+
+export async function getSoundVol(): Promise<number> {
+  const res = await chrome.storage.local.get(SOUND_VOLUME_KEY)
+  const volume: number = res[SOUND_VOLUME_KEY]
+  return volume
 }

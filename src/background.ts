@@ -1,6 +1,7 @@
-import { TvDirectorState, TvMessage, setSoundOn } from "./common"
+import { TvDirectorState, TvMessage, setSoundOn, setSoundVol } from "./common"
 
 chrome.runtime.onInstalled.addListener(setSoundOn)
+chrome.runtime.onInstalled.addListener(() => setSoundVol(50))
 
 function setIconError() {
   chrome.action.setIcon({

@@ -2,11 +2,14 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
+import { playSound } from './tunnel-vision/sound';
 import {
   getCurrentTab,
   LATEST_PDF_URL_KEY,
   storePDFUrlInLocalStorage,
-  TV_SCREEN_Z_INDEX
+  TV_SCREEN_Z_INDEX,
+  setSoundVol,
+  getSoundVol
 } from './common';
 
 // FIXME: auto scrolling the range into view doesn't work in the pdf viewer
@@ -31,12 +34,16 @@ const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElem
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
-const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
-const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
 const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
 const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
+
+const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
+const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
+
+const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
+const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
 let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
@@ -311,6 +318,14 @@ SOUND_TOGGLE.addEventListener('click', async () => {
   dir.toggleSound().then(displaySound)
 })
 
+VOLUME_SLIDER.addEventListener("input", async (event) => {
+  //@ts-ignore
+  const value = event.target.value
+  await setSoundVol(value)
+  VOLUME_DISPLAY.textContent = `${value}%`
+  playSound()
+})
+
 OPACITY_SLIDER.addEventListener('input', async (event) => {
   //@ts-ignore
   const value = event.target.value
@@ -370,5 +385,10 @@ getPDFUrl()
   .then(setPageNumText)
   .then(displayZoomPercent)
   .then(displaySound)
+  .then(getSoundVol)
+  .then((vol) => {
+    VOLUME_DISPLAY.textContent = `${vol}%`
+    VOLUME_SLIDER.value = String(vol)
+  })
   .catch((err) => console.error(err))
 
