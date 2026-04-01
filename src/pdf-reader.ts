@@ -200,6 +200,7 @@ ZOOM_OUT.addEventListener('click', zoomOut)
 
 // ZOOM_FIT.addEventListener('click', zoomFit)
 
+// TODO: change all of these document.getElementById calls to global variables
 document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
     return;
