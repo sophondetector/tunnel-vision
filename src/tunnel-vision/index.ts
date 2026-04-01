@@ -323,9 +323,7 @@ export class TvDirector {
   }
 
   incRange(): void {
-    soundIsOn().then((soundOn) => {
-      if (soundOn) playSound()
-    })
+    playSound()
 
     if (SELECTION) {
       SELECTION = false
@@ -344,9 +342,7 @@ export class TvDirector {
   }
 
   decRange(): void {
-    soundIsOn().then((soundOn) => {
-      if (soundOn) playSound()
-    })
+    playSound()
 
     if (SELECTION) {
       SELECTION = false

@@ -1,4 +1,4 @@
-import { getSoundVol } from "../common";
+import { getSoundVol, soundIsOn } from "../common";
 
 const AUDIO_URL = 'src/tunnel-vision/click.mp3'
 
@@ -11,13 +11,12 @@ function getAudio(): HTMLAudioElement {
   return AUDIO
 }
 
-// TODO: push on-off into this function
-export function playSound(): void {
+export async function playSound(): Promise<void> {
+  const isOn = await soundIsOn()
+  if (!isOn) return
   const audio = getAudio()
-  getSoundVol()
-    .then((vol) => {
-      audio.volume = vol / 100
-      audio.currentTime = 0
-      audio.play()
-    })
+  const vol = await getSoundVol()
+  audio.volume = vol / 100
+  audio.currentTime = 0
+  audio.play()
 }
