@@ -4,15 +4,27 @@ import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.json'
 
 export default defineConfig({
+  base: './',
   build: {
+    outDir: "dist",
     rollupOptions: {
       input: {
-        pdfReader: "pages/pdf-reader.html"
+        pdfReader: "pages/pdf-reader.html",
+        options: "pages/options.html"
       }
     }
   },
   plugins: [
     tailwindcss(),
     crx({ manifest })
-  ]
-})
+  ],
+  server: {
+    hmr: {
+      host: 'localhost',
+    },
+    cors: true,
+    fs: {
+      strict: false,
+    },
+  },
+});
