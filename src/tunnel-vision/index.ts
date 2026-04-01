@@ -438,18 +438,13 @@ export class TvDirector {
     if (!this.isOn()) return
 
     const rect = range.getBoundingClientRect()
-    const rectHeight = RangeManager.getMaxHeight(range)
-    // we do the above because sometimes the "extraneous" rects from the range
+    // NOTE: we do this because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
+    const rectHeight = RangeManager.getMaxHeight(range)
+
+    TvScreen.setWindowAroundRect(rect.left, rect.top, rect.width, rectHeight)
 
     if (scrollIntoView) this.scrollRectIntoView(rect, true)
-
-    // switching to the canvas api necessitated adding the window.scroll[XY]
-    // removing these adjustments causes the window to get "left behind" when scrolling
-    const finalX = rect.left + window.scrollX
-    const finalY = rect.top + window.scrollY
-
-    TvScreen.moveViewingWindow(finalX, finalY, rect.width, rectHeight)
   }
 
   // TODO: callback for when page changes layout
