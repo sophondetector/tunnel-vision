@@ -11,8 +11,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
-const MIN_SCALE = .5
-const SCALE_INC = .2
+const MIN_SCALE = .4
+const SCALE_INC = .1
 
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
@@ -31,7 +31,7 @@ const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElemen
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
-// const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
+const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
 const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
 
 let PDF_PATH: null | string = null
@@ -64,11 +64,62 @@ async function zoomOut(): Promise<void> {
     .then(displayZoomPercent)
 }
 
-// TODO: implement zoomFit
-// function zoomFit(): void {
-//   console.log(`zoom fit!`)
-//   displayZoomPercent()
-// }
+// FIXME: when zoomed out the range padding is way too big
+async function zoomFit(): Promise<void> {
+  const dir = await getDirector()
+  const idx = dir.getRangeIdx()
+
+  const page = await PDF_DOC!.getPage(PAGE_NUM)
+
+  if (!page) {
+    console.warn("No page available for zoomFit")
+    displayZoomPercent()
+    return
+  }
+
+  // Get the container that holds the rendered page (usually the parent div of the canvas)
+  const container = document.querySelector('#viewerContainer') as HTMLElement
+
+  if (!container) {
+    console.warn("PDF container not found")
+    displayZoomPercent()
+    return
+  }
+
+  const unscaledViewport = page.getViewport({ scale: ZOOM_SCALE })
+
+  const padding = 5 // pixels of margin around the page
+  const availableWidth = container.clientWidth - padding
+  const availableHeight = container.clientHeight - padding
+
+  const scaleX = availableWidth / unscaledViewport.width
+  const scaleY = availableHeight / unscaledViewport.height
+
+  // Choose the smaller scale so the whole page fits (no overflow)
+  const newScale = Math.min(scaleX, scaleY)
+
+  // Clamp newScale to existing increment scale
+  const newScaleInc = getClosestZoomInc(newScale)
+
+  // Clamp to existing min/max
+  ZOOM_SCALE = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScaleInc))
+
+  // Re-render everything
+  await renderPage()
+    .then(renderTextLayer)
+    .then(initRanges)
+    .then(() => dir.setRangeIdx(idx))
+    .then(displayZoomPercent)
+}
+
+function getClosestZoomInc(scale: number): number {
+  let res = MIN_SCALE;
+  while (res < scale) {
+    res += SCALE_INC
+  }
+  res = Math.min(res - SCALE_INC, MAX_SCALE)
+  return res
+}
 
 function getScalePercent(): number {
   return (ZOOM_SCALE / MAX_SCALE) * 100
@@ -198,8 +249,9 @@ ZOOM_IN.addEventListener('click', zoomIn)
 
 ZOOM_OUT.addEventListener('click', zoomOut)
 
-// ZOOM_FIT.addEventListener('click', zoomFit)
+ZOOM_FIT.addEventListener('click', zoomFit)
 
+// TODO: change all of these document.getElementById calls to global variables
 document.getElementById('prev')!.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
     return;
