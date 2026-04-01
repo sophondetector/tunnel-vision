@@ -109,10 +109,10 @@ export class TvScreen {
     COLOR_RGBA.b = Number('0x' + color.slice(5, 7))
   }
 
-  static setWindowAroundRect(x: number, y: number, width: number, height: number): void {
+  static setWindowAroundRect(rect: DOMRect): void {
     TvScreen.emptyRects()
     TvScreen.setWindowAroundMultipleRects([
-      new DOMRect(x, y, width, height)
+      rect
     ])
   }
 

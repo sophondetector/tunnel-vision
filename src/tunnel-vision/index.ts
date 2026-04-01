@@ -440,9 +440,8 @@ export class TvDirector {
     const rect = range.getBoundingClientRect()
     // NOTE: we do this because sometimes the "extraneous" rects from the range
     // creation process don't remain with the range
-    const rectHeight = RangeManager.getMaxHeight(range)
 
-    TvScreen.setWindowAroundRect(rect.left, rect.top, rect.width, rectHeight)
+    TvScreen.setWindowAroundRect(rect)
 
     if (scrollIntoView) this.scrollRectIntoView(rect, true)
   }
