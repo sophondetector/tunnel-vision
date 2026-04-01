@@ -25,7 +25,7 @@ function setIconReady() {
 }
 
 // TODO: create greyed out unavailable icon
-function setIconUnavailable() {
+function setIconUnavailable(): void {
   setIconError()
 }
 
