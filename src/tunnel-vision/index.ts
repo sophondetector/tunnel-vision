@@ -56,7 +56,7 @@ export class TvDirector {
       this.initializeControls()
       this.initializeOnResizeCallback()
       this.inject()
-      this.initRanges()
+      await this.initRanges()
       this.setScrollableEventListener()
       this.setMouseUpListener()
       this.setNavigateListener()
@@ -82,12 +82,13 @@ export class TvDirector {
     TvScreen.inject()
   }
 
-  initRanges(): void {
+  async initRanges(): Promise<void> {
     this.ELEMENT_ARRAY = HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
       throw new Error('TvDirector.initRanges: null element array, exiting early')
     }
-    this.RANGE_MANAGER = new RangeManager(this.ELEMENT_ARRAY)
+    this.RANGE_MANAGER = new RangeManager()
+    await this.RANGE_MANAGER.initRanges(this.ELEMENT_ARRAY)
     const range = this.RANGE_MANAGER.getFirstVisibleRange()
     if (range === undefined) {
       throw new Error('TvDirector.init: could not get first visible range')

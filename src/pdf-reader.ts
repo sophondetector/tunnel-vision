@@ -244,7 +244,7 @@ async function initRanges(): Promise<void> {
     console.error(`renderPage: ERROR could not get director`)
     return
   }
-  dir.initRanges()
+  await dir.initRanges()
 }
 
 ZOOM_IN.addEventListener('click', zoomIn)

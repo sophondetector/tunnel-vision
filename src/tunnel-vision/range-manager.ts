@@ -5,9 +5,7 @@ export class RangeManager {
   RANGES: Range[] | null = null
   RANGE_IDX: number = 0
 
-  constructor(eleArray: Array<Element>) {
-    this.initRanges(eleArray)
-  }
+  constructor() { }
 
   async initRanges(eleArray: Array<Element>): Promise<void> {
     if (!eleArray) {
