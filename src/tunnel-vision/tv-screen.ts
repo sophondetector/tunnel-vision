@@ -7,14 +7,15 @@ const TV_SCREEN_BUFFER_RADIUS = 5
 export const Z_INDEX = `99999999`
 
 // tv Screen State Variables
-const RECTANGLES: DOMRect[] = []
-let COLOR_HEX = '#0000ff'
 const COLOR_RGBA = {
   r: 0,
   g: 0,
   b: 255,
   a: .5
 }
+
+let RECTANGLES: DOMRect[] = []
+let COLOR_HEX = '#0000ff'
 
 function getFillStyle(): string {
   return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
@@ -117,9 +118,7 @@ export class TvScreen {
   }
 
   static emptyRects(): void {
-    while (RECTANGLES.length > 0) {
-      RECTANGLES.pop()
-    }
+    RECTANGLES = []
   }
 
   static getTopRect(): DOMRect {
