@@ -418,11 +418,11 @@ export class TvDirector {
     let dy = 0;
     let middleAdjust = scrollToMiddle ? Math.floor(vh / 2) : 0
 
-    if (rect.left < 0) dx = rect.left;
-    else if (rect.right > vw) dx = rect.right - vw;
+    if (rect.left - window.scrollX < 0) dx = rect.left - window.scrollX;
+    else if (rect.right - window.scrollX > vw) dx = rect.right - window.scrollX - vw;
 
-    if (rect.top < 0) dy = rect.top - middleAdjust;
-    else if (rect.bottom > vh) dy = rect.bottom - vh + middleAdjust;
+    if (rect.top - window.scrollY < 0) dy = rect.top - window.scrollY - middleAdjust;
+    else if (rect.bottom - window.scrollY > vh) dy = rect.bottom - window.scrollY - vh + middleAdjust;
 
     if (dx || dy) {
       window.scrollBy({ left: dx, top: dy, behavior: 'smooth' });
