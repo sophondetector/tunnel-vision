@@ -113,12 +113,14 @@ async function zoomFit(): Promise<void> {
 }
 
 function getClosestZoomInc(scale: number): number {
-  let res = MIN_SCALE;
-  while (res < scale) {
-    res += SCALE_INC
-  }
-  res = Math.min(res - SCALE_INC, MAX_SCALE)
-  return res
+  if (scale <= MIN_SCALE) return MIN_SCALE;
+  if (scale >= MAX_SCALE) return MAX_SCALE;
+
+  // Round to nearest multiple of SCALE_INC, then clamp
+  const steps = Math.round((scale - MIN_SCALE) / SCALE_INC);
+  let newScale = MIN_SCALE + steps * SCALE_INC;
+
+  return Math.min(newScale, MAX_SCALE);
 }
 
 function getScalePercent(): number {
