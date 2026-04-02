@@ -332,13 +332,15 @@ SOUND_TOGGLE.addEventListener('click', async () => {
   displaySoundIsOn(isOn)
 })
 
-// FIXME: disable keyboard controls for this
 VOLUME_SLIDER.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
   await setSoundVol(value)
   VOLUME_DISPLAY.textContent = `${value}%`
   playSound()
+  // NOTE: this is here to make sure that user pressing "alt+arrow" doesn't also count as volume input
+  // it effectively disables keyboard control for the volume slider
+  VOLUME_SLIDER.blur()
 })
 
 OPACITY_SLIDER.addEventListener('input', async (event) => {
