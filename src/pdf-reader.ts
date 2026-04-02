@@ -4,10 +4,10 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv';
 import { playSound } from './tunnel-vision/sound';
 import {
-  getCurrentTab,
   LATEST_PDF_URL_KEY,
-  storePDFUrlInLocalStorage,
   TV_SCREEN_Z_INDEX,
+  getCurrentTab,
+  storePDFUrlInLocalStorage,
   setSoundVol,
   getSoundVol,
   soundIsOn,
