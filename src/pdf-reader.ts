@@ -9,7 +9,8 @@ import {
   storePDFUrlInLocalStorage,
   TV_SCREEN_Z_INDEX,
   setSoundVol,
-  getSoundVol
+  getSoundVol,
+  soundIsOn
 } from './common';
 
 // FIXME: auto scrolling the range into view doesn't work in the pdf viewer
@@ -42,6 +43,7 @@ const ZOOM_DISPLAY = document.getElementById('zoom-display') as HTMLSpanElement
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
 
+const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivElement
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
@@ -143,14 +145,24 @@ function displayZoomPercent(): void {
   ZOOM_DISPLAY.textContent = `${numString}%`
 }
 
-async function displaySound(): Promise<void> {
-  const dir = await getDirector()
-  const isOn = await dir.soundIsOn()
+function disableVolumeSlider(): void {
+  VOLUME_SLIDER.disabled = true
+  VOLUME_CONTROL.style.opacity = '0.2'
+}
+
+function enableVolumeSlider(): void {
+  VOLUME_SLIDER.disabled = false
+  VOLUME_CONTROL.style.opacity = '1'
+}
+
+function displaySoundIsOn(isOn: boolean): void {
   if (isOn) {
     SOUND_DISPLAY.textContent = 'Sound is On'
+    enableVolumeSlider()
     return
   }
   SOUND_DISPLAY.textContent = 'Sound is Off'
+  disableVolumeSlider()
 }
 
 function id2Key(id: number): string {
@@ -315,7 +327,9 @@ SCREEN_TOGGLE.addEventListener('click', async () => {
 
 SOUND_TOGGLE.addEventListener('click', async () => {
   const dir = await getDirector()
-  dir.toggleSound().then(displaySound)
+  dir.toggleSound()
+  const isOn = await soundIsOn()
+  displaySoundIsOn(isOn)
 })
 
 VOLUME_SLIDER.addEventListener("input", async (event) => {
@@ -384,7 +398,8 @@ getPDFUrl()
   .then(initializeTV)
   .then(setPageNumText)
   .then(displayZoomPercent)
-  .then(displaySound)
+  .then(soundIsOn)
+  .then(displaySoundIsOn)
   .then(getSoundVol)
   .then((vol) => {
     VOLUME_DISPLAY.textContent = `${vol}%`

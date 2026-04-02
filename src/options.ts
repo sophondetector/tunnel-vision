@@ -1,9 +1,9 @@
 import {
   TvScreenState,
   getCurrentTab,
-  soundIsOn,
   storeLatestPDFUrlInLocalStorage,
   toggleSound,
+  soundIsOn,
   setSoundVol,
   getSoundVol,
   TvMessage,
@@ -32,6 +32,7 @@ const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
 const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
 
+const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivElement
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
@@ -53,6 +54,16 @@ function greyOutControls(): void {
   greyOutEle(COLOR_PICKER)
 }
 
+function disableVolumeSlider(): void {
+  VOLUME_SLIDER.disabled = true
+  VOLUME_CONTROL.style.opacity = '0.2'
+}
+
+function enableVolumeSlider(): void {
+  VOLUME_SLIDER.disabled = false
+  VOLUME_CONTROL.style.opacity = '1'
+}
+
 function hidePdf(): void {
   PDF_TOGGLE.classList.add(HIDDEN)
 }
@@ -68,12 +79,14 @@ function urlIsPdf(url: string): boolean {
   return false
 }
 
-function displaySoundState(soundOn: boolean): void {
-  if (soundOn) {
+function displaySoundState(isOn: boolean): void {
+  if (isOn) {
     SOUND_DISPLAY.textContent = 'Sound is On'
+    enableVolumeSlider()
     return
   }
   SOUND_DISPLAY.textContent = 'Sound is Off'
+  disableVolumeSlider()
 }
 
 function showHelp(): void {
