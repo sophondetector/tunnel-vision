@@ -266,7 +266,7 @@ export class TvDirector {
           return
         }
       }
-      console.error('TvDirector.clickListener: could not find clickable range')
+      // console.error('TvDirector.clickListener: could not find clickable range')
     }
 
     window.addEventListener('mouseup', mouseUpListener, {

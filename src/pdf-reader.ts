@@ -14,8 +14,6 @@ import {
   toggleSound
 } from './common';
 
-// FIXME: when clicking in the menu a "could not find clickable range" error fires; prevent this
-
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 const DEFAULT_SCALE = 2
