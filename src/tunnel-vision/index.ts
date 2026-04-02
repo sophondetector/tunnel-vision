@@ -1,7 +1,13 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import { soundIsOn, toggleSound, TvScreenState, TvDirectorState } from "../common";
+import {
+  soundIsOn,
+  toggleSound,
+  forceLayout,
+  TvScreenState,
+  TvDirectorState
+} from "../common";
 import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
@@ -444,31 +450,8 @@ export class TvDirector {
 
   // TODO: callback for when page changes layout
 
-  async forceLayout(): Promise<void> {
-    // Option 1: Simple and very common
-    void document.documentElement.offsetHeight;   // or any element
-
-    // Option 2: Using scroll properties
-    void document.documentElement.scrollHeight;
-
-    // Option 3: getBoundingClientRect (forces full layout)
-    void document.body.getBoundingClientRect();
-
-    // Option 4: Computed style (more expensive)
-    void getComputedStyle(document.documentElement).height;
-  };
-
-  /**
-   * Pauses execution for the specified number of milliseconds
-   * @param {number} ms - The number of milliseconds to pause
-   * @returns {Promise<void>}
-   */
-  async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async onResizeCallback(curDir: TvDirector): Promise<void> {
-    await curDir.forceLayout()
+    await forceLayout()
     await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
     const rangeManager = curDir.getRangeManager()

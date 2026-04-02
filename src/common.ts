@@ -77,3 +77,27 @@ export async function getSoundVol(): Promise<number> {
   const volume: number = res[SOUND_VOLUME_KEY]
   return volume
 }
+
+export async function forceLayout(): Promise<void> {
+  // Option 1: Simple and very common
+  void document.documentElement.offsetHeight;   // or any element
+
+  // Option 2: Using scroll properties
+  void document.documentElement.scrollHeight;
+
+  // Option 3: getBoundingClientRect (forces full layout)
+  void document.body.getBoundingClientRect();
+
+  // Option 4: Computed style (more expensive)
+  void getComputedStyle(document.documentElement).height;
+}
+
+/**
+ * Pauses execution for the specified number of milliseconds
+ * @param {number} ms - The number of milliseconds to pause
+ * @returns {Promise<void>}
+ */
+export async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
