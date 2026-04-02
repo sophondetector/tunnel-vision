@@ -109,7 +109,6 @@ export class TvScreen {
   }
 
   static setWindowAroundRect(rect: DOMRect): void {
-    TvScreen.emptyRects()
     TvScreen.setWindowAroundMultipleRects([
       rect
     ])
