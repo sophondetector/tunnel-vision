@@ -14,8 +14,6 @@ import {
   toggleSound
 } from './common';
 
-// FIXME: auto scrolling the range into view doesn't work in the pdf viewer
-
 // FIXME: when clicking in the menu a "could not find clickable range" error fires; prevent this
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
