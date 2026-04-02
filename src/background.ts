@@ -50,7 +50,7 @@ function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
   } else if (state === TvDirectorState.PDF) {
     setIconPdf()
   } else {
-    console.warn(`background.ts: RECEIVED UNKNOWN STATE ${state} FROM TAB ${tabId}`)
+    console.warn(`background.ts: received unknown state ${state} from tab ${tabId}`)
   }
 }
 
