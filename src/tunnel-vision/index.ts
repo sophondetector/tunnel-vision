@@ -8,7 +8,6 @@ import {
   TvScreenState,
   TvDirectorState
 } from "../common";
-import { isPdfReader } from "./site-handlers/pdf-reader-handler";
 import { playSound } from "./sound";
 
 // const RESIZE_DEBOUNCE_MILLIS = 500
@@ -61,8 +60,9 @@ export class TvDirector {
 
       this.initializeControls()
       this.initializeOnResizeCallback()
-      this.inject()
+      await TvScreen.inject()
       await this.initRanges()
+      TvScreen.animate()
       this.setScrollableEventListener()
       this.setMouseUpListener()
       this.setNavigateListener()
@@ -82,10 +82,6 @@ export class TvDirector {
       this.toggleScreenOff()
       return
     }
-  }
-
-  inject() {
-    TvScreen.inject()
   }
 
   async initRanges(): Promise<void> {
@@ -138,8 +134,8 @@ export class TvDirector {
       return
     }
 
-    const rng = sel.getRangeAt(0)
-    const txt = rng.toString()
+    const range = sel.getRangeAt(0)
+    const txt = range.toString()
     if (txt.length < 1) {
       SELECTION = false
       return
@@ -149,19 +145,10 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    let boxes = Array.from(rng.getClientRects())
-
-    // NOTE: this filter is here to fix a bug where ranges 
-    // with zero width show up when selecting text in the pdf-reader
-    if (isPdfReader()) {
-      boxes = boxes.filter(box => box.left !== box.right)
-    }
-
-    TvScreen.setWindowAroundMultipleRects(boxes)
+    TvScreen.setActiveRange(range)
   }
 
   setSelectionListener(): void {
-    // NOTE: see note above drawAroundSelection definition for why we pass 'this'
     document.addEventListener(
       "selectionchange", this.drawAroundSelection, { capture: true }
     )
@@ -412,7 +399,9 @@ export class TvDirector {
   * @param {DOMRect} rect - The DOMRect to scroll into view (e.g. from element.getBoundingClientRect())
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
-  scrollRectIntoView(rect: DOMRect, scrollToMiddle: boolean = true): void {
+  scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): void {
+    const rect = range.getBoundingClientRect()
+
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
@@ -420,11 +409,11 @@ export class TvDirector {
     let dy = 0;
     let middleAdjust = scrollToMiddle ? Math.floor(vh / 2) : 0
 
-    if (rect.left - window.scrollX < 0) dx = rect.left - window.scrollX;
-    else if (rect.right - window.scrollX > vw) dx = rect.right - window.scrollX - vw;
+    if (rect.left < 0) dx = rect.left;
+    else if (rect.right > vw) dx = rect.right - vw;
 
-    if (rect.top - window.scrollY < 0) dy = rect.top - window.scrollY - middleAdjust;
-    else if (rect.bottom - window.scrollY > vh) dy = rect.bottom - window.scrollY - vh + middleAdjust;
+    if (rect.top < 0) dy = rect.top - middleAdjust;
+    else if (rect.bottom > vh) dy = rect.bottom - vh + middleAdjust;
 
     if (dx || dy) {
       window.scrollBy({ left: dx, top: dy, behavior: 'smooth' });
@@ -437,19 +426,17 @@ export class TvDirector {
   * @param {boolean} scrollIntoView - Whether or not you want to scroll the window to the range - default is `true`
   */
   setWindowAroundRange(range: Range, scrollIntoView: boolean = true): void {
-    if (!this.isOn()) return
-
-    const rect = range.getBoundingClientRect()
-    // NOTE: we do this because sometimes the "extraneous" rects from the range
-    // creation process don't remain with the range
-
-    TvScreen.setWindowAroundRect(rect)
-
-    if (scrollIntoView) this.scrollRectIntoView(rect, true)
+    if (!this.isOn()) {
+      // console.log('screen is off!')
+      return
+    }
+    TvScreen.setActiveRange(range)
+    if (scrollIntoView) this.scrollRangeIntoView(range, true)
   }
 
   // TODO: callback for when page changes layout
 
+  // FIXME: viewing window breaks into two lines rather than a single line when sizing down
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     await forceLayout()
     await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
@@ -472,9 +459,6 @@ export class TvDirector {
     const delta = WIN_WIDTH - newWidth
     WIN_WIDTH = newWidth
 
-    // FIXME: when sizing UP the selection window goes to a point BEFORE where it should
-    // This only happens when you MAKE a selection at the smaller size and then go to a bigger size
-    // If you make a selection at a bigger size, size down, and then size back up it works correctly
     if (SELECTION) {
       curDir.drawAroundSelection()
       return

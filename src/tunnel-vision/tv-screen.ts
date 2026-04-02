@@ -12,7 +12,7 @@ const COLOR_RGBA = {
   a: .5
 }
 
-let RECTANGLES: DOMRect[] = []
+let ACTIVE_RANGE: Range | null = null
 let COLOR_HEX = '#0000ff'
 
 function getFillStyle(): string {
@@ -21,7 +21,7 @@ function getFillStyle(): string {
 
 export class TvScreen {
 
-  static create(): HTMLCanvasElement {
+  static async create(): Promise<HTMLCanvasElement> {
     const canvas = document.createElement('canvas')
 
     canvas.style.display = TV_SCREEN_DISPLAY
@@ -43,6 +43,24 @@ export class TvScreen {
     return canvas
   }
 
+  static setActiveRange(range: Range): void {
+    ACTIVE_RANGE = range
+  }
+
+  static getActiveRange(): Range {
+    if (ACTIVE_RANGE === null) {
+      throw new Error(`Active range is null!`)
+    }
+    return ACTIVE_RANGE
+  }
+
+  static getRectsToDraw(): DOMRect[] {
+    const activeRange = TvScreen.getActiveRange()
+    const rects = Array.from(activeRange.getClientRects())
+      .filter(r => r.width > 1 && r.height > 1)
+    return rects
+  }
+
   static drawScreen() {
     const canvas = TvScreen.getScreenEle()
     const ctx = TvScreen.getContext()
@@ -51,9 +69,11 @@ export class TvScreen {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    RECTANGLES.forEach(rect => {
-      const adjustedX = rect.x - window.scrollX
-      const adjustedY = rect.y - window.scrollY
+    const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
+
+    rects.forEach(rect => {
+      const adjustedX = rect.x
+      const adjustedY = rect.y
       ctx.clearRect(
         adjustedX - TV_SCREEN_BUFFER_RADIUS,
         adjustedY - TV_SCREEN_BUFFER_RADIUS,
@@ -108,50 +128,26 @@ export class TvScreen {
     COLOR_RGBA.b = Number('0x' + color.slice(5, 7))
   }
 
-  static setWindowAroundRect(rect: DOMRect): void {
-    TvScreen.setWindowAroundMultipleRects([
-      rect
-    ])
-  }
-
-  static emptyRects(): void {
-    RECTANGLES = []
-  }
-
   static getTopRect(): DOMRect {
-    return RECTANGLES[0]
+    const range = TvScreen.getActiveRange()
+    const rects = range.getClientRects()
+    return rects.item(0) as DOMRect
   }
 
   static getBottomRect(): DOMRect {
-    const len = RECTANGLES.length
-    return RECTANGLES[len - 1]
+    const range = TvScreen.getActiveRange()
+    const rects = range.getClientRects()
+    return rects.item(rects.length - 1) as DOMRect
   }
 
-  static setWindowAroundMultipleRects(rects: Array<DOMRect>): void {
-    TvScreen.emptyRects()
-    for (const rect of rects) {
-      rect.x += window.scrollX
-      rect.y += window.scrollY
-      RECTANGLES.push(rect)
-    }
-  }
-
-  static inject(): void {
-    let screenEle = document.getElementById(TV_SCREEN_ID) as HTMLCanvasElement
-    if (screenEle !== null) {
-      console.log(`TvScreen.inject: screen element already exists`)
-      return
-    }
-
-    screenEle = TvScreen.create()
+  // TODO: factor this into two (at least) methods and package them in an init method
+  static async inject(): Promise<void> {
+    const screenEle = await TvScreen.create()
     document.body.appendChild(screenEle)
     console.log('TvScreen.inject: tv screen div injected')
 
     window.addEventListener('scroll', TvScreen.drawScreen);
     console.log('TvScreen.inject: Added scroll event listener')
-
-    TvScreen.animate()
-    console.log('TvScreen.inject: TvScreen animation started')
   }
 
   static turnOn(): void {
@@ -166,10 +162,6 @@ export class TvScreen {
     console.log(`tv screen turned off!`)
   }
 
-  /*
-  * if tv screen is on return true
-  * else return false
-  */
   static isOn(): boolean {
     const screenEle = TvScreen.getScreenEle()
     return !(screenEle.style.display === 'none')
