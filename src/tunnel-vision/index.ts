@@ -452,54 +452,57 @@ export class TvDirector {
 
     await rangeManager.initRanges(curDir.getElementArray())
 
-    const newWidth = window.innerWidth
-    const delta = newWidth - WIN_WIDTH
-    // positive delta means bigger window; negative means smaller
-    WIN_WIDTH = newWidth
-
     if (SELECTION) {
       curDir.drawAroundSelection()
       return
     }
 
+    const newWidth = window.innerWidth
+    const delta = newWidth - WIN_WIDTH
+    // positive delta means bigger window; negative means smaller
+    WIN_WIDTH = newWidth
+
     let rangeIdx = rangeManager.getRangeIdx()
 
     // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
-      for (rangeIdx; rangeIdx > 0; rangeIdx--) {
+      // console.log('the window became smaller')
+      for (rangeIdx; rangeIdx >= 0; rangeIdx--) {
         const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
         if (iterRange === undefined) {
-          console.warn(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+          console.warn(`TvDirector.onResizeCallback: could not get range at index ${rangeIdx}`)
           continue
         }
         if (iterRange.isPointInRange(prevNode, prevOffset)) {
-          console.log('it was smaller')
           curDir.setWindowAroundRange(iterRange)
           rangeManager.setRangeIdx(rangeIdx)
           return
         }
       }
+      console.error('onResizeCallback: could not find new range!')
+      return
     }
 
     // if bigger window -> the new index is likely later -> so we go forwards
+    // console.log('the window became bigger')
     const rangeLen = rangeManager.getRangesLength()
     if (rangeLen === undefined) {
-      console.error(`TvDirector.onResizeCallback: ERROR - could not get range length!`)
+      console.error(`TvDirector.onResizeCallback: could not get range length!`)
       return
     }
     for (rangeIdx; rangeIdx < rangeLen; rangeIdx++) {
       const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
       if (iterRange === undefined) {
-        console.warn(`TvDirector.onResizeCallback: WARNING - could not get range at index ${rangeIdx}`)
+        console.warn(`TvDirector.onResizeCallback: could not get range at index ${rangeIdx}`)
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        console.log('it was bigger')
         this.setWindowAroundRange(iterRange)
         rangeManager.setRangeIdx(rangeIdx)
         return
       }
     }
+    console.error('onResizeCallback: could not find new range!')
   }
 
   initializeControls() {
