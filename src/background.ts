@@ -38,7 +38,7 @@ function setIconPdf(): void {
   setIconReady()
 }
 
-function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
+function setIconFromState(state: TvDirectorState, tabId: number): void {
   if (state === TvDirectorState.READY) {
     setIconReady()
   } else if (state === TvDirectorState.ERROR) {
@@ -58,7 +58,7 @@ function setIconBasedOnState(state: TvDirectorState, tabId: number): void {
 chrome.tabs.onActivated.addListener((activeInfo) => {
   const tabId = activeInfo.tabId
   chrome.tabs.sendMessage(tabId, TvMessage.GET_DIRECTOR_STATE, (response) => {
-    setIconBasedOnState(response, tabId)
+    setIconFromState(response, tabId)
   })
 });
 
@@ -66,5 +66,5 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 chrome.runtime.onMessage.addListener(async (message, sender) => {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (activeTab.id !== sender.tab?.id) return;
-  setIconBasedOnState(message, sender.tab?.id as number)
+  setIconFromState(message, sender.tab?.id as number)
 })
