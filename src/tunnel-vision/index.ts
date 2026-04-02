@@ -4,7 +4,6 @@ import { TvScreen } from "./tv-screen";
 import {
   soundIsOn,
   toggleSound,
-  forceLayout,
   TvScreenState,
   TvDirectorState
 } from "../common";
@@ -436,9 +435,7 @@ export class TvDirector {
 
   // TODO: callback for when page changes layout
 
-  // FIXME: viewing window breaks into two lines rather than a single line when sizing down
   async onResizeCallback(curDir: TvDirector): Promise<void> {
-    await forceLayout()
     await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
     const rangeManager = curDir.getRangeManager()
@@ -456,7 +453,8 @@ export class TvDirector {
     await rangeManager.initRanges(curDir.getElementArray())
 
     const newWidth = window.innerWidth
-    const delta = WIN_WIDTH - newWidth
+    const delta = newWidth - WIN_WIDTH
+    // positive delta means bigger window; negative means smaller
     WIN_WIDTH = newWidth
 
     if (SELECTION) {
@@ -465,7 +463,8 @@ export class TvDirector {
     }
 
     let rangeIdx = rangeManager.getRangeIdx()
-    // if bigger window -> go backwards
+
+    // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
       for (rangeIdx; rangeIdx > 0; rangeIdx--) {
         const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
@@ -474,6 +473,7 @@ export class TvDirector {
           continue
         }
         if (iterRange.isPointInRange(prevNode, prevOffset)) {
+          console.log('it was smaller')
           curDir.setWindowAroundRange(iterRange)
           rangeManager.setRangeIdx(rangeIdx)
           return
@@ -481,7 +481,7 @@ export class TvDirector {
       }
     }
 
-    // if smaller window -> go forwards
+    // if bigger window -> the new index is likely later -> so we go forwards
     const rangeLen = rangeManager.getRangesLength()
     if (rangeLen === undefined) {
       console.error(`TvDirector.onResizeCallback: ERROR - could not get range length!`)
@@ -494,6 +494,7 @@ export class TvDirector {
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
+        console.log('it was bigger')
         this.setWindowAroundRange(iterRange)
         rangeManager.setRangeIdx(rangeIdx)
         return
