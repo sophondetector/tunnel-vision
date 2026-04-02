@@ -351,6 +351,9 @@ OPACITY_SLIDER.addEventListener('input', async (event) => {
   const dir = await getDirector()
   dir.setScreenOpacity(value)
   OPACITY_DISPLAY.textContent = `${value}%`
+  // NOTE: this is here to make sure that user pressing "alt+arrow" doesn't also count as opacity input
+  // it effectively disables keyboard control for the opacity slider
+  OPACITY_SLIDER.blur()
 })
 
 COLOR_PICKER.addEventListener('input', async (event) => {
