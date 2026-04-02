@@ -110,10 +110,10 @@ SCREEN_TOGGLE.addEventListener('click', async () => {
   })
 })
 
-SOUND_TOGGLE.addEventListener('click', () => {
-  toggleSound()
-    .then(soundIsOn)
-    .then(displaySoundState)
+SOUND_TOGGLE.addEventListener('click', async () => {
+  await toggleSound()
+  const isOn = await soundIsOn()
+  displaySoundState(isOn)
 })
 
 OPACITY_SLIDER.addEventListener("input", async (event) => {

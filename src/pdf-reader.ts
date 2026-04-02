@@ -10,7 +10,8 @@ import {
   TV_SCREEN_Z_INDEX,
   setSoundVol,
   getSoundVol,
-  soundIsOn
+  soundIsOn,
+  toggleSound
 } from './common';
 
 // FIXME: auto scrolling the range into view doesn't work in the pdf viewer
@@ -326,12 +327,12 @@ SCREEN_TOGGLE.addEventListener('click', async () => {
 })
 
 SOUND_TOGGLE.addEventListener('click', async () => {
-  const dir = await getDirector()
-  dir.toggleSound()
+  await toggleSound()
   const isOn = await soundIsOn()
   displaySoundIsOn(isOn)
 })
 
+// FIXME: disable keyboard controls for this
 VOLUME_SLIDER.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
