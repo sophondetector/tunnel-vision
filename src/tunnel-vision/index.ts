@@ -437,7 +437,18 @@ export class TvDirector {
   }
 
   async onResizeCallback(curDir: TvDirector): Promise<void> {
+    const newWidth = window.innerWidth
+    const delta = newWidth - WIN_WIDTH
+    if (delta === 0) return
+    WIN_WIDTH = newWidth
     const rangeManager = curDir.getRangeManager()
+
+    if (SELECTION) {
+      await rangeManager.initRanges(curDir.getElementArray())
+      curDir.drawAroundSelection()
+      return
+    }
+
     const prevRange = rangeManager.getCurrentRange()
     if (prevRange === undefined) {
       console.error('TvDirector.onResizeCallback: could not get current range!')
@@ -445,26 +456,17 @@ export class TvDirector {
     }
     const prevNode = prevRange.startContainer
     const prevOffset = Math.max(1, prevRange.startOffset)
-    // NOTE: making sure prevOffset is at least one fixes the
-    // bug where smaller window leads to range directly before
-    // we want getting picked
+    // NOTE: making sure prevOffset is at least one fixes the bug where smaller window leads to range directly before we want getting picked
 
     await rangeManager.initRanges(curDir.getElementArray())
 
-    if (SELECTION) {
-      curDir.drawAroundSelection()
-      return
-    }
-
-    const newWidth = window.innerWidth
-    const delta = newWidth - WIN_WIDTH
-    // positive delta means bigger window; negative means smaller
-    WIN_WIDTH = newWidth
-
     let rangeIdx = rangeManager.getRangeIdx()
+    const padding = 5
 
+    // positive delta means bigger window; negative means smaller
     // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
+      rangeIdx = Math.min(rangeIdx + padding, rangeManager.getRangesLength() as number)
       // console.log('the window became smaller')
       for (rangeIdx; rangeIdx >= 0; rangeIdx--) {
         const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
@@ -485,6 +487,7 @@ export class TvDirector {
 
     // if bigger window -> the new index is likely later -> so we go forwards
     // console.log('the window became bigger')
+    rangeIdx = Math.max(rangeIdx - padding, 0)
     const rangeLen = rangeManager.getRangesLength()
     if (rangeLen === undefined) {
       console.error(`TvDirector.onResizeCallback: could not get range length!`)
