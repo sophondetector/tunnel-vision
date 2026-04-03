@@ -5,6 +5,8 @@ const SCROLLABLE_ELE_LECS = [
   '#post-viewer > div > div > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.content-cFaSRD > div'
 ]
 
+// FIXME: clicking on lines doesn't work on substack
+
 export function isActuallySubstack(): boolean {
   return document.querySelector('link[href="https://substackcdn.com"]') ? true : false
 }
