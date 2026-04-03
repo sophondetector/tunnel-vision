@@ -497,7 +497,7 @@ export class TvDirector {
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        this.setWindowAroundRange(iterRange)
+        curDir.setWindowAroundRange(iterRange)
         rangeManager.setRangeIdx(rangeIdx)
         return
       }
