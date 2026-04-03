@@ -17,6 +17,7 @@ import {
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 // TODO: hide debug panel by default
+// TODO: add debug panel to options.ts/html
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
