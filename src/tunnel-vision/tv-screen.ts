@@ -43,6 +43,12 @@ export class TvScreen {
     return canvas
   }
 
+  static async inject(): Promise<void> {
+    const screenEle = await TvScreen.create()
+    document.body.appendChild(screenEle)
+    console.log('TvScreen.inject: tv screen injected')
+  }
+
   static setActiveRange(range: Range): void {
     ACTIVE_RANGE = range
   }
@@ -138,16 +144,6 @@ export class TvScreen {
     const range = TvScreen.getActiveRange()
     const rects = range.getClientRects()
     return rects.item(rects.length - 1) as DOMRect
-  }
-
-  // TODO: factor this into two (at least) methods and package them in an init method
-  static async inject(): Promise<void> {
-    const screenEle = await TvScreen.create()
-    document.body.appendChild(screenEle)
-    console.log('TvScreen.inject: tv screen div injected')
-
-    window.addEventListener('scroll', TvScreen.drawScreen);
-    console.log('TvScreen.inject: Added scroll event listener')
   }
 
   static turnOn(): void {
