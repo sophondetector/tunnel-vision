@@ -371,7 +371,7 @@ export class TvDirector {
   * Scrolls the minimal amount needed (horizontally and/or vertically) to bring
   * the entire rect into view. Uses smooth scrolling.
   * 
-  * @param {DOMRect} rect - The DOMRect to scroll into view (e.g. from element.getBoundingClientRect())
+  * @param {Range} range - The Range to scroll into view 
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
   scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): void {
