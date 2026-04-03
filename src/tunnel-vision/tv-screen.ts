@@ -68,7 +68,9 @@ export class TvScreen {
     return rects
   }
 
-  static drawScreen() {
+  static drawScreen(): void {
+    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
+
     const canvas = TvScreen.getScreenEle()
     const ctx = TvScreen.getContext()
 
