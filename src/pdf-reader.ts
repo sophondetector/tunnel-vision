@@ -66,11 +66,11 @@ async function zoomIn(): Promise<void> {
   ZOOM_SCALE += SCALE_INC
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
-  renderPage()
-    .then(renderTextLayer)
-    .then(initRanges)
-    .then(() => dir.setRangeIdx(idx))
-    .then(displayZoomPercent)
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  dir.setRangeIdx(idx)
+  displayZoomPercent()
 }
 
 async function zoomOut(): Promise<void> {
@@ -78,11 +78,11 @@ async function zoomOut(): Promise<void> {
   ZOOM_SCALE -= SCALE_INC
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
-  renderPage()
-    .then(renderTextLayer)
-    .then(initRanges)
-    .then(() => dir.setRangeIdx(idx))
-    .then(displayZoomPercent)
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  dir.setRangeIdx(idx)
+  displayZoomPercent()
 }
 
 // FIXME: when zoomed out the range padding is way too big
@@ -127,10 +127,10 @@ async function zoomFit(): Promise<void> {
 
   // Re-render everything
   await renderPage()
-    .then(renderTextLayer)
-    .then(initRanges)
-    .then(() => dir.setRangeIdx(idx))
-    .then(displayZoomPercent)
+  await renderTextLayer()
+  await initRanges()
+  dir.setRangeIdx(idx)
+  displayZoomPercent()
 }
 
 function getClosestZoomInc(scale: number): number {
