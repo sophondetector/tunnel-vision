@@ -2,6 +2,7 @@ import { TvScreenState, TV_SCREEN_Z_INDEX } from "../common"
 
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
+// TODO: paramaterize buffer radius and allow user to control it
 const TV_SCREEN_BUFFER_RADIUS = 5
 
 // tv Screen State Variables
