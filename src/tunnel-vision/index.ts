@@ -52,7 +52,7 @@ export class TvDirector {
 
       const handler = HandlerManager.getHandler()
       if (!handler) {
-        throw new Error(`TvDirector.constructor: could not get handler!`)
+        throw new Error(`TvDirector.init: could not get handler!`)
       }
 
       await handler.initDelay()
@@ -62,7 +62,6 @@ export class TvDirector {
       await TvScreen.inject()
       await this.initRanges()
       TvScreen.animate()
-      this.setScrollableEventListener()
       this.setMouseUpListener()
       this.setNavigateListener()
       this.setSelectionListener()
@@ -201,30 +200,6 @@ export class TvDirector {
     rm.setRangeIdx(idx)
     const range = rm.getCurrentRange() as Range
     this.setWindowAroundRange(range)
-  }
-
-  // TODO: is there a way I can dynamically determine a "scrollable interior" element?
-  setScrollableEventListener(): void {
-    const scrollEle = HandlerManager.getScrollableElement()
-    if (!scrollEle) {
-      console.log('setScrollableEventListener: no scroll ele found, so not adding event listener')
-      return
-    }
-
-    scrollEle.addEventListener('scroll', () => {
-      RangeManager.bind(this) // needed because by default this will refer to the HTMLElement
-      if (SELECTION) {
-        this.drawAroundSelection()
-        return
-      }
-      const curr = this.getRangeManager().getCurrentRange()
-      if (curr === undefined) {
-        throw new Error('TvDirector.setScrollableEventListener: could not find current range!')
-      }
-      this.setWindowAroundRange(curr, false)
-    })
-
-    console.log('TvDirector: scrollable element event listener set')
   }
 
   static clickInRange(event: MouseEvent, range: Range): boolean {
