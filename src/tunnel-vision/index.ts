@@ -440,8 +440,6 @@ export class TvDirector {
   // TODO: callback for when page changes layout
 
   async onResizeCallback(curDir: TvDirector): Promise<void> {
-    await TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
-
     const rangeManager = curDir.getRangeManager()
     const prevRange = rangeManager.getCurrentRange()
     if (prevRange === undefined) {
