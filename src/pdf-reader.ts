@@ -33,6 +33,7 @@ const RESIZER = document.getElementById('resizer') as HTMLElement;
 
 const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
 const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
+const PAGE_COUNT = document.getElementById('page_count') as HTMLSpanElement
 
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
@@ -394,7 +395,7 @@ getPDFUrl()
   })
   .then((pdfDocProxy) => {
     PDF_DOC = pdfDocProxy
-    document.getElementById('page_count')!.textContent = PDF_DOC.numPages.toString()
+    PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
   })
   .then(renderPage)
   .then(renderTextLayer)
