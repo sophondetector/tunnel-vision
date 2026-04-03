@@ -27,13 +27,18 @@ const SIDEBAR_MAX_WIDTH = 1000
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
+// control panel
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
+
+const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
+const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
 
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
+
 const ZOOM_IN = document.getElementById('zoom-in') as HTMLButtonElement
 const ZOOM_OUT = document.getElementById('zoom-out') as HTMLButtonElement
 const ZOOM_FIT = document.getElementById('zoom-fit') as HTMLButtonElement
@@ -46,6 +51,10 @@ const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivEleme
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
+// debug panel
+const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
+
+// state variables
 let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
@@ -275,8 +284,7 @@ ZOOM_OUT.addEventListener('click', zoomOut)
 
 ZOOM_FIT.addEventListener('click', zoomFit)
 
-// TODO: change all of these document.getElementById calls to global variables
-document.getElementById('prev')!.addEventListener('click', function () {
+PREV_PAGE.addEventListener('click', function () {
   if (PAGE_NUM <= 1) {
     return;
   }
@@ -287,7 +295,7 @@ document.getElementById('prev')!.addEventListener('click', function () {
     .then(setPageNumText)
 });
 
-document.getElementById('next')!.addEventListener('click', function () {
+NEXT_PAGE.addEventListener('click', function () {
   if (PAGE_NUM >= PDF_DOC!.numPages) {
     return;
   }
@@ -298,18 +306,10 @@ document.getElementById('next')!.addEventListener('click', function () {
     .then(setPageNumText)
 });
 
-document.getElementById('re-range')!.addEventListener('click', function () {
+RE_RANGE.addEventListener('click', function () {
   initRanges().then(() => {
     console.log('re-range done')
   })
-})
-
-window.addEventListener('beforeunload', async () => {
-  const tab = await getCurrentTab() as chrome.tabs.Tab
-  const key = id2Key(tab.id as number)
-  await chrome.storage.local.remove(key)
-}, {
-  capture: true
 })
 
 //@ts-ignore
@@ -381,6 +381,14 @@ document.addEventListener('mouseup', () => {
   document.body.style.cursor = 'default';
   document.body.style.userSelect = 'auto';
 });
+
+window.addEventListener('beforeunload', async () => {
+  const tab = await getCurrentTab() as chrome.tabs.Tab
+  const key = id2Key(tab.id as number)
+  await chrome.storage.local.remove(key)
+}, {
+  capture: true
+})
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
