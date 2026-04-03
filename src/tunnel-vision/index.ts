@@ -76,7 +76,6 @@ export class TvDirector {
     } catch (err) {
       console.error(`TvDirector.init: aborting due to error ${err}`)
       this.setDirectorState(TvDirectorState.ERROR)
-      // TODO: make this unloading more comprehensive
       this.toggleScreenOff()
       return
     }
@@ -436,8 +435,6 @@ export class TvDirector {
     TvScreen.setActiveRange(range)
     if (scrollIntoView) this.scrollRangeIntoView(range, true)
   }
-
-  // TODO: callback for when page changes layout
 
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     const rangeManager = curDir.getRangeManager()
