@@ -361,18 +361,9 @@ COLOR_PICKER.addEventListener('input', async (event) => {
 
 document.addEventListener('mousemove', async (e) => {
   if (!IS_RESIZING) return;
-  const newWidth = e.clientX;   // distance from left edge
-  if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {   // min/max limits
+  const newWidth = e.clientX;
+  if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {
     SIDEBAR.style.width = `${newWidth}px`;
-    const dir = await getDirector()
-    // FIXME: is there a more performance friendly way to redraw the screen
-    // when the sidebar moves? when moving to next range the screen is in the 
-    // right position WITHOUT having to fire the onResizeCallback
-    if (!dir) {
-      console.log('mousemove callback: could not get director!')
-      return
-    }
-    dir.onResizeCallback(dir)
   }
 });
 
