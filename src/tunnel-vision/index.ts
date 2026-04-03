@@ -562,9 +562,5 @@ export class TvDirector {
     }, {
       capture: true
     })
-
-    // window.addEventListener('resize', () => this.onResizeCallback(this), {
-    //   capture: true
-    // })
   }
 }
