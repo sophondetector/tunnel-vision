@@ -285,32 +285,31 @@ ZOOM_OUT.addEventListener('click', zoomOut)
 
 ZOOM_FIT.addEventListener('click', zoomFit)
 
-PREV_PAGE.addEventListener('click', function () {
+PREV_PAGE.addEventListener('click', async function () {
   if (PAGE_NUM <= 1) {
     return;
   }
   PAGE_NUM--;
-  renderPage()
-    .then(renderTextLayer)
-    .then(initRanges)
-    .then(setPageNumText)
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  setPageNumText()
 });
 
-NEXT_PAGE.addEventListener('click', function () {
+NEXT_PAGE.addEventListener('click', async function () {
   if (PAGE_NUM >= PDF_DOC!.numPages) {
     return;
   }
   PAGE_NUM++;
-  renderPage()
-    .then(renderTextLayer)
-    .then(initRanges)
-    .then(setPageNumText)
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  setPageNumText()
 });
 
-RE_RANGE.addEventListener('click', function () {
-  initRanges().then(() => {
-    console.log('re-range done')
-  })
+RE_RANGE.addEventListener('click', async function () {
+  await initRanges()
+  console.log('re-range done')
 })
 
 //@ts-ignore
