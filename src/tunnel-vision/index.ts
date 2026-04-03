@@ -221,8 +221,9 @@ export class TvDirector {
       if (curr === undefined) {
         throw new Error('TvDirector.setScrollableEventListener: could not find current range!')
       }
-      this.setWindowAroundRange(curr)
+      this.setWindowAroundRange(curr, false)
     })
+
     console.log('TvDirector: scrollable element event listener set')
   }
 
