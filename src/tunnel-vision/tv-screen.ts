@@ -79,11 +79,9 @@ export class TvScreen {
     const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
 
     rects.forEach(rect => {
-      const adjustedX = rect.x
-      const adjustedY = rect.y
       ctx.clearRect(
-        adjustedX - TV_SCREEN_BUFFER_RADIUS,
-        adjustedY - TV_SCREEN_BUFFER_RADIUS,
+        rect.x - TV_SCREEN_BUFFER_RADIUS,
+        rect.y - TV_SCREEN_BUFFER_RADIUS,
         rect.width + (TV_SCREEN_BUFFER_RADIUS * 2),
         rect.height + (TV_SCREEN_BUFFER_RADIUS * 2)
       );
