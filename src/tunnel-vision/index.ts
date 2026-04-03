@@ -436,6 +436,21 @@ export class TvDirector {
     if (scrollIntoView) this.scrollRangeIntoView(range, true)
   }
 
+  async bruteForceSearch(curDir: TvDirector, prevNode: Node, prevOffset: number): Promise<void> {
+    const rm = curDir.getRangeManager()
+    const len = rm.getRangesLength() ?? 0
+    for (let idx = 0; idx < len; idx++) {
+      const iterRange = rm.rangeIdx2Range(idx)
+      if (!iterRange) continue
+      if (iterRange.isPointInRange(prevNode, prevOffset)) {
+        curDir.setWindowAroundRange(iterRange)
+        rm.setRangeIdx(idx)
+        return
+      }
+    }
+    console.error(`TvDirector.bruteForceSearch: search for range failed`)
+  }
+
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     const newWidth = window.innerWidth
     const delta = newWidth - WIN_WIDTH
@@ -480,8 +495,7 @@ export class TvDirector {
           return
         }
       }
-      console.error('onResizeCallback: could not find new range!')
-      // TODO: do a last resort sequential find from zero in case of error
+      await curDir.bruteForceSearch(curDir, prevNode, prevOffset)
       return
     }
 
@@ -505,7 +519,7 @@ export class TvDirector {
         return
       }
     }
-    console.error('onResizeCallback: could not find new range!')
+    await curDir.bruteForceSearch(curDir, prevNode, prevOffset)
   }
 
   initializeControls() {
