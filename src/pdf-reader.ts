@@ -16,8 +16,6 @@ import {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-// TODO: add debug panel to options.ts/html
-
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
 const MIN_SCALE = .4

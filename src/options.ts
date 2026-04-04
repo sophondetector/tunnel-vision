@@ -36,6 +36,10 @@ const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivEleme
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
+// debug panel
+const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
+const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
+
 function showErrorHeader(): void {
   ERROR_HEADER.classList.remove(HIDDEN)
 }
@@ -98,6 +102,29 @@ function showControlPanel(): void {
   CONTROL_PANEL_DIV.classList.remove("hidden")
   HELP_DIV.classList.add("hidden")
 }
+
+async function toggleDebugPanel(): Promise<void> {
+  const isOff = DEBUG_PANEL.classList.contains("hidden")
+  if (isOff) {
+    DEBUG_PANEL.classList.remove("hidden")
+    return
+  }
+  DEBUG_PANEL.classList.add("hidden")
+}
+
+document.addEventListener('keyup', (event) => {
+  if (!event.altKey) return
+  if (event.key === "D") {
+    toggleDebugPanel()
+  }
+})
+
+RE_RANGE.addEventListener('click', async function () {
+  const tab = await getCurrentTab()
+  chrome.tabs.sendMessage(tab.id!, TvMessage.INIT_RANGES, function () {
+    console.log(`sent message ${TvMessage.INIT_RANGES} to content.ts in open tab`)
+  })
+})
 
 HELP_TOGGLE.addEventListener('click', showHelp)
 

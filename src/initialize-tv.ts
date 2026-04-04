@@ -42,10 +42,12 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     const dirState = DIRECTOR.getDirectorState()
     sendResponse(dirState)
 
+  } else if (value === TvMessage.INIT_RANGES) {
+    DIRECTOR.initRanges()
+    sendResponse()
+
   } else {
-    console.error(`controlPanelListenerCallback: Unknown message received!!`)
-    console.log(`message value: ${value}`)
-    console.log(`message sender: ${sender}`)
+    console.error(`controlPanelListenerCallback: Unknown message! value ${value}; sender ${sender}`)
     sendResponse()
   }
 }
