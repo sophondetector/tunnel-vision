@@ -488,6 +488,41 @@ export class TvDirector {
     console.error('TvDirector.bothWaysSearch: could not find range!')
   }
 
+  async searchBehind(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
+    const rm = curDir.getRangeManager()
+    for (let idx = startIdx; idx >= 0; idx--) {
+      const iterRange = rm.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(prevNode, prevOffset)) {
+        curDir.setWindowAroundRange(iterRange)
+        rm.setRangeIdx(idx)
+        return
+      }
+    }
+    console.error('TvDirector.searchBehind: could not find range!')
+  }
+
+  async searchAhead(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
+    const rm = curDir.getRangeManager()
+    const len = rm.getRangesLength() ?? 0
+    for (let idx = startIdx; idx < len; idx++) {
+      const iterRange = rm.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(prevNode, prevOffset)) {
+        curDir.setWindowAroundRange(iterRange)
+        rm.setRangeIdx(idx)
+        return
+      }
+    }
+    console.error('TvDirector.searchAhead: could not find range!')
+  }
+
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     const newWidth = window.innerWidth
     const delta = newWidth - WIN_WIDTH
@@ -510,8 +545,9 @@ export class TvDirector {
     const prevOffset = Math.max(1, prevRange.startOffset)
     // NOTE: making sure prevOffset is at least one fixes the bug where smaller window leads to range directly before we want getting picked
 
-    let rangeIdx = rangeManager.getRangeIdx()
+    const rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
+    const len = rangeManager.getRangesLength() ?? 0
 
     // curDir.bothWaysSearch(curDir, prevNode, prevOffset, rangeIdx)
 
@@ -519,45 +555,22 @@ export class TvDirector {
     // positive delta means bigger window; negative means smaller
     // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
-      rangeIdx = Math.min(rangeIdx + padding, rangeManager.getRangesLength() as number)
-      // console.log('the window became smaller')
-      for (rangeIdx; rangeIdx >= 0; rangeIdx--) {
-        const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
-        if (iterRange === undefined) {
-          console.warn(`TvDirector.onResizeCallback: could not get range at index ${rangeIdx}`)
-          continue
-        }
-        if (iterRange.isPointInRange(prevNode, prevOffset)) {
-          curDir.setWindowAroundRange(iterRange)
-          rangeManager.setRangeIdx(rangeIdx)
-          return
-        }
-      }
-      await curDir.bruteForceSearch(curDir, prevNode, prevOffset)
+      curDir.searchBehind(
+        curDir,
+        prevNode,
+        prevOffset,
+        Math.min(rangeIdx + padding, len - 1)
+      )
       return
     }
 
     // if bigger window -> the new index is likely later -> so we go forwards
-    // console.log('the window became bigger')
-    rangeIdx = Math.max(rangeIdx - padding, 0)
-    const rangeLen = rangeManager.getRangesLength()
-    if (rangeLen === undefined) {
-      console.error(`TvDirector.onResizeCallback: could not get range length!`)
-      return
-    }
-    for (rangeIdx; rangeIdx < rangeLen; rangeIdx++) {
-      const iterRange = rangeManager.rangeIdx2Range(rangeIdx)
-      if (iterRange === undefined) {
-        console.warn(`TvDirector.onResizeCallback: could not get range at index ${rangeIdx}`)
-        continue
-      }
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
-        rangeManager.setRangeIdx(rangeIdx)
-        return
-      }
-    }
-    await curDir.bruteForceSearch(curDir, prevNode, prevOffset)
+    curDir.searchAhead(
+      curDir,
+      prevNode,
+      prevOffset,
+      Math.max(rangeIdx - padding, 0)
+    )
   }
 
   initializeControls() {
