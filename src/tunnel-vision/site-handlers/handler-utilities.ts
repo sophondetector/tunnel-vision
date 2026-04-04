@@ -4,7 +4,7 @@ export interface TvHandler {
   initDelay: () => Promise<void>
 }
 
-export function defaultBlankDelay(): Promise<void> {
+export function blankDelay(): Promise<void> {
   return new Promise(res => {
     res()
   })
@@ -75,6 +75,7 @@ export function waitForSelector(selector: string, root: Element | Document, time
     // reject = (err) => { observer.disconnect(); clearTimeout(timer); origReject(err); }
   });
 }
+
 
 // const lec = "div[data-testid='primaryColumn']"
 //

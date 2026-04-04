@@ -1,4 +1,4 @@
-import { TvHandler, defaultBlankDelay } from "./handler-utilities"
+import { TvHandler, blankDelay } from "./handler-utilities"
 
 function mdnElementGetter(): Array<Element> | null {
   let mainContent;
@@ -12,5 +12,5 @@ function mdnElementGetter(): Array<Element> | null {
 export const mdnHandler: TvHandler = {
   getTvElements: mdnElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }

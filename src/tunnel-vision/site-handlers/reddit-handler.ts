@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./handler-utilities"
+import { blankDelay, TvHandler } from "./handler-utilities"
 
 function redditElementGetter(): Array<Element> | null {
   const res = []
@@ -23,6 +23,6 @@ function redditElementGetter(): Array<Element> | null {
 export const redditHandler: TvHandler = {
   getTvElements: redditElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }
 

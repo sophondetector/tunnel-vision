@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./handler-utilities"
+import { blankDelay, TvHandler } from "./handler-utilities"
 
 export function vaticanElementGetter(): Array<Element> | null {
   const mainContent = document.querySelector('.documento')
@@ -12,5 +12,5 @@ export function vaticanElementGetter(): Array<Element> | null {
 export const vaticanHandler: TvHandler = {
   getTvElements: vaticanElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }

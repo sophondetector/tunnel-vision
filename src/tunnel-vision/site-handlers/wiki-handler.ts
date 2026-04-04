@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./handler-utilities"
+import { blankDelay, TvHandler } from "./handler-utilities"
 
 function wikipediaElementGetter(): Array<Element> | null {
   const candidates = ['#mw-content-text', '#bodyContent']
@@ -32,6 +32,6 @@ function wikipediaElementGetter(): Array<Element> | null {
 export const wikipediaHandler: TvHandler = {
   getTvElements: wikipediaElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }
 

@@ -1,4 +1,4 @@
-import { TvHandler, defaultBlankDelay } from "./handler-utilities"
+import { TvHandler, blankDelay } from "./handler-utilities"
 
 function jpostElementGetter(): Array<Element> | null {
   const content = Array.from(document.querySelectorAll('article'))
@@ -11,5 +11,5 @@ function jpostElementGetter(): Array<Element> | null {
 export const jpostHandler: TvHandler = {
   getTvElements: jpostElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }

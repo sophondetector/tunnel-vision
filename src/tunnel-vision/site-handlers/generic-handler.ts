@@ -1,4 +1,4 @@
-import { TvHandler, defaultBlankDelay } from "./handler-utilities"
+import { TvHandler, blankDelay } from "./handler-utilities"
 
 // FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
 
@@ -63,5 +63,5 @@ export function genericElementGetter(): Array<Element> | null {
 export const genericHandler: TvHandler = {
   getTvElements: genericElementGetter,
   getScrollableElement: () => undefined,
-  initDelay: defaultBlankDelay
+  initDelay: blankDelay
 }
