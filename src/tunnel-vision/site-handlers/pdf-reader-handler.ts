@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./handler-utilities"
 
 export function isPdfReader(): boolean {
   return window.location.href.match(/pdf-reader.html$/g) ? true : false

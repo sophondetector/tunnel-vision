@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./handler-utilities"
 
 function wikipediaElementGetter(): Array<Element> | null {
   const candidates = ['#mw-content-text', '#bodyContent']

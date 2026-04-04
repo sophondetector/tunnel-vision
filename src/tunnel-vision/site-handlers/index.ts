@@ -5,7 +5,7 @@ import { substackHandler, isActuallySubstack } from "./substack-handler"
 import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
 import { jpostHandler } from "./jpost-handler"
-import { TvHandler } from "./tv-handler-type"
+import { TvHandler } from "./handler-utilities"
 import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 

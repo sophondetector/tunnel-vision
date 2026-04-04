@@ -1,4 +1,4 @@
-import { TvHandler } from "./tv-handler-type"
+import { TvHandler } from "./handler-utilities"
 
 const GROK_DELAY_TIME = 2000
 

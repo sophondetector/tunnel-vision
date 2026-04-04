@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./handler-utilities"
 
 const SCROLLABLE_ELE_LECS = [
   '#post-viewer > div > div > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.content-cFaSRD > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.post-XKrpvd',

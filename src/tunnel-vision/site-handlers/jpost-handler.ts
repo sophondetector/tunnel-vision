@@ -1,4 +1,4 @@
-import { TvHandler, defaultBlankDelay } from "./tv-handler-type"
+import { TvHandler, defaultBlankDelay } from "./handler-utilities"
 
 function jpostElementGetter(): Array<Element> | null {
   const content = Array.from(document.querySelectorAll('article'))

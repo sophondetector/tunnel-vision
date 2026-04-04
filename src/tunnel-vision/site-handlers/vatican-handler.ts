@@ -1,4 +1,4 @@
-import { defaultBlankDelay, TvHandler } from "./tv-handler-type"
+import { defaultBlankDelay, TvHandler } from "./handler-utilities"
 
 export function vaticanElementGetter(): Array<Element> | null {
   const mainContent = document.querySelector('.documento')

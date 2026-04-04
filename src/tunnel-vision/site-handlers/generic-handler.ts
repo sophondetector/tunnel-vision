@@ -1,4 +1,4 @@
-import { TvHandler, defaultBlankDelay } from "./tv-handler-type"
+import { TvHandler, defaultBlankDelay } from "./handler-utilities"
 
 // FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
 
