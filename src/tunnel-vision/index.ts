@@ -143,6 +143,7 @@ export class TvDirector {
     SELECTION = true
 
     TvScreen.setActiveRange(range)
+    this.scrollRangeIntoView(range)
   }
 
   setSelectionListener(): void {
@@ -549,28 +550,27 @@ export class TvDirector {
     await rangeManager.initRanges(curDir.getElementArray())
     const len = rangeManager.getRangesLength() ?? 0
 
-    // curDir.bothWaysSearch(curDir, prevNode, prevOffset, rangeIdx)
+    // NOTE: we have two other options for searching for the range; bothWaysSearch and bruteForceSearch
 
     const padding = 5
     // positive delta means bigger window; negative means smaller
-    // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
+      // if smaller window -> the index is likely earlier -> so we go backwards
       curDir.searchBehind(
         curDir,
         prevNode,
         prevOffset,
-        Math.min(rangeIdx + padding, len - 1)
+        Math.min(rangeIdx + padding, Math.max(len - 1, 0))
       )
-      return
+    } else {
+      // if bigger window -> the new index is likely later -> so we go forwards
+      curDir.searchAhead(
+        curDir,
+        prevNode,
+        prevOffset,
+        Math.max(rangeIdx - padding, 0)
+      )
     }
-
-    // if bigger window -> the new index is likely later -> so we go forwards
-    curDir.searchAhead(
-      curDir,
-      prevNode,
-      prevOffset,
-      Math.max(rangeIdx - padding, 0)
-    )
   }
 
   initializeControls() {
