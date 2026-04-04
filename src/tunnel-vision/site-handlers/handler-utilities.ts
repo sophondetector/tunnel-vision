@@ -5,9 +5,7 @@ export interface TvHandler {
 }
 
 export function blankDelay(): Promise<void> {
-  return new Promise(res => {
-    res()
-  })
+  return new Promise(resolve => resolve())
 }
 
 function isScrollable(el: Element): boolean {
