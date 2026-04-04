@@ -23,7 +23,6 @@ function grokDelayer(): Promise<void> {
   )
 }
 
-// FIXME: fix highlight range not redrawing properly on window resize in grok (same problem on substack)
 function grokGetScrollable(): Element | undefined {
   return document.querySelector('main div.scrollbar-gutter-stable') ?? undefined
 }
