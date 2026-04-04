@@ -16,7 +16,6 @@ import {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-// TODO: hide debug panel by default
 // TODO: add debug panel to options.ts/html
 
 const DEFAULT_SCALE = 2
@@ -56,6 +55,7 @@ const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElem
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
 // debug panel
+const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
 
 // state variables
@@ -281,6 +281,22 @@ async function initRanges(): Promise<void> {
   }
   await dir.initRanges()
 }
+
+async function toggleDebugPanel(): Promise<void> {
+  const isOff = DEBUG_PANEL.classList.contains("hidden")
+  if (isOff) {
+    DEBUG_PANEL.classList.remove("hidden")
+    return
+  }
+  DEBUG_PANEL.classList.add("hidden")
+}
+
+document.addEventListener('keyup', (event) => {
+  if (!event.altKey) return
+  if (event.key === "D") {
+    toggleDebugPanel()
+  }
+})
 
 ZOOM_IN.addEventListener('click', zoomIn)
 
