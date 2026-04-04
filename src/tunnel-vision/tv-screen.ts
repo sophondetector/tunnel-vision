@@ -80,14 +80,15 @@ export class TvScreen {
 
     const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
 
-    rects.forEach(rect => {
+    for (let idx = 0; idx < rects.length; idx++) {
+      const rect = rects[idx]
       ctx.clearRect(
         rect.x - TV_SCREEN_BUFFER_RADIUS,
         rect.y - TV_SCREEN_BUFFER_RADIUS,
         rect.width + (TV_SCREEN_BUFFER_RADIUS * 2),
         rect.height + (TV_SCREEN_BUFFER_RADIUS * 2)
       );
-    });
+    }
   }
 
   static animate() {
