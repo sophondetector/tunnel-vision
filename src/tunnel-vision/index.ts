@@ -451,6 +451,43 @@ export class TvDirector {
     console.error(`TvDirector.bruteForceSearch: search for range failed`)
   }
 
+  async bothWaysSearch(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
+    const rm = curDir.getRangeManager()
+    let iterRange = rm.rangeIdx2Range(startIdx)
+    if (iterRange && iterRange.isPointInRange(prevNode, prevOffset)) {
+      curDir.setWindowAroundRange(iterRange)
+      rm.setRangeIdx(startIdx)
+      return
+    }
+
+    const len = rm.getRangesLength() ?? 0
+    let topIdx = startIdx + 1
+    let botIdx = startIdx - 1
+
+    while (topIdx < len && botIdx >= 0) {
+      if (topIdx < len) {
+        const topRange = rm.rangeIdx2Range(topIdx)
+        if (topRange && topRange.isPointInRange(prevNode, prevOffset)) {
+          curDir.setWindowAroundRange(topRange)
+          rm.setRangeIdx(topIdx)
+          return
+        }
+        topIdx++
+      }
+      if (botIdx >= 0) {
+        const botRange = rm.rangeIdx2Range(botIdx)
+        if (botRange && botRange.isPointInRange(prevNode, prevOffset)) {
+          curDir.setWindowAroundRange(botRange)
+          rm.setRangeIdx(botIdx)
+          return
+        }
+        botIdx--
+      }
+    }
+
+    console.error('TvDirector.bothWaysSearch: could not find range!')
+  }
+
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     const newWidth = window.innerWidth
     const delta = newWidth - WIN_WIDTH
@@ -473,11 +510,12 @@ export class TvDirector {
     const prevOffset = Math.max(1, prevRange.startOffset)
     // NOTE: making sure prevOffset is at least one fixes the bug where smaller window leads to range directly before we want getting picked
 
+    let rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
 
-    let rangeIdx = rangeManager.getRangeIdx()
-    const padding = 5
+    // curDir.bothWaysSearch(curDir, prevNode, prevOffset, rangeIdx)
 
+    const padding = 5
     // positive delta means bigger window; negative means smaller
     // if smaller window -> the index is likely earlier -> so we go backwards
     if (delta < 0) {
