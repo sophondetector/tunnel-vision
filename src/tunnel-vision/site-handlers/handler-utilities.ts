@@ -17,7 +17,6 @@ function isScrollable(ele: Element): boolean {
   return (overflowY == 'scroll' || overflowY == 'auto')
 }
 
-// FIXME: make this function non blocking i.e. without a while loop
 // NOTE: function for discovering the scrollable element: start somewhere deep in the page and recurse upwards
 export function discoverScrollable(startElement: Element): Element | undefined {
   let ele = startElement
