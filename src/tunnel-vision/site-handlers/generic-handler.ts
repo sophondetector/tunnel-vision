@@ -51,6 +51,9 @@ function getBodyChildWithMostText(): Element | null {
 export function genericElementGetter(): Array<Element> | null {
   let res: Element | Array<Element> | null = null;
 
+  res = discoverScrollableFromCenter()
+  if (res) return [res]
+
   res = getArticleEle()
   if (res) return res
 
