@@ -1,5 +1,6 @@
 const LOG_ELEMENTS = false
 
+// TODO: make getTvElements and getScrollableElement async so they dont block normal user interaction and so the default getScrollableElement can be discoverScrollableFromCenterPromise
 export interface TvHandler {
   getTvElements: () => Array<Element> | null
   getScrollableElement: () => Element | null
@@ -49,6 +50,15 @@ export function discoverScrollableFromCenter(): Element | null {
     return null
   }
   return scrollable
+}
+
+export async function discoverScrollableFromCenterPromise(): Promise<Element | null> {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      const scrollable = discoverScrollableFromCenter()
+      resolve(scrollable);
+    });
+  });
 }
 
 export function waitForSelector(selector: string, root: Element | Document, timeout: number = 10_000): Promise<Element | Error> {
