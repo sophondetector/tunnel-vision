@@ -370,7 +370,7 @@ export class TvDirector {
     const centerY = rect.top + rect.height / 2;
     const topElement = document.elementFromPoint(centerX, centerY)
     if (!topElement) return false
-    // if the range is not in the topElement we return false
+    // if the range does not intersect the topElement we return false
     const ans = !range.intersectsNode(topElement)
     // console.log(`rangeIsOccluded: ${ans}`)
     return ans
