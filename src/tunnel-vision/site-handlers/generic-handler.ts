@@ -72,10 +72,8 @@ export const genericHandler: TvHandler = {
   getTvElements: genericElementGetter,
   getScrollableElement: discoverScrollableFromCenter,
   initDelay: async () => {
-    await Promise.all([
-      waitForNetworkIdle(100, 5000, 0),
-      waitForDOMIdle(100)
-    ])
+    await waitForNetworkIdle(100, 5000, 0)
+    await waitForDOMIdle(50)
     console.log('genericHandler.initDelay: done!')
   }
 }
