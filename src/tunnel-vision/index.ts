@@ -364,6 +364,18 @@ export class TvDirector {
     console.log('shift down!')
   }
 
+  rangeIsOccluded(range: Range): boolean {
+    const rect = range.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const topElement = document.elementFromPoint(centerX, centerY)
+    if (!topElement) return false
+    // if the range is not in the topElement we return false
+    const ans = !range.intersectsNode(topElement)
+    // console.log(`rangeIsOccluded: ${ans}`)
+    return ans
+  }
+
   /**
   * Scrolls the viewport so that the given DOMRect becomes fully visible.
   * 
@@ -402,7 +414,17 @@ export class TvDirector {
   }
 
   useScrollableToScrollRangeIntoView(scrollable: Element, range: Range, scrollToMiddle: boolean = true): void {
+
     const rect = range.getBoundingClientRect()
+
+    if (this.rangeIsOccluded(range)) {
+      scrollable.scrollBy({
+        top: rect.y - (window.innerHeight / 2),
+        left: rect.x - (window.innerWidth / 2),
+        behavior: 'smooth',
+      })
+      return
+    }
 
     const vw = scrollable.clientWidth;
     const vh = scrollable.clientHeight;
