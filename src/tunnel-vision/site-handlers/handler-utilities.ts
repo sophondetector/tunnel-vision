@@ -1,3 +1,5 @@
+const LOG_ELEMENTS = false
+
 export interface TvHandler {
   getTvElements: () => Array<Element> | null
   getScrollableElement: () => Element | null
@@ -8,12 +10,14 @@ export function blankDelay(): Promise<void> {
   return new Promise(resolve => resolve())
 }
 
-function isScrollable(el: Element): boolean {
-  return el.scrollHeight > el.clientHeight
+function isScrollable(ele: Element): boolean {
+  const map = ele.computedStyleMap()
+  const overflowY = map.get('overflow-y')
+  return (overflowY == 'scroll' || overflowY == 'auto')
 }
 
 // NOTE: function for discovering the scrollable element: start somewhere deep in the page and recurse upwards
-export function discoverScrollable(startElement: Element, logElement: boolean = false): Element | undefined {
+export function discoverScrollable(startElement: Element): Element | undefined {
   let ele = startElement
 
   while (!isScrollable(ele)) {
@@ -24,7 +28,7 @@ export function discoverScrollable(startElement: Element, logElement: boolean = 
     }
   }
 
-  if (logElement) {
+  if (LOG_ELEMENTS) {
     console.log(`discoverScrollable: found scrollable ele`)
     console.log(ele)
   }
@@ -32,13 +36,13 @@ export function discoverScrollable(startElement: Element, logElement: boolean = 
   return ele
 }
 
-export function discoverScrollableFromCenter(logElement: boolean = false): Element | null {
+export function discoverScrollableFromCenter(): Element | null {
   const centerEle = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2)
   if (centerEle === null) {
     console.warn(`discoverScrollableFromCenter: could not get element at center of screen!`)
     return null
   }
-  const scrollable = discoverScrollable(centerEle, logElement)
+  const scrollable = discoverScrollable(centerEle)
   if (scrollable === undefined) {
     console.log(`discoverScrollableFromCenter: no scrollable element found`)
     return null
