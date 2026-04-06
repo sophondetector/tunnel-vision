@@ -6,8 +6,8 @@ function grokElementGetter(): Array<Element> | null {
   return [content]
 }
 
-function grokGetScrollable(): Element | undefined {
-  return document.querySelector('main div.scrollbar-gutter-stable') ?? undefined
+function grokGetScrollable(): Element | null {
+  return document.querySelector('main div.scrollbar-gutter-stable')
 }
 
 export const grokHandler: TvHandler = {

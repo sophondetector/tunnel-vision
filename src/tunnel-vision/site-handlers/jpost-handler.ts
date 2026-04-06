@@ -10,6 +10,6 @@ function jpostElementGetter(): Array<Element> | null {
 
 export const jpostHandler: TvHandler = {
   getTvElements: jpostElementGetter,
-  getScrollableElement: () => undefined,
+  getScrollableElement: () => null,
   initDelay: blankDelay
 }

@@ -1,6 +1,6 @@
 export interface TvHandler {
   getTvElements: () => Array<Element> | null
-  getScrollableElement: () => Element | undefined
+  getScrollableElement: () => Element | null
   initDelay: () => Promise<void>
 }
 
@@ -12,15 +12,9 @@ function isScrollable(el: Element): boolean {
   return el.scrollHeight > el.clientHeight
 }
 
-// NOTE: function for discovering the scrollable element
-// start somewhere deep in the page and recurse upwards
-export function discoverScrollable(deepSelector: string, logElement: boolean = false): Element | undefined {
-
-  let ele = document.querySelector(deepSelector)
-  if (!ele) {
-    console.error(`discoverScrollable: selector ${deepSelector} did not return an element!`)
-    return undefined
-  }
+// NOTE: function for discovering the scrollable element: start somewhere deep in the page and recurse upwards
+export function discoverScrollable(startElement: Element, logElement: boolean = false): Element | undefined {
+  let ele = startElement
 
   while (!isScrollable(ele)) {
     ele = ele.parentElement as Element
@@ -30,12 +24,26 @@ export function discoverScrollable(deepSelector: string, logElement: boolean = f
     }
   }
 
-  console.log(`discoverScrollable: found scrollable ele`)
   if (logElement) {
+    console.log(`discoverScrollable: found scrollable ele`)
     console.log(ele)
   }
 
   return ele
+}
+
+export function discoverScrollableFromCenter(logElement: boolean = false): Element | null {
+  const centerEle = document.elementFromPoint(window.innerWidth / 2, window.innerHeight / 2)
+  if (centerEle === null) {
+    console.warn(`discoverScrollableFromCenter: could not get element at center of screen!`)
+    return null
+  }
+  const scrollable = discoverScrollable(centerEle, logElement)
+  if (scrollable === undefined) {
+    console.log(`discoverScrollableFromCenter: no scrollable element found`)
+    return null
+  }
+  return scrollable
 }
 
 export function waitForSelector(selector: string, root: Element | Document, timeout: number = 10_000): Promise<Element | Error> {
@@ -223,3 +231,108 @@ export async function waitForNetworkIdle(
   return promise as Promise<void>;
 }
 
+
+/**
+ * Options for waitForDOMIdle
+ */
+export interface WaitForDOMIdleOptions {
+  /**
+   * Maximum time to wait before rejecting the promise (in milliseconds).
+   * Set to 0 to disable timeout.
+   * @default 30000
+   */
+  timeout?: number;
+
+  /**
+   * The DOM node to observe for mutations.
+   * @default document.documentElement
+   */
+  target?: Node;
+
+  /**
+   * MutationObserver configuration.
+   * @default { childList: true, subtree: true, attributes: true, characterData: true }
+   */
+  observerOptions?: MutationObserverInit;
+}
+
+/**
+ * Waits until the DOM has been stable (no mutations) for the specified idle time.
+ *
+ * @param idleTime - Milliseconds of no DOM changes before resolving
+ * @param options - Configuration options
+ * @returns Promise that resolves when DOM has been idle for `idleTime` ms
+ */
+export async function waitForDOMIdle(
+  idleTime: number = 500,
+  options: WaitForDOMIdleOptions = {}
+): Promise<void> {
+  const {
+    timeout = 30000,
+    target = document.documentElement,
+    observerOptions = {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    },
+  } = options;
+
+  if (idleTime <= 0) {
+    return Promise.resolve();
+  }
+
+  let resolvePromise: () => void;
+  let rejectPromise: (reason?: any) => void;
+  let idleTimer: NodeJS.Timeout | number | null = null;
+  let timeoutId: NodeJS.Timeout | number | null = null;
+
+  const promise = new Promise<void>((resolve, reject) => {
+    resolvePromise = resolve;
+    rejectPromise = reject;
+  });
+
+  const observer = new MutationObserver(() => {
+    // Any mutation resets the idle timer
+    resetIdleTimer();
+  });
+
+  function resetIdleTimer(): void {
+    if (idleTimer) {
+      clearTimeout(idleTimer as NodeJS.Timeout);
+    }
+
+    idleTimer = setTimeout(() => {
+      cleanup();
+      resolvePromise();
+    }, idleTime);
+  }
+
+  function cleanup(): void {
+    if (idleTimer) {
+      clearTimeout(idleTimer as NodeJS.Timeout);
+      idleTimer = null;
+    }
+    if (timeoutId) {
+      clearTimeout(timeoutId as NodeJS.Timeout);
+      timeoutId = null;
+    }
+    observer.disconnect();
+  }
+
+  // Overall timeout protection
+  if (timeout > 0) {
+    timeoutId = setTimeout(() => {
+      cleanup();
+      rejectPromise(new Error(`waitForDOMIdle timed out after ${timeout}ms`));
+    }, timeout);
+  }
+
+  // Start observing
+  observer.observe(target, observerOptions);
+
+  // Start the initial idle timer (in case there are no mutations)
+  resetIdleTimer();
+
+  return promise;
+}

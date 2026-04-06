@@ -17,7 +17,7 @@ function isScrollable(ele: Element): boolean {
   return (overflowY == 'scroll' || overflowY == 'auto')
 }
 
-function substackScrollableElement(): Element | undefined {
+function substackScrollableElement(): Element | null {
   for (const lec of SCROLLABLE_ELE_LECS) {
     const ele = document.querySelector(lec)
     if (ele && isScrollable(ele)) {
@@ -25,7 +25,7 @@ function substackScrollableElement(): Element | undefined {
     }
   }
   console.error('substackScrollableElement: could not find scrollable element')
-  return undefined
+  return null
 }
 
 function substackElementGetter(): Array<Element> | null {

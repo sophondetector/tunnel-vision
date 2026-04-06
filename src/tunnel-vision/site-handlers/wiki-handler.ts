@@ -31,7 +31,7 @@ function wikipediaElementGetter(): Array<Element> | null {
 
 export const wikipediaHandler: TvHandler = {
   getTvElements: wikipediaElementGetter,
-  getScrollableElement: () => undefined,
+  getScrollableElement: () => null,
   initDelay: blankDelay
 }
 

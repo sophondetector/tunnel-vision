@@ -11,6 +11,6 @@ function mdnElementGetter(): Array<Element> | null {
 
 export const mdnHandler: TvHandler = {
   getTvElements: mdnElementGetter,
-  getScrollableElement: () => undefined,
+  getScrollableElement: () => null,
   initDelay: blankDelay
 }
