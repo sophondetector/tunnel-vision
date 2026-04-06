@@ -27,6 +27,8 @@ DOMAIN_HANDLER_MAP.set("grok.com", grokHandler)
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
 let HANDLER: TvHandler | null = null
+let SCROLLABLE_ELEMENT: Element | null = null
+let HAS_SCROLLABLE_ELEMENT: boolean = true
 
 export class HandlerManager {
   static getHandler(): TvHandler | null {
@@ -92,10 +94,23 @@ export class HandlerManager {
     return ea
   }
 
-  static getScrollableElement(): Element | undefined | null {
+  static getScrollableElement(resetScrollable: boolean = false): Element | undefined | null {
+    if (SCROLLABLE_ELEMENT && resetScrollable === false) {
+      return SCROLLABLE_ELEMENT
+    }
+
+    if (HAS_SCROLLABLE_ELEMENT === false) return null
+
     const handler = HandlerManager.getHandler()
     if (handler === null) return null
-    return handler.getScrollableElement()
+
+    SCROLLABLE_ELEMENT = handler.getScrollableElement()
+
+    if (!SCROLLABLE_ELEMENT) {
+      HAS_SCROLLABLE_ELEMENT = false
+    }
+
+    return SCROLLABLE_ELEMENT
   }
 
   static getTopLevelHost(): string | null {

@@ -375,8 +375,7 @@ export class TvDirector {
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
   scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): void {
-    const handler = HandlerManager.getHandler()
-    const scrollable = handler!.getScrollableElement()
+    const scrollable = HandlerManager.getScrollableElement(false)
     if (scrollable) {
       this.useScrollableToScrollRangeIntoView(scrollable, range, scrollToMiddle)
       return
