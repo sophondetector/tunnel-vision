@@ -27,7 +27,7 @@ function getGenericTextEles(): Array<Element> | null {
 }
 
 function getBodyChildWithMostText(): Element | null {
-  const candidates = document.querySelectorAll('body > *')
+  const candidates = document.body.children
   let winner;
   let maxLen = 0;
   for (const cand of candidates) {
