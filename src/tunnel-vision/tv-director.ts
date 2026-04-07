@@ -118,7 +118,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
-  drawAroundSelection(): void {
+  drawAroundSelection(curDir: TvDirector): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
       SELECTION = false
@@ -137,12 +137,12 @@ export class TvDirector {
     SELECTION = true
 
     TvScreen.setActiveRange(range)
-    this.scrollRangeIntoView(range)
+    curDir.scrollRangeIntoView(range)
   }
 
   setSelectionListener(): void {
     document.addEventListener(
-      "selectionchange", this.drawAroundSelection, { capture: true }
+      "selectionchange", () => this.drawAroundSelection(this), { capture: true }
     )
   }
 
@@ -254,8 +254,6 @@ export class TvDirector {
       return
     }
     this.toggleScreenOn()
-    const curRange = this.RANGE_MANAGER?.getCurrentRange()
-    if (curRange) this.setWindowAroundRange(curRange)
   }
 
   toggleScreenOn(): void {
@@ -538,7 +536,7 @@ export class TvDirector {
 
     if (SELECTION) {
       await rangeManager.initRanges(curDir.getElementArray())
-      curDir.drawAroundSelection()
+      curDir.drawAroundSelection(curDir)
       return
     }
 
