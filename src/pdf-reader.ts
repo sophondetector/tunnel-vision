@@ -129,11 +129,8 @@ async function zoomFit(): Promise<void> {
   // Choose the smaller scale so the whole page fits (no overflow)
   const newScale = Math.min(scaleX, scaleY)
 
-  // Clamp newScale to existing increment scale
-  const newScaleInc = getClosestZoomInc(newScale)
-
   // Clamp to existing min/max
-  ZOOM_SCALE = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScaleInc))
+  ZOOM_SCALE = await getClosestZoomInc(newScale)
 
   // Update zoom radius
   setRadiusBasedOnZoom()
@@ -146,7 +143,7 @@ async function zoomFit(): Promise<void> {
   displayZoomPercent()
 }
 
-function getClosestZoomInc(scale: number): number {
+async function getClosestZoomInc(scale: number): Promise<number> {
   if (scale <= MIN_SCALE) return MIN_SCALE;
   if (scale >= MAX_SCALE) return MAX_SCALE;
 
