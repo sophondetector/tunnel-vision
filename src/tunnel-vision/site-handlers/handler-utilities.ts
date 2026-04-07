@@ -112,7 +112,8 @@ export async function waitForNetworkIdle(
 ): Promise<void> {
 
   let inflight = 0;
-  let lastActivity = Date.now();
+  //@ts-ignore NOTE: If you try to npm run build without this ignore here the compiler gets mad
+  let lastActivity;
   //@ts-ignore
   let resolvePromise;
   //@ts-ignore
