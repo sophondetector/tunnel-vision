@@ -15,5 +15,6 @@ function pdfReaderScrollableElement(): Element {
 export const pdfReaderHandler: TvHandler = {
   getTvElements: pdfReaderElementGetter,
   getScrollableElement: pdfReaderScrollableElement,
-  initDelay: blankDelay
+  initDelay: blankDelay,
+  mutationHandler: null
 }

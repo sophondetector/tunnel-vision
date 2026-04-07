@@ -63,6 +63,7 @@ export class TvDirector {
       TvScreen.animate()
       this.setMouseUpListener()
       this.setSelectionListener()
+      this.setMutationObserver()
       this.toggleScreenOff()
 
       this.setDirectorState(TvDirectorState.READY)
@@ -633,5 +634,37 @@ export class TvDirector {
     }, {
       capture: true
     })
+  }
+
+  setMutationObserver(): void {
+    const handler = HandlerManager.getHandler()
+    if (!handler) {
+      console.error(`setMutationObserver: could not get handler!`)
+      return
+    }
+
+    if (handler.mutationHandler === null) {
+      console.log(`setMutationObserver: no mutationHandler - exiting`)
+      return
+    }
+
+    const { mutationCallback, getMutationTarget } = handler.mutationHandler
+
+    const target = getMutationTarget()
+
+    if (!target) {
+      console.warn(`setMutationObserver: could not get mutation observer target - exiting`)
+      return
+    }
+
+    // NOTE: this needs to add new elements to this.ELEMENT_ARRAY and then re-range
+    const observer = new MutationObserver((mutations) => mutationCallback(this, mutations))
+
+    observer.observe(target, {
+      subtree: true,
+      childList: true
+    })
+
+    console.log(`setMutationObserver: mutation observer set`)
   }
 }

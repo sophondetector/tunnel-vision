@@ -16,5 +16,6 @@ export const grokHandler: TvHandler = {
   initDelay: async () => {
     await waitForNetworkIdle(300, 10_000, 0)
     // console.log('grokHandler.initDelay: done!')
-  }
+  },
+  mutationHandler: null
 }

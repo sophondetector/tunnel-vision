@@ -23,6 +23,7 @@ function redditElementGetter(): Array<Element> | null {
 export const redditHandler: TvHandler = {
   getTvElements: redditElementGetter,
   getScrollableElement: () => null,
-  initDelay: blankDelay
+  initDelay: blankDelay,
+  mutationHandler: null
 }
 

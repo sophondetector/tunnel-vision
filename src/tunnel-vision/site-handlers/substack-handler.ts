@@ -45,5 +45,6 @@ function substackElementGetter(): Array<Element> | null {
 export const substackHandler: TvHandler = {
   getTvElements: substackElementGetter,
   getScrollableElement: substackScrollableElement,
-  initDelay: blankDelay
+  initDelay: blankDelay,
+  mutationHandler: null
 }

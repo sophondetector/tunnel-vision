@@ -12,5 +12,6 @@ export function vaticanElementGetter(): Array<Element> | null {
 export const vaticanHandler: TvHandler = {
   getTvElements: vaticanElementGetter,
   getScrollableElement: () => null,
-  initDelay: blankDelay
+  initDelay: blankDelay,
+  mutationHandler: null
 }

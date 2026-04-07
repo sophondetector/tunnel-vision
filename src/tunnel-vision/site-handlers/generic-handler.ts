@@ -75,5 +75,6 @@ export const genericHandler: TvHandler = {
     await waitForNetworkIdle(100, 5000, 0)
     await waitForDOMIdle(50)
     console.log('genericHandler.initDelay: done!')
-  }
+  },
+  mutationHandler: null
 }

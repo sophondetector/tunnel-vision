@@ -7,6 +7,7 @@ export const wikipediaHandler: TvHandler = {
     return [main]
   },
   getScrollableElement: () => null,
-  initDelay: blankDelay
+  initDelay: blankDelay,
+  mutationHandler: null
 }
 

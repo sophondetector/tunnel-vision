@@ -1,3 +1,5 @@
+import { TvDirector } from "../tv-director"
+
 const LOG_ELEMENTS = false
 
 // TODO: make getTvElements and getScrollableElement async so they dont block normal user interaction and so the default getScrollableElement can be discoverScrollableFromCenterPromise
@@ -5,6 +7,12 @@ export interface TvHandler {
   getTvElements: () => Array<Element> | null
   getScrollableElement: () => Element | null
   initDelay: () => Promise<void>
+  mutationHandler: TvMutationSubHandler | null
+}
+
+export interface TvMutationSubHandler {
+  mutationCallback: (curDir: TvDirector, mutations: Array<MutationRecord>) => void
+  getMutationTarget: () => Node | null
 }
 
 export function blankDelay(): Promise<void> {
