@@ -59,6 +59,7 @@ export class TvDirector {
 
       this.initializeControls()
       this.initializeOnResizeCallback()
+      TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
       TvScreen.animate()
@@ -546,6 +547,8 @@ export class TvDirector {
   }
 
   async onResizeCallback(curDir: TvDirector): Promise<void> {
+    TvScreen.setBufferRadiusByScreenSize()
+
     const newWidth = window.innerWidth
     const delta = newWidth - WIN_WIDTH
     if (delta === 0) return

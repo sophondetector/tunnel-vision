@@ -2,8 +2,6 @@ import { TvScreenState, TV_SCREEN_Z_INDEX } from "../common"
 
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
-// TODO: paramaterize buffer radius and allow user to control it
-const TV_SCREEN_BUFFER_RADIUS = 5
 
 // tv Screen State Variables
 const COLOR_RGBA = {
@@ -15,12 +13,51 @@ const COLOR_RGBA = {
 
 let ACTIVE_RANGE: Range | null = null
 let COLOR_HEX = '#0000ff'
+let TV_SCREEN_BUFFER_RADIUS: number = 5
 
 function getFillStyle(): string {
   return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
 }
 
 export class TvScreen {
+
+  static setBufferRadius(radius: number): void {
+    TV_SCREEN_BUFFER_RADIUS = radius
+  }
+
+  /**
+   * Returns default character size in **physical pixels** (device pixels).
+   * This correctly reflects browser zoom + device pixel ratio.
+   */
+  static #getDefaultCharSize(): { width: number; height: number } {
+    const span = document.createElement('span');
+    span.textContent = 'M';
+    span.style.fontFamily = 'system-ui, sans-serif';
+    span.style.fontSize = '1rem';
+    span.style.position = 'absolute';
+    span.style.visibility = 'hidden';
+    span.style.whiteSpace = 'pre';
+    span.style.lineHeight = '1';
+
+    document.body.appendChild(span);
+
+    const rect = span.getBoundingClientRect();
+    document.body.removeChild(span);
+
+    const dpr = window.devicePixelRatio || 1;
+
+    return {
+      width: rect.width * dpr,   // physical pixels
+      height: rect.height * dpr  // physical pixels
+    };
+  }
+
+  static setBufferRadiusByScreenSize(): void {
+    const { width, height } = TvScreen.#getDefaultCharSize()
+    const newRad = (width + height) * .5 * .2
+    console.log(width, height, newRad)
+    TvScreen.setBufferRadius(newRad)
+  }
 
   static async create(): Promise<HTMLCanvasElement> {
     const canvas = document.createElement('canvas')
