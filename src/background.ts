@@ -38,7 +38,7 @@ function setIconPdf(): void {
   setIconReady()
 }
 
-function setIconFromState(state: TvDirectorState, tabId: number): void {
+function setIconFromState(state: TvDirectorState, _tabId: number): void {
   if (state === TvDirectorState.READY) {
     setIconReady()
   } else if (state === TvDirectorState.ERROR) {
@@ -50,7 +50,7 @@ function setIconFromState(state: TvDirectorState, tabId: number): void {
   } else if (state === TvDirectorState.PDF) {
     setIconPdf()
   } else {
-    console.warn(`background.ts: received unknown state ${state} from tab ${tabId}`)
+    // console.warn(`background.ts: received unknown state ${state} from tab ${_tabId}`)
   }
 }
 
