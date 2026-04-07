@@ -275,6 +275,8 @@ export class TvDirector {
       return
     }
     this.toggleScreenOn()
+    const curRange = this.RANGE_MANAGER?.getCurrentRange()
+    if (curRange) this.setWindowAroundRange(curRange)
   }
 
   toggleScreenOn(): void {

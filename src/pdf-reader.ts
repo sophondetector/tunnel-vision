@@ -13,6 +13,7 @@ import {
   soundIsOn,
   toggleSound
 } from './common';
+import { TvScreen } from './tunnel-vision/tv-screen';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -62,10 +63,16 @@ let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
 let ZOOM_SCALE = DEFAULT_SCALE
+let DEFAULT_BUFFER_RADIUS = 1
+
+function setRadiusBasedOnZoom(): void {
+  TvScreen.setBufferRadius(DEFAULT_BUFFER_RADIUS * ZOOM_SCALE * ZOOM_SCALE)
+}
 
 async function zoomIn(): Promise<void> {
   if (ZOOM_SCALE >= MAX_SCALE) return
   ZOOM_SCALE += SCALE_INC
+  setRadiusBasedOnZoom()
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
   await renderPage()
@@ -78,6 +85,7 @@ async function zoomIn(): Promise<void> {
 async function zoomOut(): Promise<void> {
   if (ZOOM_SCALE <= MIN_SCALE) return
   ZOOM_SCALE -= SCALE_INC
+  setRadiusBasedOnZoom()
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
   await renderPage()
@@ -87,7 +95,6 @@ async function zoomOut(): Promise<void> {
   displayZoomPercent()
 }
 
-// FIXME: when zoomed out the range padding is way too big
 async function zoomFit(): Promise<void> {
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
@@ -126,6 +133,9 @@ async function zoomFit(): Promise<void> {
 
   // Clamp to existing min/max
   ZOOM_SCALE = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScaleInc))
+
+  // Update zoom radius
+  setRadiusBasedOnZoom()
 
   // Re-render everything
   await renderPage()
