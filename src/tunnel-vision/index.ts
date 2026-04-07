@@ -153,6 +153,7 @@ export class TvDirector {
     )
   }
 
+  // FIXME: get rid of this; it's extraneous and duplicates events happening elsewhere
   setNavigateListener(): void {
     //TODO: replace this with a "milliseconds since last tree manipulation" debounce
     //@ts-ignore
