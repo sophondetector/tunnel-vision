@@ -95,6 +95,7 @@ async function zoomOut(): Promise<void> {
   displayZoomPercent()
 }
 
+// FIXME: this makes the pdf too small on the desktop
 async function zoomFit(): Promise<void> {
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
