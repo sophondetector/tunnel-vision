@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-gray-50">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,18 +17,24 @@
     :root {
       --serif: 'Georgia', 'Times New Roman', serif;
     }
+
     body {
       font-family: var(--serif);
     }
-    h1, h2, h3 {
+
+    h1,
+    h2,
+    h3 {
       font-family: var(--serif);
       font-weight: 600;
       letter-spacing: -0.025em;
     }
+
     /* Make sure text layer uses same font for selectable text */
     .textLayer {
       font-family: var(--serif) !important;
     }
+
     /* Optional: better canvas container */
     #viewerContainer {
       background: #f9fafb;
@@ -37,6 +44,7 @@
     }
   </style>
 </head>
+
 <body class="h-screen flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
 
   <!-- Header / Top Bar (for mobile / small screens) -->
@@ -48,13 +56,11 @@
   </header>
 
   <div class="flex flex-1 overflow-hidden">
-    
+
     <!-- Sidebar (fixed on desktop, toggleable on mobile) -->
-    <aside 
-        id="sidebar" 
-        class="bg-white border-r border-gray-200 w-72 flex-shrink-0 overflow-y-auto md:sticky md:top-0 md:h-screen"
-        style="width: 350px"
-    >
+    <aside id="sidebar"
+      class="bg-white border-r border-gray-200 w-72 flex-shrink-0 overflow-y-auto md:sticky md:top-0 md:h-screen"
+      style="width: 350px">
       <div class="p-6 space-y-6">
 
         <h1 class="text-2xl font-semibold text-gray-900 tracking-tight text-center">
@@ -64,23 +70,19 @@
         <!-- Navigation Controls -->
         <div class="flex flex-col gap-3">
           <div class="flex gap-2">
-            <button
-              id="prev"
-              class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition"
-            >
+            <button id="prev"
+              class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition">
               Previous
             </button>
-            <button
-              id="next"
-              class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm"
-            >
+            <button id="next"
+              class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm">
               Next
             </button>
           </div>
 
           <div class="text-center text-sm text-gray-600">
             Page: <span id="page_num" class="font-semibold text-indigo-700">1</span> /
-            <span id="page_count" class="font-semibold">?</span>
+            <span id="page-count" class="font-semibold">?</span>
           </div>
         </div>
 
@@ -88,23 +90,17 @@
         <div class="space-y-2 flex flex-col items-center gap-2">
           <h1 class="text-lg font-semibold text-gray-900 tracking-tight text-center">Zoom</h1>
           <div class="flex items-center gap-2">
-            <button
-              id="zoom-out"
-              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition"
-            >
+            <button id="zoom-out"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition">
               –
             </button>
             <span id="zoom-display" class="w-20 text-center font-medium text-indigo-700">100%</span>
-            <button
-              id="zoom-in"
-              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition"
-            >
+            <button id="zoom-in"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition">
               +
             </button>
-            <button
-              id="zoom-fit"
-              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition text-xs"
-            >
+            <button id="zoom-fit"
+              class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 transition text-xs">
               Fit
             </button>
           </div>
@@ -118,28 +114,26 @@
             <!-- Toggle Buttons -->
             <div class="flex flex-col gap-3 flex-1">
 
-              <button
-                id="screen-toggle"
-                class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1"
-              >
+              <button id="screen-toggle"
+                class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1">
                 Screen On / Off
               </button>
 
-              <button
-                id="sound-toggle"
-                class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1"
-              >
+              <button id="sound-toggle"
+                class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1">
                 <span>Sound On / Off</span>
                 <span> | </span>
                 <span id="sound-display">Sound is On</span>
               </button>
 
               <div id="volume-control">
-                <label for="volume-control" class="mb-2 block flex items-baseline justify-between text-sm font-medium text-gray-700">
+                <label for="volume-control"
+                  class="mb-2 block flex items-baseline justify-between text-sm font-medium text-gray-700">
                   <span>Sound Volume</span>
                   <span id="volume-display" class="text-lg font-semibold text-indigo-700">50%</span>
                 </label>
-                <input type="range" min="0" max="100" value="50" class="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200" id="volume-slider" />
+                <input type="range" min="0" max="100" value="50"
+                  class="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200" id="volume-slider" />
               </div>
 
             </div>
@@ -151,18 +145,13 @@
 
             <!-- Opacity -->
             <div>
-              <label for="opacity-slider" class="block text-sm font-medium text-gray-700 mb-2 flex items-baseline justify-between">
+              <label for="opacity-slider"
+                class="block text-sm font-medium text-gray-700 mb-2 flex items-baseline justify-between">
                 <span>Overlay Opacity</span>
                 <span id="opacity-display" class="text-lg font-semibold text-indigo-700">50%</span>
               </label>
-              <input
-                type="range"
-                min="1"
-                max="100"
-                value="50"
-                class="slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                id="opacity-slider"
-              >
+              <input type="range" min="1" max="100" value="50"
+                class="slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" id="opacity-slider">
             </div>
 
             <!-- Color -->
@@ -171,12 +160,8 @@
                 Highlight Color
               </label>
               <div class="flex items-center gap-3">
-                <input
-                  type="color"
-                  id="color-picker"
-                  value="#0000ff"
-                  class="w-12 h-12 rounded-md border border-gray-300 cursor-pointer p-1"
-                />
+                <input type="color" id="color-picker" value="#0000ff"
+                  class="w-12 h-12 rounded-md border border-gray-300 cursor-pointer p-1" />
                 <span class="text-sm text-gray-500">Click to choose</span>
               </div>
             </div>
@@ -187,10 +172,8 @@
         <!-- Debug (keep but styled subtly) -->
         <div id="debug-panel" class="hidden pt-4 border-t border-gray-200">
           <h2 class="text-lg font-medium text-gray-800 mb-2">Debug</h2>
-          <button
-            id="re-range"
-            class="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg border border-red-200 transition"
-          >
+          <button id="re-range"
+            class="w-full px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg border border-red-200 transition">
             Re-Range
           </button>
         </div>
@@ -198,17 +181,13 @@
       </div>
     </aside>
 
-    <div 
-        id="resizer" 
-        class="w-1 bg-gray-300 hover:bg-indigo-500 cursor-col-resize active:bg-indigo-600 flex-shrink-0 transition-colors"
-    >
+    <div id="resizer"
+      class="w-1 bg-gray-300 hover:bg-indigo-500 cursor-col-resize active:bg-indigo-600 flex-shrink-0 transition-colors">
     </div>
 
     <!-- Main Viewer Area -->
-    <main 
-        class="flex-1 overflow-auto bg-gray-100 flex items-start justify-center p-4 md:p-8"
-        style="position: relative"
-    >
+    <main class="flex-1 overflow-auto bg-gray-100 flex items-start justify-center p-4 md:p-8"
+      style="position: relative">
 
       <!-- pdf.js container wrapper -->
       <div id="viewerContainer" class="relative w-full bg-white shadow-xl rounded-lg border border-gray-200">
@@ -236,4 +215,5 @@
   <!-- </script> -->
 
 </body>
+
 </html>
