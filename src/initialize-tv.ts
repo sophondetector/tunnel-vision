@@ -1,4 +1,4 @@
-import { TvDirector } from "./tunnel-vision"
+import { TvDirector } from "./tunnel-vision/tv-director"
 import { TvMessage } from "./common"
 
 let DIRECTOR: TvDirector | null = null
