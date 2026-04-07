@@ -95,7 +95,6 @@ async function zoomOut(): Promise<void> {
   displayZoomPercent()
 }
 
-// FIXME: this makes the pdf too small on the desktop
 async function zoomFit(): Promise<void> {
   const dir = await getDirector()
   const idx = dir.getRangeIdx()
@@ -109,7 +108,7 @@ async function zoomFit(): Promise<void> {
   }
 
   // Get the container that holds the rendered page (usually the parent div of the canvas)
-  const container = document.querySelector('#viewerContainer') as HTMLElement
+  const container = document.querySelector('main') as HTMLElement
 
   if (!container) {
     console.warn("PDF container not found")
@@ -117,7 +116,7 @@ async function zoomFit(): Promise<void> {
     return
   }
 
-  const unscaledViewport = page.getViewport({ scale: ZOOM_SCALE })
+  const unscaledViewport = page.getViewport({ scale: 1.0 })
 
   const padding = 5 // pixels of margin around the page
   const availableWidth = container.clientWidth - padding
