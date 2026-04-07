@@ -14,7 +14,6 @@ const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
 let WIN_WIDTH = window.innerWidth
-let NAV_DEBOUNCE: number | undefined = undefined
 let SELECTING = false
 let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
@@ -64,7 +63,6 @@ export class TvDirector {
       await this.initRanges()
       TvScreen.animate()
       this.setMouseUpListener()
-      this.setNavigateListener()
       this.setSelectionListener()
       this.toggleScreenOff()
 
@@ -151,21 +149,6 @@ export class TvDirector {
     document.addEventListener(
       "selectionchange", this.drawAroundSelection, { capture: true }
     )
-  }
-
-  // FIXME: get rid of this; it's extraneous and duplicates events happening elsewhere
-  setNavigateListener(): void {
-    //TODO: replace this with a "milliseconds since last tree manipulation" debounce
-    //@ts-ignore
-    window.navigation.onnavigatesuccess = () => {
-      clearTimeout(NAV_DEBOUNCE)
-      NAV_DEBOUNCE = setTimeout(() => {
-        if (!this.INITTED_ONCE) return
-        console.log('TvDirector.onnavigatesuccess callback running')
-        this.toggleScreenOff()
-        this.initRanges()
-      }, NAV_DEBOUNCE_MILLIS) as unknown as number
-    }
   }
 
   getRangeManager(): RangeManager {
