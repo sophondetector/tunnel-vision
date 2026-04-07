@@ -55,7 +55,6 @@ export class TvScreen {
   static setBufferRadiusByScreenSize(): void {
     const { width, height } = TvScreen.#getDefaultCharSize()
     const newRad = (width + height) * .5 * .2
-    console.log(width, height, newRad)
     TvScreen.setBufferRadius(newRad)
   }
 
