@@ -10,7 +10,6 @@ import {
 import { playSound } from "./sound";
 
 const RESIZE_DEBOUNCE_MILLIS = 0
-const NAV_DEBOUNCE_MILLIS = 300
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
 
 let WIN_WIDTH = window.innerWidth
@@ -65,10 +64,6 @@ export class TvDirector {
       this.setMouseUpListener()
       this.setSelectionListener()
       this.toggleScreenOff()
-
-      setTimeout(() => {
-        this.INITTED_ONCE = true
-      }, NAV_DEBOUNCE_MILLIS * 5)
 
       this.setDirectorState(TvDirectorState.READY)
 
