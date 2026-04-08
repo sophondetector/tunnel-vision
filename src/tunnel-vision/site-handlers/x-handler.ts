@@ -2,16 +2,14 @@ import { TvDirector } from "../tv-director"
 import { TvHandler, waitForSelector } from "./handler-utilities"
 
 // FIXME: the x handler is extremely buggy
+const SCROLLABLE_LEC = "div[data-testid='primaryColumn']"
+const PARAGRAPH_LEC = "div[data-testid='tweetText'] span"
 
 let MUTATION_DEBOUNCE_ID: undefined | number = undefined
 let MUTATION_DEBOUNCE_TIME = 100
 // TODO: consider moving all the scrolling machinery into types-and-utilities and making it generalizable
 let LAST_SCROLL: undefined | number = undefined
 let SCROLL_INTERVAL = 5000
-
-const SCROLLABLE_LEC = "div[data-testid='primaryColumn']"
-const PARAGRAPH_LEC = "div[data-testid='tweetText'] span"
-
 
 function scrollEndCallback(): void {
   LAST_SCROLL = Date.now()
