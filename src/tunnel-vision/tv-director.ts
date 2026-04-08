@@ -90,6 +90,16 @@ export class TvDirector {
     this.setWindowAroundRange(range)
   }
 
+  async reInitRanges(): Promise<void> {
+    const rangeManager = this.getRangeManager()
+    const curIdx = rangeManager.getRangeIdx()
+    this.ELEMENT_ARRAY = HandlerManager.getEleArray() as Element[]
+    await rangeManager.initRanges(this.ELEMENT_ARRAY)
+    const curRange = rangeManager.rangeIdx2Range(curIdx) as Range
+    rangeManager.setRangeIdx(curIdx)
+    this.setWindowAroundRange(curRange, false)
+  }
+
   disableSelectionHighlighting(): void {
     const style = document.createElement('style')
     style.innerHTML = `

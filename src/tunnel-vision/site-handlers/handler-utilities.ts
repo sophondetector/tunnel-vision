@@ -359,3 +359,17 @@ export async function waitForDOMIdle(
 
   return promise;
 }
+
+export async function mutationsContainAddedText(mutations: MutationRecord[]): Promise<boolean> {
+  for (let idx = 0; idx < mutations.length; idx++) {
+    const rec = mutations[idx]
+    if (rec.addedNodes.length > 0) {
+      for (let jdx = 0; jdx < rec.addedNodes.length; jdx++) {
+        const addedNode = rec.addedNodes[jdx]
+        if (addedNode.TEXT_NODE) return true
+      }
+    }
+  }
+  return false
+}
+

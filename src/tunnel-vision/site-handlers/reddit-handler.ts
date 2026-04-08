@@ -1,4 +1,4 @@
-import { waitForDOMIdle, TvHandler } from "./handler-utilities"
+import { waitForDOMIdle, TvHandler, mutationsContainAddedText } from "./handler-utilities"
 import { TvDirector } from "../tv-director"
 
 function getTvElements(): Array<Element> | null {
@@ -21,17 +21,11 @@ function getTvElements(): Array<Element> | null {
   return null
 }
 
-function mutationCallback(_curDir: TvDirector, mutations: Array<MutationRecord>): void {
-  let idx = 0
-  for (const mut of mutations) {
-    if (mut.addedNodes.length > 0) {
-      for (const node of mut.addedNodes) {
-        if (node.textContent && node.textContent.length > 0) {
-          console.log(idx++, node.textContent.trim().replace(/\s+/g, ' '))
-        }
-      }
-    }
-  }
+async function mutationCallback(curDir: TvDirector, mutations: Array<MutationRecord>): Promise<void> {
+  if (!(await mutationsContainAddedText(mutations))) return
+  await waitForDOMIdle(10)
+  await curDir.reInitRanges()
+  // console.log('re-initted ranges inside mutation callback')
 }
 
 function getMutationTarget(): Node | null {
