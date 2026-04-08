@@ -43,7 +43,13 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     sendResponse(dirState)
 
   } else if (value === TvMessage.INIT_RANGES) {
+    console.log('re-running initRanges')
     DIRECTOR.initRanges()
+    sendResponse()
+
+  } else if (value === TvMessage.RE_INIT) {
+    console.log('re-initting director')
+    DIRECTOR.init()
     sendResponse()
 
   } else {
