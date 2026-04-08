@@ -8,6 +8,7 @@ import {
   TvDirectorState
 } from "../common";
 import { playSound } from "./sound";
+import { defaultMutationHandler } from "./site-handlers/handler-utilities";
 
 const RESIZE_DEBOUNCE_MILLIS = 0
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
@@ -95,7 +96,22 @@ export class TvDirector {
     const curIdx = rangeManager.getRangeIdx()
     this.ELEMENT_ARRAY = HandlerManager.getEleArray() as Element[]
     await rangeManager.initRanges(this.ELEMENT_ARRAY)
-    const curRange = rangeManager.rangeIdx2Range(curIdx) as Range
+    const curRange = rangeManager.rangeIdx2Range(curIdx)
+    if (!curRange) {
+      const firstRange = rangeManager.getFirstVisibleRange()
+      if (!firstRange) {
+        this.setDirectorState(TvDirectorState.ERROR)
+        return
+      }
+      const firstIdx = rangeManager.range2RangeIdx(firstRange)
+      if (firstIdx === undefined) {
+        this.setDirectorState(TvDirectorState.ERROR)
+        return
+      }
+      rangeManager.setRangeIdx(firstIdx)
+      this.setWindowAroundRange(firstRange, false)
+      return
+    }
     rangeManager.setRangeIdx(curIdx)
     this.setWindowAroundRange(curRange, false)
   }
@@ -653,12 +669,12 @@ export class TvDirector {
       return
     }
 
-    if (handler.mutationHandler === null) {
-      console.log(`setMutationObserver: no mutationHandler - exiting`)
-      return
-    }
+    let { getMutationTarget, mutationCallback } = defaultMutationHandler
 
-    const { mutationCallback, getMutationTarget } = handler.mutationHandler
+    if (handler.mutationHandler) {
+      getMutationTarget = handler.mutationHandler.getMutationTarget
+      mutationCallback = handler.mutationHandler.mutationCallback
+    }
 
     const target = getMutationTarget()
 
@@ -667,7 +683,7 @@ export class TvDirector {
       return
     }
 
-    // NOTE: this needs to add new elements to this.ELEMENT_ARRAY and then re-range
+    // TODO: this needs to add new elements to this.ELEMENT_ARRAY and then re-range
     const observer = new MutationObserver((mutations) => mutationCallback(this, mutations))
 
     observer.observe(target, {

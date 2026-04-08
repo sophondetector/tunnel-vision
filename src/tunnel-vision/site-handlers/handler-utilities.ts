@@ -296,7 +296,7 @@ export async function waitForDOMIdle(
     observerOptions = {
       childList: true,
       subtree: true,
-      attributes: true,
+      attributes: false,
       characterData: true,
     },
   } = options;
@@ -371,5 +371,22 @@ export async function mutationsContainAddedText(mutations: MutationRecord[]): Pr
     }
   }
   return false
+}
+
+export async function defaultMutationCallback(curDir: TvDirector, mutations: Array<MutationRecord>): Promise<void> {
+  if (!(await mutationsContainAddedText(mutations))) {
+    return
+  }
+  await waitForDOMIdle(10)
+  await curDir.reInitRanges()
+}
+
+export function defaultGetMutationTarget(): Node {
+  return document.body
+}
+
+export const defaultMutationHandler: TvMutationSubHandler = {
+  mutationCallback: defaultMutationCallback,
+  getMutationTarget: defaultGetMutationTarget
 }
 
