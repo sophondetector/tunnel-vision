@@ -8,6 +8,7 @@ import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "./handler-utilities"
 import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
+import { xHandler } from "./x-handler"
 
 function isFile(): boolean {
   return (window.location.protocol === "file:")
@@ -23,6 +24,7 @@ DOMAIN_HANDLER_MAP.set("substack.com", substackHandler)
 DOMAIN_HANDLER_MAP.set("reddit.com", redditHandler)
 DOMAIN_HANDLER_MAP.set("jpost.com", jpostHandler)
 DOMAIN_HANDLER_MAP.set("grok.com", grokHandler)
+DOMAIN_HANDLER_MAP.set("x.com", xHandler)
 
 const SUPPORTED_DOMAINS = Array.from(DOMAIN_HANDLER_MAP.keys())
 
