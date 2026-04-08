@@ -264,8 +264,9 @@ export class RangeManager {
         ranges.push(nextRange);
 
         currentRange = nextRange;
-        previousBottom = nextRange.getBoundingClientRect().bottom
-        previousTop = nextRange.getBoundingClientRect().top
+        const rect = nextRange.getBoundingClientRect()
+        previousBottom = rect.bottom
+        previousTop = rect.top
       }
 
       charIndex++;
