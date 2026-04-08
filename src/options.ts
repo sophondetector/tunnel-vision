@@ -39,6 +39,7 @@ const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputEleme
 // debug panel
 const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
+const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
 
 function showErrorHeader(): void {
   ERROR_HEADER.classList.remove(HIDDEN)
@@ -123,6 +124,13 @@ RE_RANGE.addEventListener('click', async function () {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.INIT_RANGES, function () {
     console.log(`sent message ${TvMessage.INIT_RANGES} to content.ts in open tab`)
+  })
+})
+
+RE_INIT.addEventListener('click', async function () {
+  const tab = await getCurrentTab()
+  chrome.tabs.sendMessage(tab.id!, TvMessage.RE_INIT, function () {
+    console.log(`sent message ${TvMessage.RE_INIT} to content.ts in open tab`)
   })
 })
 

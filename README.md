@@ -32,6 +32,8 @@ This will create the source code in the `dist/` folder. You can then install it 
 ### Debug
 To activate the debug panel in the pdf-reader press `alt+shift+d`.
 
+To activate the debug panel in the pop-up press `alt+shift+d` *while the pop-up is open*.
+
 ## Usage
 <div> Press <b>alt-l</b> to turn the tv-screen on and off.</div>
 <div>You can also click Tunnel Vision icon and then click the <b>Tunnel Vision Screen On/Off</b> button.</div>
