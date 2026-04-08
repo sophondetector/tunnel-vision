@@ -1,6 +1,7 @@
-import { blankDelay, TvHandler } from "./handler-utilities"
+import { waitForDOMIdle, TvHandler } from "./handler-utilities"
+import { TvDirector } from "../tv-director"
 
-function redditElementGetter(): Array<Element> | null {
+function getTvElements(): Array<Element> | null {
   const res = []
 
   const mainContent = document.querySelector('#main-content')
@@ -20,10 +21,29 @@ function redditElementGetter(): Array<Element> | null {
   return null
 }
 
-export const redditHandler: TvHandler = {
-  getTvElements: redditElementGetter,
-  getScrollableElement: () => null,
-  initDelay: blankDelay,
-  mutationHandler: null
+function mutationCallback(_curDir: TvDirector, mutations: Array<MutationRecord>): void {
+  let idx = 0
+  for (const mut of mutations) {
+    if (mut.addedNodes.length > 0) {
+      for (const node of mut.addedNodes) {
+        if (node.textContent && node.textContent.length > 0) {
+          console.log(idx++, node.textContent.trim().replace(/\s+/g, ' '))
+        }
+      }
+    }
+  }
 }
 
+function getMutationTarget(): Node | null {
+  return document.querySelector('#main-content')
+}
+
+export const redditHandler: TvHandler = {
+  getTvElements,
+  getScrollableElement: () => null,
+  initDelay: async () => waitForDOMIdle(100),
+  mutationHandler: {
+    mutationCallback,
+    getMutationTarget
+  }
+}
