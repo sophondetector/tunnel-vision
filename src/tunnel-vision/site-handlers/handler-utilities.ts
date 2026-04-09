@@ -377,7 +377,7 @@ export async function mutationsContainAddedText(mutations: MutationRecord[]): Pr
       for (let jdx = 0; jdx < rec.addedNodes.length; jdx++) {
         const addedNode = rec.addedNodes[jdx]
         if (nodeIsVisible(addedNode) && addedNode.textContent && addedNode.textContent.trim().length > 0) {
-          // console.log('here', addedNode)
+          // console.log('mutationsContainAddedText: found some text:', addedNode.textContent)
           return true
         }
       }
@@ -389,11 +389,7 @@ export async function mutationsContainAddedText(mutations: MutationRecord[]): Pr
 
 export function defaultMutationCallback(curDir: TvDirector, _mutations: Array<MutationRecord>): void {
   clearTimeout(DEFAULT_MUTATION_TIMEOUT)
-  DEFAULT_MUTATION_TIMEOUT = setTimeout(() => {
-    mutationsContainAddedText(_mutations).then((hasAddedText) => {
-      if (hasAddedText) curDir.initRanges()
-    })
-  }, 50)
+  DEFAULT_MUTATION_TIMEOUT = setTimeout(curDir.initRanges, 100)
 }
 
 export function defaultGetMutationTarget(): Node {
