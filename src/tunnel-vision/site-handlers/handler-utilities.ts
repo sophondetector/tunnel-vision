@@ -2,6 +2,8 @@ import { TvDirector } from "../tv-director"
 
 const LOG_ELEMENTS = false
 
+let DEFAULT_MUTATION_TIMEOUT: undefined | NodeJS.Timeout = undefined
+
 // TODO: make getTvElements and getScrollableElement async so they dont block normal user interaction and so the default getScrollableElement can be discoverScrollableFromCenterPromise
 export interface TvHandler {
   getTvElements: () => Array<Element> | null
@@ -360,25 +362,38 @@ export async function waitForDOMIdle(
   return promise;
 }
 
+function nodeIsVisible(node: Node): boolean {
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    return (node as Element).checkVisibility()
+  }
+  if (!node.parentElement) return false
+  return node.parentElement.checkVisibility()
+}
+
 export async function mutationsContainAddedText(mutations: MutationRecord[]): Promise<boolean> {
   for (let idx = 0; idx < mutations.length; idx++) {
     const rec = mutations[idx]
     if (rec.addedNodes.length > 0) {
       for (let jdx = 0; jdx < rec.addedNodes.length; jdx++) {
         const addedNode = rec.addedNodes[jdx]
-        if (addedNode.TEXT_NODE) return true
+        if (nodeIsVisible(addedNode) && addedNode.textContent && addedNode.textContent.trim().length > 0) {
+          // console.log('here', addedNode)
+          return true
+        }
       }
     }
   }
   return false
 }
 
-export async function defaultMutationCallback(curDir: TvDirector, mutations: Array<MutationRecord>): Promise<void> {
-  if (!(await mutationsContainAddedText(mutations))) {
-    return
-  }
-  await waitForDOMIdle(10)
-  await curDir.reInitRanges()
+
+export function defaultMutationCallback(curDir: TvDirector, _mutations: Array<MutationRecord>): void {
+  clearTimeout(DEFAULT_MUTATION_TIMEOUT)
+  DEFAULT_MUTATION_TIMEOUT = setTimeout(() => {
+    mutationsContainAddedText(_mutations).then((hasAddedText) => {
+      if (hasAddedText) curDir.initRanges()
+    })
+  }, 50)
 }
 
 export function defaultGetMutationTarget(): Node {
