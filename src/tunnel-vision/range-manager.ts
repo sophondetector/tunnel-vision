@@ -188,9 +188,10 @@ export class RangeManager {
       const iterNodes = RangeManager.#getAllTextNodes(iterEle)
       textNodes.push(...iterNodes)
     }
-    const ranges = RangeManager.textNodes2Ranges(
-      textNodes.filter(RangeManager.nodeHasRealText)
-    )
+
+    const textNodesWithText = textNodes.filter(RangeManager.nodeHasRealText)
+    const ranges = RangeManager.textNodes2Ranges(textNodesWithText)
+
     return ranges
   }
 
@@ -211,6 +212,7 @@ export class RangeManager {
     return res
   }
 
+  // TODO: refactor so it uses binary search to find range endings
   static textNodes2Ranges(textNodes: Node[]): Range[] {
     if (textNodes.length === 0) return [];
 
@@ -248,8 +250,9 @@ export class RangeManager {
       offsetInNode++;
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
 
-      const currentBottom = currentRange.getBoundingClientRect().bottom;
-      const currentTop = currentRange.getBoundingClientRect().top
+      const curRect = currentRange.getBoundingClientRect()
+      const currentBottom = curRect.bottom;
+      const currentTop = curRect.top
 
       // Did we cross into a new visual line?
       if (Math.abs(currentBottom - previousBottom) > BOTTOM_LIMIT ||
