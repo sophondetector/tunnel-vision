@@ -80,12 +80,14 @@ export class TvScreen {
     return canvas
   }
 
+  // FIXME: add check here to prevent creation of multiple canvases
   static async inject(): Promise<void> {
     const screenEle = await TvScreen.create()
     document.body.appendChild(screenEle)
     console.log('TvScreen.inject: tv screen injected')
   }
 
+  // FIXME: remove all range management from TvScreen
   static setActiveRange(range: Range): void {
     ACTIVE_RANGE = range
   }
@@ -127,11 +129,13 @@ export class TvScreen {
     }
   }
 
+  // TODO: move all animation functions into the director
   static animate() {
     TvScreen.drawScreen()
     requestAnimationFrame(TvScreen.animate)
   }
 
+  // FIXME: change this to getCanvas
   static getScreenEle(): HTMLCanvasElement {
     const screenEle = document.getElementById(TV_SCREEN_ID)
     if (!screenEle) {
@@ -207,6 +211,14 @@ export class TvScreen {
       return
     }
     TvScreen.turnOn()
+  }
+
+  static drawBoxAroundRect(rect: DOMRect, color: string = "red", thickness: number = 3): void {
+    const ctx = TvScreen.getContext()
+    ctx.strokeStyle = color;
+    ctx.lineWidth = thickness;
+    ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+    // console.log('Drawn at:', x.toFixed(1), y.toFixed(1));
   }
 }
 

@@ -635,8 +635,19 @@ export class TvDirector {
     })
   }
 
-  // TODO: Implement showRanges
   showRanges(): void {
-    console.log('TvDirector.showRanges: running...')
+    const rangeManager = this.getRangeManager()
+
+    const drawRanges = () => {
+      const len = rangeManager.getRangesLength() as number
+      for (let idx = 0; idx < len; idx++) {
+        const range = rangeManager.rangeIdx2Range(idx) as Range
+        const rect = range.getBoundingClientRect()
+        TvScreen.drawBoxAroundRect(rect, "red", 3)
+      }
+      requestAnimationFrame(drawRanges)
+    }
+
+    requestAnimationFrame(drawRanges)
   }
 }
