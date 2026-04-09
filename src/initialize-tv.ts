@@ -52,6 +52,11 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     DIRECTOR.init()
     sendResponse()
 
+  } else if (value === TvMessage.SHOW_RANGES) {
+    console.log('show ranges message received')
+    DIRECTOR.showRanges()
+    sendResponse()
+
   } else {
     console.error(`controlPanelListenerCallback: Unknown message! value ${value}; sender ${sender}`)
     sendResponse()

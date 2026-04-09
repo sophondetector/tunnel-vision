@@ -634,4 +634,9 @@ export class TvDirector {
       capture: true
     })
   }
+
+  // TODO: Implement showRanges
+  showRanges(): void {
+    console.log('TvDirector.showRanges: running...')
+  }
 }

@@ -57,6 +57,7 @@ const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputEleme
 const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
 const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
+const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 
 // state variables
 let PDF_PATH: null | string = null
@@ -341,6 +342,11 @@ RE_INIT.addEventListener('click', async function () {
   const dir = await getDirector()
   await dir.init()
   console.log('re-init done')
+})
+
+SHOW_RANGES.addEventListener('click', async function () {
+  const dir = await getDirector()
+  dir.showRanges()
 })
 
 //@ts-ignore
