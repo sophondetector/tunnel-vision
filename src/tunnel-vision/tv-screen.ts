@@ -215,5 +215,25 @@ export class TvScreen {
     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
     // console.log('Drawn at:', x.toFixed(1), y.toFixed(1));
   }
+
+  static drawNumber(
+    x: number,
+    y: number,
+    number: number,
+    color: string = '#00ff00',
+    size: number = 20
+  ) {
+    const ctx = TvScreen.getContext()
+    ctx.save();
+
+    ctx.font = `${size}px Arial`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(number.toString(), x, y);
+
+    ctx.restore();
+  }
 }
 
