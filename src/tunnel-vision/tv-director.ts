@@ -152,31 +152,29 @@ export class TvDirector {
   }
 
   drawScreen(): void {
+
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
+    TvScreen.clearCanvas()
+    TvScreen.fillCanvas()
 
-    const canvas = TvScreen.getCanvas()
-    const ctx = TvScreen.getContext()
     const buffer = TvScreen.getBufferRadius()
-
-    ctx.fillStyle = TvScreen.getFillStyle()
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const allRects = Array.from(
       this.RANGE_MANAGER!.getCurrentRange()!.getClientRects()
     )
     const rects = allRects.filter((r) => r.width > 1 && r.height > 1)
 
-    // TODO: move clearRect logic into TvScreen
     for (let idx = 0; idx < rects.length; idx++) {
       const rect = rects[idx]
-      ctx.clearRect(
-        rect.x - buffer,
-        rect.y - buffer,
-        rect.width + (buffer * 2),
-        rect.height + (buffer * 2)
-      );
+      TvScreen.clearRect(
+        rect.x,
+        rect.y,
+        rect.width,
+        rect.height,
+        buffer
+      )
     }
+
   }
 
   getRangeManager(): RangeManager {

@@ -189,6 +189,57 @@ export class TvScreen {
     TvScreen.turnOn()
   }
 
+  static clearCanvas(): void {
+    const canvas = TvScreen.getCanvas()
+    const ctx = TvScreen.getContext()
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
+  static fillCanvas(fillStyle: string | null = null): void {
+    if (fillStyle === null) {
+      fillStyle = TvScreen.getFillStyle()
+    }
+    const canvas = TvScreen.getCanvas()
+    TvScreen.fillRect(0, 0, canvas.width, canvas.height, 0, fillStyle)
+  }
+
+  static fillRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    buffer: number = 0,
+    fillStyle: string | null = null
+  ): void {
+    const ctx = TvScreen.getContext()
+    if (fillStyle === null) {
+      fillStyle = TvScreen.getFillStyle()
+    }
+    ctx.fillStyle = fillStyle
+    ctx.fillRect(
+      x - buffer,
+      y - buffer,
+      width + (buffer * 2),
+      height + (buffer * 2)
+    );
+  }
+
+  static clearRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    buffer: number = 0
+  ): void {
+    const ctx = TvScreen.getContext()
+    ctx.clearRect(
+      x - buffer,
+      y - buffer,
+      width + (buffer * 2),
+      height + (buffer * 2)
+    );
+  }
+
   static drawBoxAroundRect(rect: DOMRect, color: string = "red", thickness: number = 3): void {
     const ctx = TvScreen.getContext()
     ctx.strokeStyle = color;
