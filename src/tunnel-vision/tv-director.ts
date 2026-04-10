@@ -496,90 +496,6 @@ export class TvDirector {
     }
   }
 
-  async bruteForceSearch(curDir: TvDirector, prevNode: Node, prevOffset: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    const len = rm.getRangesLength() ?? 0
-    for (let idx = 0; idx < len; idx++) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (!iterRange) continue
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        rm.setRangeIdx(idx)
-        return
-      }
-    }
-    console.error(`TvDirector.bruteForceSearch: search for range failed`)
-  }
-
-  async bothWaysSearch(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    let iterRange = rm.rangeIdx2Range(startIdx)
-    if (iterRange && iterRange.isPointInRange(prevNode, prevOffset)) {
-      rm.setRangeIdx(startIdx)
-      return
-    }
-
-    const len = rm.getRangesLength() ?? 0
-    let topIdx = startIdx + 1
-    let botIdx = startIdx - 1
-
-    while (topIdx < len && botIdx >= 0) {
-      if (topIdx < len) {
-        const topRange = rm.rangeIdx2Range(topIdx)
-        if (topRange && topRange.isPointInRange(prevNode, prevOffset)) {
-          rm.setRangeIdx(topIdx)
-          return
-        }
-        topIdx++
-      }
-      if (botIdx >= 0) {
-        const botRange = rm.rangeIdx2Range(botIdx)
-        if (botRange && botRange.isPointInRange(prevNode, prevOffset)) {
-          rm.setRangeIdx(botIdx)
-          return
-        }
-        botIdx--
-      }
-    }
-
-    console.error('TvDirector.bothWaysSearch: could not find range!')
-  }
-
-  // TODO: change search function interfaces to return [idx, range]
-  async searchBehind(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    for (let idx = startIdx; idx >= 0; idx--) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (iterRange === undefined) {
-        console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
-        continue
-      }
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        rm.setRangeIdx(idx)
-        curDir.scrollRangeIntoView(iterRange)
-        return
-      }
-    }
-    console.error('TvDirector.searchBehind: could not find range!')
-  }
-
-  async searchAhead(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    const len = rm.getRangesLength() ?? 0
-    for (let idx = startIdx; idx < len; idx++) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (iterRange === undefined) {
-        console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
-        continue
-      }
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        rm.setRangeIdx(idx)
-        curDir.scrollRangeIntoView(iterRange)
-        return
-      }
-    }
-    console.error('TvDirector.searchAhead: could not find range!')
-  }
-
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     TvScreen.setBufferRadiusByScreenSize()
 
@@ -601,9 +517,10 @@ export class TvDirector {
       console.error('TvDirector.onResizeCallback: could not get current range!')
       return
     }
+
     const prevNode = prevRange.startContainer
     const prevOffset = Math.max(1, prevRange.startOffset)
-    // NOTE: making sure prevOffset is at least one fixes the bug where smaller window leads to range directly before we want getting picked
+    // NOTE: prevOffset must be at least one or we get the range BEFORE we want
 
     const rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
@@ -614,21 +531,33 @@ export class TvDirector {
     const padding = 5
     // positive delta means bigger window; negative means smaller
     if (delta < 0) {
+
       // if smaller window -> the index is likely earlier -> so we go backwards
-      curDir.searchBehind(
-        curDir,
+      const [idx, range] = await rangeManager.searchBehind(
         prevNode,
         prevOffset,
         Math.min(rangeIdx + padding, Math.max(len - 1, 0))
       )
+      if (idx === null || range === null) {
+        console.error(`onResizeCallback: search for range failed!`)
+        return
+      }
+      rangeManager.setRangeIdx(idx)
+
     } else {
+
       // if bigger window -> the new index is likely later -> so we go forwards
-      curDir.searchAhead(
-        curDir,
+      const [idx, range] = await rangeManager.searchAhead(
         prevNode,
         prevOffset,
         Math.max(rangeIdx - padding, 0)
       )
+      if (idx === null || range === null) {
+        console.error(`onResizeCallback: search for range failed!`)
+        return
+      }
+      rangeManager.setRangeIdx(idx)
+
     }
   }
 

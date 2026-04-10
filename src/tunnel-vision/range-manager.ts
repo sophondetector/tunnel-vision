@@ -300,4 +300,80 @@ export class RangeManager {
     }
     return ends;
   }
+
+  async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0
+    for (let idx = 0; idx < len; idx++) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (!iterRange) continue
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error(`TvDirector.bruteForceSearch: search for range failed`)
+    return [null, null]
+  }
+
+  async bothWaysSearch(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    let iterRange = this.rangeIdx2Range(startIdx)
+    if (iterRange && iterRange.isPointInRange(node, offset)) {
+      return [startIdx, iterRange]
+    }
+
+    const len = this.getRangesLength() ?? 0
+    let topIdx = startIdx + 1
+    let botIdx = startIdx - 1
+
+    while (topIdx < len && botIdx >= 0) {
+      if (topIdx < len) {
+        const topRange = this.rangeIdx2Range(topIdx)
+        if (topRange && topRange.isPointInRange(node, offset)) {
+          return [topIdx, topRange]
+        }
+        topIdx++
+      }
+      if (botIdx >= 0) {
+        const botRange = this.rangeIdx2Range(botIdx)
+        if (botRange && botRange.isPointInRange(node, offset)) {
+          return [botIdx, botRange]
+        }
+        botIdx--
+      }
+    }
+
+    console.error('TvDirector.bothWaysSearch: could not find range!')
+    return [null, null]
+  }
+
+  async searchBehind(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    for (let idx = startIdx; idx >= 0; idx--) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error('TvDirector.searchBehind: could not find range!')
+    return [null, null]
+  }
+
+  async searchAhead(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0
+    for (let idx = startIdx; idx < len; idx++) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error('TvDirector.searchAhead: could not find range!')
+    return [null, null]
+  }
 }
+
