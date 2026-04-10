@@ -375,7 +375,6 @@ export class TvDirector {
     const topBound = topRect.y
     const leftBound = topRect.x
     this.setRangeAtPoint(topBound, leftBound)
-    // TODO: change this interface to x,y instead of y,x
   }
 
   setRangeAtSelectionBottom(): void {
