@@ -60,7 +60,7 @@ export class TvDirector {
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
-      TvDirector.animate()
+      this.animate(this)
       this.setMouseUpListener()
       this.setSelectionListener()
       this.toggleScreenOff()
@@ -146,12 +146,12 @@ export class TvDirector {
     )
   }
 
-  static animate() {
-    TvDirector.drawScreen()
-    requestAnimationFrame(TvDirector.animate)
+  animate(curDir: TvDirector) {
+    this.drawScreen()
+    requestAnimationFrame(() => this.animate(curDir))
   }
 
-  static drawScreen(): void {
+  drawScreen(): void {
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
     const canvas = TvScreen.getScreenEle()
@@ -162,7 +162,11 @@ export class TvDirector {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
+    const allRects = Array.from(
+      this.RANGE_MANAGER!.getCurrentRange()!.getClientRects()
+    )
+    const rects = allRects.filter((r) => r.width > 1 && r.height > 1)
+
 
     for (let idx = 0; idx < rects.length; idx++) {
       const rect = rects[idx]
