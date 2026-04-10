@@ -87,7 +87,6 @@ export class TvDirector {
     if (range === undefined) {
       throw new Error('TvDirector.init: could not get first visible range')
     }
-    this.setWindowAroundRange(range)
   }
 
   disableSelectionHighlighting(): void {
@@ -168,6 +167,21 @@ export class TvDirector {
 
     const buffer = TvScreen.getBufferRadius()
 
+    if (SELECTION) {
+      const rects = this.getSelectionRange()!.getClientRects()
+      for (let idx = 0; idx < rects.length; idx++) {
+        const rect = rects[idx]
+        TvScreen.clearRect(
+          rect.x,
+          rect.y,
+          rect.width,
+          rect.height,
+          buffer
+        )
+      }
+      return
+    }
+
     const allRects = Array.from(
       this.RANGE_MANAGER!.getCurrentRange()!.getClientRects()
     )
@@ -218,8 +232,6 @@ export class TvDirector {
   setRangeIdx(idx: number): void {
     const rm = this.RANGE_MANAGER as RangeManager
     rm.setRangeIdx(idx)
-    const range = rm.getCurrentRange() as Range
-    this.setWindowAroundRange(range)
   }
 
   static clickInRange(event: MouseEvent, range: Range): boolean {
@@ -258,7 +270,6 @@ export class TvDirector {
         const rng = rm.RANGES[idx]
         if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
           rm.setRangeIdx(idx)
-          this.setWindowAroundRange(rng)
           return
         }
       }
@@ -326,7 +337,7 @@ export class TvDirector {
       return
     }
 
-    this.setWindowAroundRange(nextRange)
+    this.scrollRangeIntoView(nextRange)
   }
 
   decRange(): void {
@@ -345,7 +356,7 @@ export class TvDirector {
       return
     }
 
-    this.setWindowAroundRange(prevRange)
+    this.scrollRangeIntoView(prevRange)
   }
 
   setRangeAtSelectionTop(): void {
@@ -361,9 +372,10 @@ export class TvDirector {
       return
     }
 
-    const topBound = topRect.y - window.scrollY
-    const leftBound = topRect.x - window.scrollX
+    const topBound = topRect.y
+    const leftBound = topRect.x
     this.setRangeAtPoint(topBound, leftBound)
+    // TODO: change this interface to x,y instead of y,x
   }
 
   setRangeAtSelectionBottom(): void {
@@ -380,8 +392,8 @@ export class TvDirector {
       return
     }
 
-    const bottomBound = bottomRect.y - window.scrollY
-    const leftBound = bottomRect.x - window.scrollX
+    const bottomBound = bottomRect.y
+    const leftBound = bottomRect.x
     this.setRangeAtPoint(bottomBound, leftBound)
   }
 
@@ -393,7 +405,6 @@ export class TvDirector {
       return
     }
     rm.setRangeIdx(rangeIdx)
-    this.setWindowAroundRange(range)
   }
 
   // TODO: implement shift-adding ranges
@@ -487,20 +498,6 @@ export class TvDirector {
     }
   }
 
-  // FIXME: get rid of this useless abstraction
-  /**
-  * This sets the TvScreen viewing window around a given Range 
-  * @param {Range} range - The range of text you want to set the window around
-  * @param {boolean} scrollIntoView - Whether or not you want to scroll the window to the range - default is `true`
-  */
-  setWindowAroundRange(range: Range, scrollIntoView: boolean = true): void {
-    if (!this.isOn()) {
-      // console.log('screen is off!')
-      return
-    }
-    if (scrollIntoView) this.scrollRangeIntoView(range, true)
-  }
-
   async bruteForceSearch(curDir: TvDirector, prevNode: Node, prevOffset: number): Promise<void> {
     const rm = curDir.getRangeManager()
     const len = rm.getRangesLength() ?? 0
@@ -508,7 +505,6 @@ export class TvDirector {
       const iterRange = rm.rangeIdx2Range(idx)
       if (!iterRange) continue
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
         rm.setRangeIdx(idx)
         return
       }
@@ -520,7 +516,6 @@ export class TvDirector {
     const rm = curDir.getRangeManager()
     let iterRange = rm.rangeIdx2Range(startIdx)
     if (iterRange && iterRange.isPointInRange(prevNode, prevOffset)) {
-      curDir.setWindowAroundRange(iterRange)
       rm.setRangeIdx(startIdx)
       return
     }
@@ -533,7 +528,6 @@ export class TvDirector {
       if (topIdx < len) {
         const topRange = rm.rangeIdx2Range(topIdx)
         if (topRange && topRange.isPointInRange(prevNode, prevOffset)) {
-          curDir.setWindowAroundRange(topRange)
           rm.setRangeIdx(topIdx)
           return
         }
@@ -542,7 +536,6 @@ export class TvDirector {
       if (botIdx >= 0) {
         const botRange = rm.rangeIdx2Range(botIdx)
         if (botRange && botRange.isPointInRange(prevNode, prevOffset)) {
-          curDir.setWindowAroundRange(botRange)
           rm.setRangeIdx(botIdx)
           return
         }
@@ -562,7 +555,6 @@ export class TvDirector {
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
         rm.setRangeIdx(idx)
         return
       }
@@ -580,7 +572,6 @@ export class TvDirector {
         continue
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
         rm.setRangeIdx(idx)
         return
       }
