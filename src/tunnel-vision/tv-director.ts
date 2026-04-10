@@ -524,41 +524,16 @@ export class TvDirector {
 
     const rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
-    const len = rangeManager.getRangesLength() ?? 0
 
-    // NOTE: we have two other options for searching for the range; bothWaysSearch and bruteForceSearch
+    const [idx, range] = await rangeManager.bothWaysSearch(prevNode, prevOffset, rangeIdx)
 
-    const padding = 5
-    // positive delta means bigger window; negative means smaller
-    if (delta < 0) {
-
-      // if smaller window -> the index is likely earlier -> so we go backwards
-      const [idx, range] = await rangeManager.searchBehind(
-        prevNode,
-        prevOffset,
-        Math.min(rangeIdx + padding, Math.max(len - 1, 0))
-      )
-      if (idx === null || range === null) {
-        console.error(`onResizeCallback: search for range failed!`)
-        return
-      }
-      rangeManager.setRangeIdx(idx)
-
-    } else {
-
-      // if bigger window -> the new index is likely later -> so we go forwards
-      const [idx, range] = await rangeManager.searchAhead(
-        prevNode,
-        prevOffset,
-        Math.max(rangeIdx - padding, 0)
-      )
-      if (idx === null || range === null) {
-        console.error(`onResizeCallback: search for range failed!`)
-        return
-      }
-      rangeManager.setRangeIdx(idx)
-
+    if (idx === null) {
+      console.error('onResizeCallback: could not find new range')
+      return
     }
+
+    rangeManager.setRangeIdx(idx)
+    curDir.scrollRangeIntoView(range)
   }
 
   initializeControls() {

@@ -301,6 +301,8 @@ export class RangeManager {
     return ends;
   }
 
+  // TODO: write a O(logN) method (binary search)
+
   async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0
     for (let idx = 0; idx < len; idx++) {
