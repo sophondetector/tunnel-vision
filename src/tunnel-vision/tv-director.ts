@@ -545,6 +545,7 @@ export class TvDirector {
     console.error('TvDirector.bothWaysSearch: could not find range!')
   }
 
+  // TODO: change search function interfaces to return [idx, range]
   async searchBehind(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
     const rm = curDir.getRangeManager()
     for (let idx = startIdx; idx >= 0; idx--) {
@@ -555,6 +556,7 @@ export class TvDirector {
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
         rm.setRangeIdx(idx)
+        curDir.scrollRangeIntoView(iterRange)
         return
       }
     }
@@ -572,6 +574,7 @@ export class TvDirector {
       }
       if (iterRange.isPointInRange(prevNode, prevOffset)) {
         rm.setRangeIdx(idx)
+        curDir.scrollRangeIntoView(iterRange)
         return
       }
     }
