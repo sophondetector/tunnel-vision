@@ -11,7 +11,6 @@ const COLOR_RGBA = {
   a: .5
 }
 
-let ACTIVE_RANGE: Range | null = null
 let COLOR_HEX = '#0000ff'
 let TV_SCREEN_BUFFER_RADIUS: number = 5
 
@@ -93,25 +92,6 @@ export class TvScreen {
     console.log('TvScreen.inject: tv screen injected')
   }
 
-  // FIXME: remove all range management from TvScreen
-  static setActiveRange(range: Range): void {
-    ACTIVE_RANGE = range
-  }
-
-  static getActiveRange(): Range {
-    if (ACTIVE_RANGE === null) {
-      throw new Error(`Active range is null!`)
-    }
-    return ACTIVE_RANGE
-  }
-
-  static getRectsToDraw(): DOMRect[] {
-    const activeRange = TvScreen.getActiveRange()
-    const rects = Array.from(activeRange.getClientRects())
-      .filter(r => r.width > 1 && r.height > 1)
-    return rects
-  }
-
   static getCanvas(): HTMLCanvasElement {
     const screenEle = document.getElementById(TV_SCREEN_ID)
     if (!screenEle) {
@@ -150,18 +130,6 @@ export class TvScreen {
     COLOR_RGBA.r = Number('0x' + color.slice(1, 3))
     COLOR_RGBA.g = Number('0x' + color.slice(3, 5))
     COLOR_RGBA.b = Number('0x' + color.slice(5, 7))
-  }
-
-  static getTopRect(): DOMRect {
-    const range = TvScreen.getActiveRange()
-    const rects = range.getClientRects()
-    return rects.item(0) as DOMRect
-  }
-
-  static getBottomRect(): DOMRect {
-    const range = TvScreen.getActiveRange()
-    const rects = range.getClientRects()
-    return rects.item(rects.length - 1) as DOMRect
   }
 
   static turnOn(): void {

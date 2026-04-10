@@ -16,6 +16,7 @@ let WIN_WIDTH = window.innerWidth
 let SELECTING = false
 let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
+let SELECTION_RANGE: Range | undefined = undefined
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -136,8 +137,16 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    TvScreen.setActiveRange(range)
+    this.setSelectionRange(range)
     curDir.scrollRangeIntoView(range)
+  }
+
+  setSelectionRange(range: Range): void {
+    SELECTION_RANGE = range
+  }
+
+  getSelectionRange(): Range | undefined {
+    return SELECTION_RANGE
   }
 
   setSelectionListener(): void {
@@ -340,14 +349,37 @@ export class TvDirector {
   }
 
   setRangeAtSelectionTop(): void {
-    const topRect = TvScreen.getTopRect()
+    const selRange = this.getSelectionRange()
+    if (selRange === undefined) {
+      console.error('setRangeAtSelectionTop: no selection range')
+      return
+    }
+
+    const topRect = selRange.getClientRects().item(0)
+    if (topRect === null) {
+      console.error('setRangeAtSelectionTop: no top rect!')
+      return
+    }
+
     const topBound = topRect.y - window.scrollY
     const leftBound = topRect.x - window.scrollX
     this.setRangeAtPoint(topBound, leftBound)
   }
 
   setRangeAtSelectionBottom(): void {
-    const bottomRect = TvScreen.getBottomRect()
+    const selRange = this.getSelectionRange()
+    if (selRange === undefined) {
+      console.error('setRangeAtSelectionTop: no selection range')
+      return
+    }
+
+    const rects = selRange.getClientRects()
+    const bottomRect = selRange.getClientRects().item(rects.length - 1)
+    if (bottomRect === null) {
+      console.error('setRangeAtSelectionTop: no top rect!')
+      return
+    }
+
     const bottomBound = bottomRect.y - window.scrollY
     const leftBound = bottomRect.x - window.scrollX
     this.setRangeAtPoint(bottomBound, leftBound)
@@ -455,6 +487,7 @@ export class TvDirector {
     }
   }
 
+  // FIXME: get rid of this useless abstraction
   /**
   * This sets the TvScreen viewing window around a given Range 
   * @param {Range} range - The range of text you want to set the window around
@@ -465,7 +498,6 @@ export class TvDirector {
       // console.log('screen is off!')
       return
     }
-    TvScreen.setActiveRange(range)
     if (scrollIntoView) this.scrollRangeIntoView(range, true)
   }
 
