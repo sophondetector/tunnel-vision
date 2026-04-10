@@ -248,8 +248,9 @@ export class RangeManager {
       offsetInNode++;
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
 
-      const currentBottom = currentRange.getBoundingClientRect().bottom;
-      const currentTop = currentRange.getBoundingClientRect().top
+      const curRect = currentRange.getBoundingClientRect()
+      const currentBottom = curRect.bottom;
+      const currentTop = curRect.top
 
       // Did we cross into a new visual line?
       if (Math.abs(currentBottom - previousBottom) > BOTTOM_LIMIT ||
@@ -264,8 +265,9 @@ export class RangeManager {
         ranges.push(nextRange);
 
         currentRange = nextRange;
-        previousBottom = nextRange.getBoundingClientRect().bottom
-        previousTop = nextRange.getBoundingClientRect().top
+        const nextRect = nextRange.getBoundingClientRect()
+        previousBottom = nextRect.bottom
+        previousTop = nextRect.top
       }
 
       charIndex++;
