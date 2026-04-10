@@ -522,10 +522,9 @@ export class TvDirector {
     const prevOffset = Math.max(1, prevRange.startOffset)
     // NOTE: prevOffset must be at least one or we get the range BEFORE we want
 
-    const rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
 
-    const [idx, range] = await rangeManager.bothWaysSearch(prevNode, prevOffset, rangeIdx)
+    const [idx, range] = await rangeManager.binarySearch(prevNode, prevOffset)
 
     if (idx === null) {
       console.error('onResizeCallback: could not find new range')

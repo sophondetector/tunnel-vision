@@ -16,6 +16,10 @@ export class RangeManager {
       return
     }
     this.RANGES = RangeManager.eleArray2Ranges(eleArray)
+
+    // this.RANGES = this.RANGES.sort(
+    //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
+    // )
   }
 
   getRangeIdx(): number {
@@ -301,7 +305,33 @@ export class RangeManager {
     return ends;
   }
 
-  // TODO: write a O(logN) method (binary search)
+  async binarySearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0;
+    if (len === 0) return [null, null];
+
+    let left = 0;
+    let right = len - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+      const range = this.rangeIdx2Range(mid);
+
+      if (!range) break;
+
+      const cmp = range.comparePoint(node, offset);  // -1 before, 0 inside, +1 after
+
+      if (cmp === 0) {
+        return [mid, range];
+      } else if (cmp < 0) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    console.error(`TvDirector.binarySearch: search for range failed`);
+    return [null, null];
+  }
 
   async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0
