@@ -136,8 +136,7 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    this.setSelectionRange(range)
-    curDir.scrollRangeIntoView(range)
+    curDir.setSelectionRange(range)
   }
 
   setSelectionRange(range: Range): void {
@@ -593,6 +592,7 @@ export class TvDirector {
     if (SELECTION) {
       await rangeManager.initRanges(curDir.getElementArray())
       curDir.drawAroundSelection(curDir)
+      curDir.scrollRangeIntoView(curDir.getSelectionRange() as Range, false)
       return
     }
 
