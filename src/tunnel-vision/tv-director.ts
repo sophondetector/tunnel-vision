@@ -604,6 +604,11 @@ export class TvDirector {
         const range = rangeManager.rangeIdx2Range(idx) as Range
         const rect = range.getBoundingClientRect()
         TvScreen.drawBoxAroundRect(rect, "red", 3)
+        TvScreen.drawNumber(
+          rect.x,
+          rect.y,
+          idx
+        )
       }
       requestAnimationFrame(drawRanges)
     }
