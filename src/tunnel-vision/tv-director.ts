@@ -154,7 +154,7 @@ export class TvDirector {
   drawScreen(): void {
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
 
-    const canvas = TvScreen.getScreenEle()
+    const canvas = TvScreen.getCanvas()
     const ctx = TvScreen.getContext()
     const buffer = TvScreen.getBufferRadius()
 
@@ -167,7 +167,7 @@ export class TvDirector {
     )
     const rects = allRects.filter((r) => r.width > 1 && r.height > 1)
 
-
+    // TODO: move clearRect logic into TvScreen
     for (let idx = 0; idx < rects.length; idx++) {
       const rect = rects[idx]
       ctx.clearRect(

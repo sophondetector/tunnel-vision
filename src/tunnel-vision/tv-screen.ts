@@ -112,18 +112,16 @@ export class TvScreen {
     return rects
   }
 
-
-  // FIXME: change this to getCanvas
-  static getScreenEle(): HTMLCanvasElement {
+  static getCanvas(): HTMLCanvasElement {
     const screenEle = document.getElementById(TV_SCREEN_ID)
     if (!screenEle) {
-      throw new Error(`TvScreen.getScreenEle: could not find element with id ${TV_SCREEN_ID}`)
+      throw new Error(`TvScreen.getCanvas: could not find element with id ${TV_SCREEN_ID}`)
     }
     return screenEle as HTMLCanvasElement
   }
 
   static getContext(): CanvasRenderingContext2D {
-    const canvas = TvScreen.getScreenEle()
+    const canvas = TvScreen.getCanvas()
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     return ctx
   }
@@ -136,7 +134,7 @@ export class TvScreen {
   }
 
   static async setScreenSize(width: number, height: number): Promise<void> {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.width = width
     screenEle.height = height
   }
@@ -167,19 +165,19 @@ export class TvScreen {
   }
 
   static turnOn(): void {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.style.display = TV_SCREEN_DISPLAY
     console.log(`tv screen turned on!`)
   }
 
   static turnOff(): void {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.style.display = 'none'
     console.log(`tv screen turned off!`)
   }
 
   static isOn(): boolean {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     return !(screenEle.style.display === 'none')
   }
 
