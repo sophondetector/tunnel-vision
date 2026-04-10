@@ -29,6 +29,9 @@ export function discoverScrollable(startElement: Element): Element | undefined {
     }
   }
 
+  // NOTE: if the scrollable element is a body tag scrollElementIntoView breaks
+  if (ele.tagName === 'BODY') return undefined
+
   if (LOG_ELEMENTS) {
     console.log(`discoverScrollable: found scrollable ele`)
     console.log(ele)
