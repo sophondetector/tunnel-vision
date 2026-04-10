@@ -15,14 +15,18 @@ let ACTIVE_RANGE: Range | null = null
 let COLOR_HEX = '#0000ff'
 let TV_SCREEN_BUFFER_RADIUS: number = 5
 
-function getFillStyle(): string {
-  return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
-}
-
 export class TvScreen {
+
+  static getFillStyle(): string {
+    return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
+  }
 
   static setBufferRadius(radius: number): void {
     TV_SCREEN_BUFFER_RADIUS = radius
+  }
+
+  static getBufferRadius(): number {
+    return TV_SCREEN_BUFFER_RADIUS
   }
 
   /**
@@ -75,7 +79,7 @@ export class TvScreen {
     canvas.id = TV_SCREEN_ID
 
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-    ctx.fillStyle = getFillStyle()
+    ctx.fillStyle = TvScreen.getFillStyle()
 
     return canvas
   }
@@ -108,34 +112,6 @@ export class TvScreen {
     return rects
   }
 
-  static drawScreen(): void {
-    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
-
-    const canvas = TvScreen.getScreenEle()
-    const ctx = TvScreen.getContext()
-
-    ctx.fillStyle = getFillStyle()
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
-
-    for (let idx = 0; idx < rects.length; idx++) {
-      const rect = rects[idx]
-      ctx.clearRect(
-        rect.x - TV_SCREEN_BUFFER_RADIUS,
-        rect.y - TV_SCREEN_BUFFER_RADIUS,
-        rect.width + (TV_SCREEN_BUFFER_RADIUS * 2),
-        rect.height + (TV_SCREEN_BUFFER_RADIUS * 2)
-      );
-    }
-  }
-
-  // TODO: move all animation functions into the director
-  static animate() {
-    TvScreen.drawScreen()
-    requestAnimationFrame(TvScreen.animate)
-  }
 
   // FIXME: change this to getCanvas
   static getScreenEle(): HTMLCanvasElement {

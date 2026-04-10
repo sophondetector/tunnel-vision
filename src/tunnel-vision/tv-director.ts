@@ -60,7 +60,7 @@ export class TvDirector {
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
-      TvScreen.animate()
+      TvDirector.animate()
       this.setMouseUpListener()
       this.setSelectionListener()
       this.toggleScreenOff()
@@ -144,6 +144,35 @@ export class TvDirector {
     document.addEventListener(
       "selectionchange", () => this.drawAroundSelection(this), { capture: true }
     )
+  }
+
+  static animate() {
+    TvDirector.drawScreen()
+    requestAnimationFrame(TvDirector.animate)
+  }
+
+  static drawScreen(): void {
+    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
+
+    const canvas = TvScreen.getScreenEle()
+    const ctx = TvScreen.getContext()
+    const buffer = TvScreen.getBufferRadius()
+
+    ctx.fillStyle = TvScreen.getFillStyle()
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
+
+    for (let idx = 0; idx < rects.length; idx++) {
+      const rect = rects[idx]
+      ctx.clearRect(
+        rect.x - buffer,
+        rect.y - buffer,
+        rect.width + (buffer * 2),
+        rect.height + (buffer * 2)
+      );
+    }
   }
 
   getRangeManager(): RangeManager {
