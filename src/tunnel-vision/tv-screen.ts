@@ -80,8 +80,10 @@ export class TvScreen {
     return canvas
   }
 
-  // FIXME: add check here to prevent creation of multiple canvases
   static async inject(): Promise<void> {
+    if (document.getElementById(TV_SCREEN_ID)) {
+      return
+    }
     const screenEle = await TvScreen.create()
     document.body.appendChild(screenEle)
     console.log('TvScreen.inject: tv screen injected')
