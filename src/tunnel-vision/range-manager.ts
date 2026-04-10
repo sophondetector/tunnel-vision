@@ -1,4 +1,3 @@
-const TEXT_NODE_NAME = '#text'
 const LOG_RANGES = false
 
 export class RangeManager {
@@ -198,17 +197,21 @@ export class RangeManager {
     return textNode.textContent!.trim().length > 0
   }
 
-  static #getAllTextNodes(node: Node): Array<Node> {
-    const res = []
-    if (node.nodeName === TEXT_NODE_NAME) {
-      res.push(node)
-      return res
+  static #getAllTextNodes(root: Node): Node[] {
+    const walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,     // Only text nodes
+      null,                     // No custom filter (or add one to skip whitespace)
+      //@ts-ignore
+      false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      textNodes.push(node);
     }
-    for (const cn of node.childNodes) {
-      const iterRes = RangeManager.#getAllTextNodes(cn)
-      res.push(...iterRes)
-    }
-    return res
+    return textNodes;
   }
 
   static textNodes2Ranges(textNodes: Node[]): Range[] {
