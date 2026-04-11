@@ -171,13 +171,7 @@ export class TvDirector {
       const rects = this.getSelectionRange()!.getClientRects()
       for (let idx = 0; idx < rects.length; idx++) {
         const rect = rects[idx]
-        TvScreen.clearRect(
-          rect.x,
-          rect.y,
-          rect.width,
-          rect.height,
-          buffer
-        )
+        TvScreen.clearRect(rect, buffer)
       }
       return
     }
@@ -185,13 +179,7 @@ export class TvDirector {
     const rects = this.RANGE_MANAGER!.getRectsToClear()
     for (let idx = 0; idx < rects.length; idx++) {
       const rect = rects[idx]
-      TvScreen.clearRect(
-        rect.x,
-        rect.y,
-        rect.width,
-        rect.height,
-        buffer
-      )
+      TvScreen.clearRect(rect, buffer)
     }
 
   }
