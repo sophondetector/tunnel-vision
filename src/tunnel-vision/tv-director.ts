@@ -118,6 +118,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
+  // FIXME: this method needs a better name because it doesn't draw the selection rather it makes a decision about whether SELECTING/SELECTION should be set on or off and calls this.setSelectionRange if necessary
   drawAroundSelection(curDir: TvDirector): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
