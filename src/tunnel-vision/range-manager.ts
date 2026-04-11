@@ -1,3 +1,4 @@
+// TODO: make this toggleable via the debug panel
 const LOG_RANGES = false
 
 export class RangeManager {
