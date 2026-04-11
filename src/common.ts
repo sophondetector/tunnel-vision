@@ -11,7 +11,8 @@ export enum TvMessage {
   GET_SCREEN_STATE = "GET_SCREEN_STATE",
   GET_DIRECTOR_STATE = "GET_DIRECTOR_STATE",
   INIT_RANGES = "INIT_RANGES",
-  RE_INIT = "RE_INIT"
+  RE_INIT = "RE_INIT",
+  SHOW_RANGES = "SHOW_RANGES"
 }
 
 export enum TvDirectorState {

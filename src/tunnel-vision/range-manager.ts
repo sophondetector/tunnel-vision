@@ -1,4 +1,3 @@
-const TEXT_NODE_NAME = '#text'
 const LOG_RANGES = false
 
 export class RangeManager {
@@ -17,6 +16,10 @@ export class RangeManager {
       return
     }
     this.RANGES = RangeManager.eleArray2Ranges(eleArray)
+
+    // this.RANGES = this.RANGES.sort(
+    //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
+    // )
   }
 
   getRangeIdx(): number {
@@ -199,17 +202,21 @@ export class RangeManager {
     return textNode.textContent!.trim().length > 0
   }
 
-  static #getAllTextNodes(node: Node): Array<Node> {
-    const res = []
-    if (node.nodeName === TEXT_NODE_NAME) {
-      res.push(node)
-      return res
+  static #getAllTextNodes(root: Node): Node[] {
+    const walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,     // Only text nodes
+      null,                     // No custom filter (or add one to skip whitespace)
+      //@ts-ignore
+      false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      textNodes.push(node);
     }
-    for (const cn of node.childNodes) {
-      const iterRes = RangeManager.#getAllTextNodes(cn)
-      res.push(...iterRes)
-    }
-    return res
+    return textNodes;
   }
 
   // TODO: refactor so it uses binary search to find range endings
@@ -267,9 +274,10 @@ export class RangeManager {
         ranges.push(nextRange);
 
         currentRange = nextRange;
-        const rect = nextRange.getBoundingClientRect()
-        previousBottom = rect.bottom
-        previousTop = rect.top
+
+        const nextRect = nextRange.getBoundingClientRect()
+        previousBottom = nextRect.bottom
+        previousTop = nextRect.top
       }
 
       charIndex++;
@@ -299,4 +307,108 @@ export class RangeManager {
     }
     return ends;
   }
+
+  async binarySearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0;
+    if (len === 0) return [null, null];
+
+    let left = 0;
+    let right = len - 1;
+
+    while (left <= right) {
+      const mid = Math.floor((left + right) / 2);
+      const range = this.rangeIdx2Range(mid);
+
+      if (!range) break;
+
+      const cmp = range.comparePoint(node, offset);  // -1 before, 0 inside, +1 after
+
+      if (cmp === 0) {
+        return [mid, range];
+      } else if (cmp < 0) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    console.error(`TvDirector.binarySearch: search for range failed`);
+    return [null, null];
+  }
+
+  async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0
+    for (let idx = 0; idx < len; idx++) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (!iterRange) continue
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error(`TvDirector.bruteForceSearch: search for range failed`)
+    return [null, null]
+  }
+
+  async bothWaysSearch(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    let iterRange = this.rangeIdx2Range(startIdx)
+    if (iterRange && iterRange.isPointInRange(node, offset)) {
+      return [startIdx, iterRange]
+    }
+
+    const len = this.getRangesLength() ?? 0
+    let topIdx = startIdx + 1
+    let botIdx = startIdx - 1
+
+    while (topIdx < len && botIdx >= 0) {
+      if (topIdx < len) {
+        const topRange = this.rangeIdx2Range(topIdx)
+        if (topRange && topRange.isPointInRange(node, offset)) {
+          return [topIdx, topRange]
+        }
+        topIdx++
+      }
+      if (botIdx >= 0) {
+        const botRange = this.rangeIdx2Range(botIdx)
+        if (botRange && botRange.isPointInRange(node, offset)) {
+          return [botIdx, botRange]
+        }
+        botIdx--
+      }
+    }
+
+    console.error('TvDirector.bothWaysSearch: could not find range!')
+    return [null, null]
+  }
+
+  async searchBehind(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    for (let idx = startIdx; idx >= 0; idx--) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error('TvDirector.searchBehind: could not find range!')
+    return [null, null]
+  }
+
+  async searchAhead(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
+    const len = this.getRangesLength() ?? 0
+    for (let idx = startIdx; idx < len; idx++) {
+      const iterRange = this.rangeIdx2Range(idx)
+      if (iterRange === undefined) {
+        console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
+        continue
+      }
+      if (iterRange.isPointInRange(node, offset)) {
+        return [idx, iterRange]
+      }
+    }
+    console.error('TvDirector.searchAhead: could not find range!')
+    return [null, null]
+  }
 }
+

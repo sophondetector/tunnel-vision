@@ -17,6 +17,7 @@ let WIN_WIDTH = window.innerWidth
 let SELECTING = false
 let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
+let SELECTION_RANGE: Range | undefined = undefined
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -61,7 +62,7 @@ export class TvDirector {
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
-      TvScreen.animate()
+      this.animate(this)
       this.setMouseUpListener()
       this.setSelectionListener()
       this.setMutationObserver()
@@ -88,7 +89,6 @@ export class TvDirector {
     if (range === undefined) {
       throw new Error('TvDirector.init: could not get first visible range')
     }
-    this.setWindowAroundRange(range)
   }
 
   async reInitRanges(): Promise<void> {
@@ -109,11 +109,9 @@ export class TvDirector {
         return
       }
       rangeManager.setRangeIdx(firstIdx)
-      this.setWindowAroundRange(firstRange, false)
       return
     }
     rangeManager.setRangeIdx(curIdx)
-    this.setWindowAroundRange(curRange, false)
   }
 
   disableSelectionHighlighting(): void {
@@ -163,14 +161,67 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    TvScreen.setActiveRange(range)
-    curDir.scrollRangeIntoView(range)
+    curDir.setSelectionRange(range)
+  }
+
+  setSelectionRange(range: Range): void {
+    SELECTION_RANGE = range
+  }
+
+  getSelectionRange(): Range | undefined {
+    return SELECTION_RANGE
   }
 
   setSelectionListener(): void {
     document.addEventListener(
       "selectionchange", () => this.drawAroundSelection(this), { capture: true }
     )
+  }
+
+  animate(curDir: TvDirector) {
+    this.drawScreen()
+    requestAnimationFrame(() => this.animate(curDir))
+  }
+
+  drawScreen(): void {
+
+    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
+    TvScreen.clearCanvas()
+    TvScreen.fillCanvas()
+
+    const buffer = TvScreen.getBufferRadius()
+
+    if (SELECTION) {
+      const rects = this.getSelectionRange()!.getClientRects()
+      for (let idx = 0; idx < rects.length; idx++) {
+        const rect = rects[idx]
+        TvScreen.clearRect(
+          rect.x,
+          rect.y,
+          rect.width,
+          rect.height,
+          buffer
+        )
+      }
+      return
+    }
+
+    const allRects = Array.from(
+      this.RANGE_MANAGER!.getCurrentRange()!.getClientRects()
+    )
+    const rects = allRects.filter((r) => r.width > 1 && r.height > 1)
+
+    for (let idx = 0; idx < rects.length; idx++) {
+      const rect = rects[idx]
+      TvScreen.clearRect(
+        rect.x,
+        rect.y,
+        rect.width,
+        rect.height,
+        buffer
+      )
+    }
+
   }
 
   getRangeManager(): RangeManager {
@@ -205,8 +256,6 @@ export class TvDirector {
   setRangeIdx(idx: number): void {
     const rm = this.RANGE_MANAGER as RangeManager
     rm.setRangeIdx(idx)
-    const range = rm.getCurrentRange() as Range
-    this.setWindowAroundRange(range)
   }
 
   static clickInRange(event: MouseEvent, range: Range): boolean {
@@ -241,11 +290,11 @@ export class TvDirector {
         return
       }
 
+      // TODO: make this O(logN)
       for (let idx = 0; idx < rm.RANGES.length; idx++) {
         const rng = rm.RANGES[idx]
         if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
           rm.setRangeIdx(idx)
-          this.setWindowAroundRange(rng)
           return
         }
       }
@@ -313,7 +362,7 @@ export class TvDirector {
       return
     }
 
-    this.setWindowAroundRange(nextRange)
+    this.scrollRangeIntoView(nextRange)
   }
 
   decRange(): void {
@@ -332,20 +381,43 @@ export class TvDirector {
       return
     }
 
-    this.setWindowAroundRange(prevRange)
+    this.scrollRangeIntoView(prevRange)
   }
 
   setRangeAtSelectionTop(): void {
-    const topRect = TvScreen.getTopRect()
-    const topBound = topRect.y - window.scrollY
-    const leftBound = topRect.x - window.scrollX
+    const selRange = this.getSelectionRange()
+    if (selRange === undefined) {
+      console.error('setRangeAtSelectionTop: no selection range')
+      return
+    }
+
+    const topRect = selRange.getClientRects().item(0)
+    if (topRect === null) {
+      console.error('setRangeAtSelectionTop: no top rect!')
+      return
+    }
+
+    const topBound = topRect.y
+    const leftBound = topRect.x
     this.setRangeAtPoint(topBound, leftBound)
   }
 
   setRangeAtSelectionBottom(): void {
-    const bottomRect = TvScreen.getBottomRect()
-    const bottomBound = bottomRect.y - window.scrollY
-    const leftBound = bottomRect.x - window.scrollX
+    const selRange = this.getSelectionRange()
+    if (selRange === undefined) {
+      console.error('setRangeAtSelectionTop: no selection range')
+      return
+    }
+
+    const rects = selRange.getClientRects()
+    const bottomRect = selRange.getClientRects().item(rects.length - 1)
+    if (bottomRect === null) {
+      console.error('setRangeAtSelectionTop: no top rect!')
+      return
+    }
+
+    const bottomBound = bottomRect.y
+    const leftBound = bottomRect.x
     this.setRangeAtPoint(bottomBound, leftBound)
   }
 
@@ -357,7 +429,6 @@ export class TvDirector {
       return
     }
     rm.setRangeIdx(rangeIdx)
-    this.setWindowAroundRange(range)
   }
 
   // TODO: implement shift-adding ranges
@@ -451,107 +522,6 @@ export class TvDirector {
     }
   }
 
-  /**
-  * This sets the TvScreen viewing window around a given Range 
-  * @param {Range} range - The range of text you want to set the window around
-  * @param {boolean} scrollIntoView - Whether or not you want to scroll the window to the range - default is `true`
-  */
-  setWindowAroundRange(range: Range, scrollIntoView: boolean = true): void {
-    if (!this.isOn()) {
-      // console.log('screen is off!')
-      return
-    }
-    TvScreen.setActiveRange(range)
-    if (scrollIntoView) this.scrollRangeIntoView(range, true)
-  }
-
-  async bruteForceSearch(curDir: TvDirector, prevNode: Node, prevOffset: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    const len = rm.getRangesLength() ?? 0
-    for (let idx = 0; idx < len; idx++) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (!iterRange) continue
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
-        rm.setRangeIdx(idx)
-        return
-      }
-    }
-    console.error(`TvDirector.bruteForceSearch: search for range failed`)
-  }
-
-  async bothWaysSearch(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    let iterRange = rm.rangeIdx2Range(startIdx)
-    if (iterRange && iterRange.isPointInRange(prevNode, prevOffset)) {
-      curDir.setWindowAroundRange(iterRange)
-      rm.setRangeIdx(startIdx)
-      return
-    }
-
-    const len = rm.getRangesLength() ?? 0
-    let topIdx = startIdx + 1
-    let botIdx = startIdx - 1
-
-    while (topIdx < len && botIdx >= 0) {
-      if (topIdx < len) {
-        const topRange = rm.rangeIdx2Range(topIdx)
-        if (topRange && topRange.isPointInRange(prevNode, prevOffset)) {
-          curDir.setWindowAroundRange(topRange)
-          rm.setRangeIdx(topIdx)
-          return
-        }
-        topIdx++
-      }
-      if (botIdx >= 0) {
-        const botRange = rm.rangeIdx2Range(botIdx)
-        if (botRange && botRange.isPointInRange(prevNode, prevOffset)) {
-          curDir.setWindowAroundRange(botRange)
-          rm.setRangeIdx(botIdx)
-          return
-        }
-        botIdx--
-      }
-    }
-
-    console.error('TvDirector.bothWaysSearch: could not find range!')
-  }
-
-  async searchBehind(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    for (let idx = startIdx; idx >= 0; idx--) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (iterRange === undefined) {
-        console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
-        continue
-      }
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
-        rm.setRangeIdx(idx)
-        return
-      }
-    }
-    console.error('TvDirector.searchBehind: could not find range!')
-  }
-
-  async searchAhead(curDir: TvDirector, prevNode: Node, prevOffset: number, startIdx: number): Promise<void> {
-    const rm = curDir.getRangeManager()
-    const len = rm.getRangesLength() ?? 0
-    for (let idx = startIdx; idx < len; idx++) {
-      const iterRange = rm.rangeIdx2Range(idx)
-      if (iterRange === undefined) {
-        console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
-        continue
-      }
-      if (iterRange.isPointInRange(prevNode, prevOffset)) {
-        curDir.setWindowAroundRange(iterRange)
-        rm.setRangeIdx(idx)
-        return
-      }
-    }
-    console.error('TvDirector.searchAhead: could not find range!')
-  }
-
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     TvScreen.setBufferRadiusByScreenSize()
 
@@ -564,6 +534,7 @@ export class TvDirector {
     if (SELECTION) {
       await rangeManager.initRanges(curDir.getElementArray())
       curDir.drawAroundSelection(curDir)
+      curDir.scrollRangeIntoView(curDir.getSelectionRange() as Range, false)
       return
     }
 
@@ -572,35 +543,22 @@ export class TvDirector {
       console.error('TvDirector.onResizeCallback: could not get current range!')
       return
     }
+
     const prevNode = prevRange.startContainer
     const prevOffset = Math.max(1, prevRange.startOffset)
-    // NOTE: making sure prevOffset is at least one fixes the bug where smaller window leads to range directly before we want getting picked
+    // NOTE: prevOffset must be at least one or we get the range BEFORE we want
 
-    const rangeIdx = rangeManager.getRangeIdx()
     await rangeManager.initRanges(curDir.getElementArray())
-    const len = rangeManager.getRangesLength() ?? 0
 
-    // NOTE: we have two other options for searching for the range; bothWaysSearch and bruteForceSearch
+    const [idx, range] = await rangeManager.binarySearch(prevNode, prevOffset)
 
-    const padding = 5
-    // positive delta means bigger window; negative means smaller
-    if (delta < 0) {
-      // if smaller window -> the index is likely earlier -> so we go backwards
-      curDir.searchBehind(
-        curDir,
-        prevNode,
-        prevOffset,
-        Math.min(rangeIdx + padding, Math.max(len - 1, 0))
-      )
-    } else {
-      // if bigger window -> the new index is likely later -> so we go forwards
-      curDir.searchAhead(
-        curDir,
-        prevNode,
-        prevOffset,
-        Math.max(rangeIdx - padding, 0)
-      )
+    if (idx === null) {
+      console.error('onResizeCallback: could not find new range')
+      return
     }
+
+    rangeManager.setRangeIdx(idx)
+    curDir.scrollRangeIntoView(range)
   }
 
   initializeControls() {
@@ -693,4 +651,26 @@ export class TvDirector {
 
     console.log(`setMutationObserver: mutation observer set`)
   }
+
+  showRanges(): void {
+    const rangeManager = this.getRangeManager()
+
+    const drawRanges = () => {
+      const len = rangeManager.getRangesLength() as number
+      for (let idx = 0; idx < len; idx++) {
+        const range = rangeManager.rangeIdx2Range(idx) as Range
+        const rect = range.getBoundingClientRect()
+        TvScreen.drawBoxAroundRect(rect, "red", 3)
+        TvScreen.drawNumber(
+          rect.x,
+          rect.y,
+          idx
+        )
+      }
+      requestAnimationFrame(drawRanges)
+    }
+
+    requestAnimationFrame(drawRanges)
+  }
+
 }

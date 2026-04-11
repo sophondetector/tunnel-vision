@@ -11,18 +11,21 @@ const COLOR_RGBA = {
   a: .5
 }
 
-let ACTIVE_RANGE: Range | null = null
 let COLOR_HEX = '#0000ff'
 let TV_SCREEN_BUFFER_RADIUS: number = 5
 
-function getFillStyle(): string {
-  return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
-}
-
 export class TvScreen {
+
+  static getFillStyle(): string {
+    return `rgba(${COLOR_RGBA.r}, ${COLOR_RGBA.g}, ${COLOR_RGBA.b}, ${COLOR_RGBA.a})`
+  }
 
   static setBufferRadius(radius: number): void {
     TV_SCREEN_BUFFER_RADIUS = radius
+  }
+
+  static getBufferRadius(): number {
+    return TV_SCREEN_BUFFER_RADIUS
   }
 
   /**
@@ -75,73 +78,30 @@ export class TvScreen {
     canvas.id = TV_SCREEN_ID
 
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-    ctx.fillStyle = getFillStyle()
+    ctx.fillStyle = TvScreen.getFillStyle()
 
     return canvas
   }
 
   static async inject(): Promise<void> {
+    if (document.getElementById(TV_SCREEN_ID)) {
+      return
+    }
     const screenEle = await TvScreen.create()
     document.body.appendChild(screenEle)
     console.log('TvScreen.inject: tv screen injected')
   }
 
-  static setActiveRange(range: Range): void {
-    ACTIVE_RANGE = range
-  }
-
-  static getActiveRange(): Range {
-    if (ACTIVE_RANGE === null) {
-      throw new Error(`Active range is null!`)
-    }
-    return ACTIVE_RANGE
-  }
-
-  static getRectsToDraw(): DOMRect[] {
-    const activeRange = TvScreen.getActiveRange()
-    const rects = Array.from(activeRange.getClientRects())
-      .filter(r => r.width > 1 && r.height > 1)
-    return rects
-  }
-
-  static drawScreen(): void {
-    TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
-
-    const canvas = TvScreen.getScreenEle()
-    const ctx = TvScreen.getContext()
-
-    ctx.fillStyle = getFillStyle()
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const rects: Array<DOMRect> = TvScreen.getRectsToDraw()
-
-    for (let idx = 0; idx < rects.length; idx++) {
-      const rect = rects[idx]
-      ctx.clearRect(
-        rect.x - TV_SCREEN_BUFFER_RADIUS,
-        rect.y - TV_SCREEN_BUFFER_RADIUS,
-        rect.width + (TV_SCREEN_BUFFER_RADIUS * 2),
-        rect.height + (TV_SCREEN_BUFFER_RADIUS * 2)
-      );
-    }
-  }
-
-  static animate() {
-    TvScreen.drawScreen()
-    requestAnimationFrame(TvScreen.animate)
-  }
-
-  static getScreenEle(): HTMLCanvasElement {
+  static getCanvas(): HTMLCanvasElement {
     const screenEle = document.getElementById(TV_SCREEN_ID)
     if (!screenEle) {
-      throw new Error(`TvScreen.getScreenEle: could not find element with id ${TV_SCREEN_ID}`)
+      throw new Error(`TvScreen.getCanvas: could not find element with id ${TV_SCREEN_ID}`)
     }
     return screenEle as HTMLCanvasElement
   }
 
   static getContext(): CanvasRenderingContext2D {
-    const canvas = TvScreen.getScreenEle()
+    const canvas = TvScreen.getCanvas()
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     return ctx
   }
@@ -154,7 +114,7 @@ export class TvScreen {
   }
 
   static async setScreenSize(width: number, height: number): Promise<void> {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.width = width
     screenEle.height = height
   }
@@ -172,32 +132,20 @@ export class TvScreen {
     COLOR_RGBA.b = Number('0x' + color.slice(5, 7))
   }
 
-  static getTopRect(): DOMRect {
-    const range = TvScreen.getActiveRange()
-    const rects = range.getClientRects()
-    return rects.item(0) as DOMRect
-  }
-
-  static getBottomRect(): DOMRect {
-    const range = TvScreen.getActiveRange()
-    const rects = range.getClientRects()
-    return rects.item(rects.length - 1) as DOMRect
-  }
-
   static turnOn(): void {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.style.display = TV_SCREEN_DISPLAY
     console.log(`tv screen turned on!`)
   }
 
   static turnOff(): void {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     screenEle.style.display = 'none'
     console.log(`tv screen turned off!`)
   }
 
   static isOn(): boolean {
-    const screenEle = TvScreen.getScreenEle()
+    const screenEle = TvScreen.getCanvas()
     return !(screenEle.style.display === 'none')
   }
 
@@ -207,6 +155,85 @@ export class TvScreen {
       return
     }
     TvScreen.turnOn()
+  }
+
+  static clearCanvas(): void {
+    const canvas = TvScreen.getCanvas()
+    const ctx = TvScreen.getContext()
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
+  static fillCanvas(fillStyle: string | null = null): void {
+    if (fillStyle === null) {
+      fillStyle = TvScreen.getFillStyle()
+    }
+    const canvas = TvScreen.getCanvas()
+    TvScreen.fillRect(0, 0, canvas.width, canvas.height, 0, fillStyle)
+  }
+
+  static fillRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    buffer: number = 0,
+    fillStyle: string | null = null
+  ): void {
+    const ctx = TvScreen.getContext()
+    if (fillStyle === null) {
+      fillStyle = TvScreen.getFillStyle()
+    }
+    ctx.fillStyle = fillStyle
+    ctx.fillRect(
+      x - buffer,
+      y - buffer,
+      width + (buffer * 2),
+      height + (buffer * 2)
+    );
+  }
+
+  static clearRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    buffer: number = 0
+  ): void {
+    const ctx = TvScreen.getContext()
+    ctx.clearRect(
+      x - buffer,
+      y - buffer,
+      width + (buffer * 2),
+      height + (buffer * 2)
+    );
+  }
+
+  static drawBoxAroundRect(rect: DOMRect, color: string = "red", thickness: number = 3): void {
+    const ctx = TvScreen.getContext()
+    ctx.strokeStyle = color;
+    ctx.lineWidth = thickness;
+    ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+    // console.log('Drawn at:', x.toFixed(1), y.toFixed(1));
+  }
+
+  static drawNumber(
+    x: number,
+    y: number,
+    number: number,
+    color: string = '#00ff00',
+    size: number = 20
+  ) {
+    const ctx = TvScreen.getContext()
+    ctx.save();
+
+    ctx.font = `${size}px Arial`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillText(number.toString(), x, y);
+
+    ctx.restore();
   }
 }
 
