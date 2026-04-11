@@ -193,18 +193,15 @@ export class TvScreen {
   }
 
   static clearRect(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
+    rect: DOMRect,
     buffer: number = 0
   ): void {
     const ctx = TvScreen.getContext()
     ctx.clearRect(
-      x - buffer,
-      y - buffer,
-      width + (buffer * 2),
-      height + (buffer * 2)
+      rect.x - buffer,
+      rect.y - buffer,
+      rect.width + (buffer * 2),
+      rect.height + (buffer * 2)
     );
   }
 
