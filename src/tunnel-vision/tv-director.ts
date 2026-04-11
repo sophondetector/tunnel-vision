@@ -306,7 +306,7 @@ export class TvDirector {
     return TvScreen.isOn()
   }
 
-  incRange(): void {
+  incLine(): void {
     playSound()
 
     if (SELECTION) {
@@ -316,16 +316,16 @@ export class TvDirector {
       return
     }
 
-    const nextRange = this.getRangeManager().incRange()
+    const nextRange = this.getRangeManager().incLine()
     if (nextRange === undefined) {
-      console.log('TvDirector.incRange: could not find next range')
+      console.log('TvDirector.incLine: could not find next range')
       return
     }
 
     this.scrollRangeIntoView(nextRange)
   }
 
-  decRange(): void {
+  decLine(): void {
     playSound()
 
     if (SELECTION) {
@@ -335,9 +335,9 @@ export class TvDirector {
       return
     }
 
-    const prevRange = this.getRangeManager().decRange()
+    const prevRange = this.getRangeManager().decLine()
     if (prevRange === undefined) {
-      console.log('TvDirector.decRange: could not find previous range')
+      console.log('TvDirector.decLine: could not find previous range')
       return
     }
 
@@ -538,7 +538,7 @@ export class TvDirector {
               this.shiftRangeDown()
               break
             }
-            this.incRange()
+            this.incLine()
           }
           break;
         case "ArrowUp":
@@ -550,7 +550,7 @@ export class TvDirector {
               this.shiftRangeUp()
               break
             }
-            this.decRange()
+            this.decLine()
           }
           break;
         case "J":
