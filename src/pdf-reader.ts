@@ -24,6 +24,7 @@ const SCALE_INC = .1
 
 const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
+const SIDEBAR_DEFAULT_WIDTH = 350
 
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
@@ -31,6 +32,8 @@ const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 // control panel
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
+const COLLAPSER = document.getElementById('collapser') as HTMLButtonElement;
+const CHEVRON = document.getElementById('chevron') as HTMLElement;
 
 const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
 const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
@@ -349,12 +352,22 @@ SHOW_RANGES.addEventListener('click', async function () {
   dir.showRanges()
 })
 
-//@ts-ignore
-RESIZER.addEventListener('mousedown', (e) => {
+RESIZER.addEventListener('mousedown', () => {
   IS_RESIZING = true;
   document.body.style.cursor = 'col-resize';
   document.body.style.userSelect = 'none';
 });
+
+COLLAPSER.addEventListener('click', () => {
+  const width = Number.parseFloat(SIDEBAR.style.width)
+  if (width > 0) {
+    SIDEBAR.style.width = `${0}px`
+    CHEVRON.style.transform = 'rotate(180deg)'
+    return
+  }
+  CHEVRON.style.transform = 'rotate(0deg)'
+  SIDEBAR.style.width = `${SIDEBAR_DEFAULT_WIDTH}px`
+})
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const dir = await getDirector()
