@@ -518,7 +518,7 @@ export class TvDirector {
 
     await rangeManager.initRanges(curDir.getElementArray())
 
-    const [idx, range] = await rangeManager.binarySearch(prevNode, prevOffset)
+    const [idx, range] = await rangeManager.nodeOffset2Range(prevNode, prevOffset)
 
     if (idx === null) {
       console.error('onResizeCallback: could not find new range')
