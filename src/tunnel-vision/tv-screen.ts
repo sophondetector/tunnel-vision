@@ -192,6 +192,7 @@ export class TvScreen {
     );
   }
 
+  // TODO: improve this interface
   static clearRect(
     x: number,
     y: number,
