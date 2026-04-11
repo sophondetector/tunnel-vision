@@ -313,6 +313,7 @@ export class RangeManager {
     return ends;
   }
 
+  // FIXME: rename this method
   async binarySearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0;
     if (len === 0) return [null, null];
