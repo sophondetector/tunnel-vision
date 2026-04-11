@@ -1,3 +1,4 @@
+// TODO: make this toggleable via the debug panel
 const LOG_RANGES = false
 
 export class RangeManager {
@@ -20,6 +21,12 @@ export class RangeManager {
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
     // )
+  }
+
+  getRectsToClear(): DOMRect[] {
+    const rng = this.getCurrentRange()
+    const rect = rng!.getBoundingClientRect()
+    return [rect]
   }
 
   getRangeIdx(): number {
@@ -74,6 +81,7 @@ export class RangeManager {
     return res
   }
 
+  // FIXME: make rangeIsVisible more robust
   static rangeIsVisible(rng: Range): boolean {
     const parent = rng.startContainer.parentElement
     if (!parent) {
@@ -101,7 +109,7 @@ export class RangeManager {
       return undefined
     }
     if (!RangeManager.rangeIsVisible(range)) {
-      range = this.getNextRange()
+      range = this.incLine()
       if (range === undefined) {
         console.error('RangeManager.getFirstVisibleRange: could not get first visible range!')
         return undefined
@@ -110,9 +118,9 @@ export class RangeManager {
     return range
   }
 
-  getNextRange(): Range | undefined {
+  incLine(): Range | undefined {
     if (this.RANGES === null) {
-      console.error(`RangeManager.getNextRange: RANGES is null`)
+      console.error(`RangeManager.incLine: RANGES is null`)
       return undefined
     }
     // find the next visible range
@@ -121,7 +129,7 @@ export class RangeManager {
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
         if (LOG_RANGES) {
-          console.log(`RangeManager.getNextRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(`RangeManager.incLine: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
@@ -129,12 +137,12 @@ export class RangeManager {
         return iterRange
       }
     }
-    console.warn(`RangeManger.getNextRange: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManger.incLine: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  getPrevRange(): Range | undefined {
+  decLine(): Range | undefined {
     if (this.RANGES === null) {
-      console.error(`RangeManager.getPrevRange: this.RANGES is null`)
+      console.error(`RangeManager.decLine: this.RANGES is null`)
       return undefined
     }
     // find the first previous visible range
@@ -143,7 +151,7 @@ export class RangeManager {
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
         if (LOG_RANGES) {
-          console.log(`RangeManager.getPrevRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(`RangeManager.decLine: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
@@ -151,7 +159,7 @@ export class RangeManager {
         return iterRange
       }
     }
-    console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManager.decLine: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
   rangeAtPoint(top: number, left: number): [Range, number] | [null, null] {
@@ -308,7 +316,7 @@ export class RangeManager {
     return ends;
   }
 
-  async binarySearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+  async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0;
     if (len === 0) return [null, null];
 
@@ -332,7 +340,7 @@ export class RangeManager {
       }
     }
 
-    console.error(`TvDirector.binarySearch: search for range failed`);
+    console.error(`TvDirector.nodeOffset2Range: search for range failed`);
     return [null, null];
   }
 

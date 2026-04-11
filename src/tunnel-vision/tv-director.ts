@@ -143,6 +143,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
+  // FIXME: this method needs a better name because it doesn't draw the selection rather it makes a decision about whether SELECTING/SELECTION should be set on or off and calls this.setSelectionRange if necessary
   drawAroundSelection(curDir: TvDirector): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
@@ -172,6 +173,14 @@ export class TvDirector {
     return SELECTION_RANGE
   }
 
+  getSelectionRects(): DOMRect[] {
+    const range = this.getSelectionRange() as Range
+    const rects = Array.from(range.getClientRects()).filter(
+      (r) => r.width > 1 && r.height > 1
+    )
+    return rects
+  }
+
   setSelectionListener(): void {
     document.addEventListener(
       "selectionchange", () => this.drawAroundSelection(this), { capture: true }
@@ -192,34 +201,18 @@ export class TvDirector {
     const buffer = TvScreen.getBufferRadius()
 
     if (SELECTION) {
-      const rects = this.getSelectionRange()!.getClientRects()
+      const rects = this.getSelectionRects()
       for (let idx = 0; idx < rects.length; idx++) {
         const rect = rects[idx]
-        TvScreen.clearRect(
-          rect.x,
-          rect.y,
-          rect.width,
-          rect.height,
-          buffer
-        )
+        TvScreen.clearRect(rect, buffer)
       }
       return
     }
 
-    const allRects = Array.from(
-      this.RANGE_MANAGER!.getCurrentRange()!.getClientRects()
-    )
-    const rects = allRects.filter((r) => r.width > 1 && r.height > 1)
-
+    const rects = this.RANGE_MANAGER!.getRectsToClear()
     for (let idx = 0; idx < rects.length; idx++) {
       const rect = rects[idx]
-      TvScreen.clearRect(
-        rect.x,
-        rect.y,
-        rect.width,
-        rect.height,
-        buffer
-      )
+      TvScreen.clearRect(rect, buffer)
     }
 
   }
@@ -346,7 +339,7 @@ export class TvDirector {
     return TvScreen.isOn()
   }
 
-  incRange(): void {
+  incLine(): void {
     playSound()
 
     if (SELECTION) {
@@ -356,16 +349,16 @@ export class TvDirector {
       return
     }
 
-    const nextRange = this.getRangeManager().getNextRange()
+    const nextRange = this.getRangeManager().incLine()
     if (nextRange === undefined) {
-      console.log('TvDirector.incRange: could not find next range')
+      console.log('TvDirector.incLine: could not find next range')
       return
     }
 
     this.scrollRangeIntoView(nextRange)
   }
 
-  decRange(): void {
+  decLine(): void {
     playSound()
 
     if (SELECTION) {
@@ -375,9 +368,9 @@ export class TvDirector {
       return
     }
 
-    const prevRange = this.getRangeManager().getPrevRange()
+    const prevRange = this.getRangeManager().decLine()
     if (prevRange === undefined) {
-      console.log('TvDirector.decRange: could not find previous range')
+      console.log('TvDirector.decLine: could not find previous range')
       return
     }
 
@@ -550,7 +543,7 @@ export class TvDirector {
 
     await rangeManager.initRanges(curDir.getElementArray())
 
-    const [idx, range] = await rangeManager.binarySearch(prevNode, prevOffset)
+    const [idx, range] = await rangeManager.nodeOffset2Range(prevNode, prevOffset)
 
     if (idx === null) {
       console.error('onResizeCallback: could not find new range')
@@ -578,7 +571,7 @@ export class TvDirector {
               this.shiftRangeDown()
               break
             }
-            this.incRange()
+            this.incLine()
           }
           break;
         case "ArrowUp":
@@ -590,7 +583,7 @@ export class TvDirector {
               this.shiftRangeUp()
               break
             }
-            this.decRange()
+            this.decLine()
           }
           break;
         case "J":
