@@ -23,6 +23,12 @@ export class RangeManager {
     // )
   }
 
+  getRectsToClear(): DOMRect[] {
+    const rng = this.getCurrentRange()
+    const rect = rng!.getBoundingClientRect()
+    return [rect]
+  }
+
   getRangeIdx(): number {
     return this.RANGE_IDX
   }

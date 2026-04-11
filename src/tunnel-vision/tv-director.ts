@@ -181,15 +181,18 @@ export class TvDirector {
       return
     }
 
-    const rect = this.RANGE_MANAGER!.getCurrentRange()!.getBoundingClientRect()
+    const rects = this.RANGE_MANAGER!.getRectsToClear()
+    for (let idx = 0; idx < rects.length; idx++) {
+      const rect = rects[idx]
+      TvScreen.clearRect(
+        rect.x,
+        rect.y,
+        rect.width,
+        rect.height,
+        buffer
+      )
+    }
 
-    TvScreen.clearRect(
-      rect.x,
-      rect.y,
-      rect.width,
-      rect.height,
-      buffer
-    )
   }
 
   getRangeManager(): RangeManager {
