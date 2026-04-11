@@ -265,6 +265,7 @@ export class TvDirector {
         return
       }
 
+      // TODO: make this O(logN)
       for (let idx = 0; idx < rm.RANGES.length; idx++) {
         const rng = rm.RANGES[idx]
         if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
