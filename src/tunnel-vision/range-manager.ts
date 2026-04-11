@@ -108,7 +108,7 @@ export class RangeManager {
       return undefined
     }
     if (!RangeManager.rangeIsVisible(range)) {
-      range = this.getNextRange()
+      range = this.incRange()
       if (range === undefined) {
         console.error('RangeManager.getFirstVisibleRange: could not get first visible range!')
         return undefined
@@ -117,9 +117,9 @@ export class RangeManager {
     return range
   }
 
-  getNextRange(): Range | undefined {
+  incRange(): Range | undefined {
     if (this.RANGES === null) {
-      console.error(`RangeManager.getNextRange: RANGES is null`)
+      console.error(`RangeManager.incRange: RANGES is null`)
       return undefined
     }
     // find the next visible range
@@ -128,7 +128,7 @@ export class RangeManager {
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
         if (LOG_RANGES) {
-          console.log(`RangeManager.getNextRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(`RangeManager.incRange: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
@@ -136,12 +136,12 @@ export class RangeManager {
         return iterRange
       }
     }
-    console.warn(`RangeManger.getNextRange: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManger.incRange: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
   }
 
-  getPrevRange(): Range | undefined {
+  decRange(): Range | undefined {
     if (this.RANGES === null) {
-      console.error(`RangeManager.getPrevRange: this.RANGES is null`)
+      console.error(`RangeManager.decRange: this.RANGES is null`)
       return undefined
     }
     // find the first previous visible range
@@ -150,7 +150,7 @@ export class RangeManager {
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
         if (LOG_RANGES) {
-          console.log(`RangeManager.getPrevRange: range set to range at index ${this.RANGE_IDX}`)
+          console.log(`RangeManager.decRange: range set to range at index ${this.RANGE_IDX}`)
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
@@ -158,7 +158,7 @@ export class RangeManager {
         return iterRange
       }
     }
-    console.warn(`RangeManager.getPrevRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
+    console.warn(`RangeManager.decRange: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
   }
 
   rangeAtPoint(top: number, left: number): [Range, number] | [null, null] {

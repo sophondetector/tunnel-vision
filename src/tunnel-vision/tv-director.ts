@@ -316,7 +316,7 @@ export class TvDirector {
       return
     }
 
-    const nextRange = this.getRangeManager().getNextRange()
+    const nextRange = this.getRangeManager().incRange()
     if (nextRange === undefined) {
       console.log('TvDirector.incRange: could not find next range')
       return
@@ -335,7 +335,7 @@ export class TvDirector {
       return
     }
 
-    const prevRange = this.getRangeManager().getPrevRange()
+    const prevRange = this.getRangeManager().decRange()
     if (prevRange === undefined) {
       console.log('TvDirector.decRange: could not find previous range')
       return
