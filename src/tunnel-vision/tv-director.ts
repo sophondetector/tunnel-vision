@@ -72,7 +72,7 @@ export class TvDirector {
       this.animate(this)
       this.setMouseUpListener()
       this.setSelectionListener()
-      this.setMutationObserver()
+      // this.setMutationObserver()
       this.toggleScreenOff()
 
       this.setDirectorState(TvDirectorState.READY)
