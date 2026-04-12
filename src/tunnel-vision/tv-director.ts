@@ -646,6 +646,7 @@ export class TvDirector {
     console.log(`setMutationObserver: mutation observer set`)
   }
 
+  // TODO: make this toggled via a global var
   showRanges(): void {
     const rangeManager = this.getRangeManager()
 
