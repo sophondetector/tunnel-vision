@@ -41,6 +41,7 @@ const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
 const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
 const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
+const LOG_RANGES = document.getElementById('log-ranges') as HTMLButtonElement
 
 function showErrorHeader(): void {
   ERROR_HEADER.classList.remove(HIDDEN)
@@ -139,6 +140,13 @@ SHOW_RANGES.addEventListener('click', async function () {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.SHOW_RANGES, function () {
     console.log(`sent message ${TvMessage.SHOW_RANGES} to content.ts in open tab`)
+  })
+})
+
+LOG_RANGES.addEventListener('click', async function () {
+  const tab = await getCurrentTab()
+  chrome.tabs.sendMessage(tab.id!, TvMessage.LOG_RANGES, function () {
+    console.log(`sent message ${TvMessage.LOG_RANGES} to content.ts in open tab`)
   })
 })
 

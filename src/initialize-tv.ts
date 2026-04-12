@@ -53,8 +53,13 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     sendResponse()
 
   } else if (value === TvMessage.SHOW_RANGES) {
-    console.log('show ranges message received')
-    DIRECTOR.toggleShowRanges()
+    const onOff = DIRECTOR.toggleShowRanges()
+    console.log(`show ranges is ${onOff ? "ON" : "OFF"}`)
+    sendResponse()
+
+  } else if (value === TvMessage.LOG_RANGES) {
+    const onOff = DIRECTOR.getRangeManager().toggleLogRanges()
+    console.log(`log ranges is ${onOff ? "ON" : "OFF"}`)
     sendResponse()
 
   } else {

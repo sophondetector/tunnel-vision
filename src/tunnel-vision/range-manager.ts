@@ -1,5 +1,4 @@
-// TODO: make this toggleable via the debug panel
-const LOG_RANGES = false
+let LOG_RANGES = false
 
 export class RangeManager {
   RANGES: Range[] | null = null
@@ -21,6 +20,11 @@ export class RangeManager {
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
     // )
+  }
+
+  toggleLogRanges(): boolean {
+    LOG_RANGES = !LOG_RANGES
+    return LOG_RANGES
   }
 
   getRectsToClear(): DOMRect[] {
@@ -82,6 +86,7 @@ export class RangeManager {
   }
 
   // FIXME: make rangeIsVisible more robust
+  // FIXME: make this a private method
   static rangeIsVisible(rng: Range): boolean {
     const parent = rng.startContainer.parentElement
     if (!parent) {
