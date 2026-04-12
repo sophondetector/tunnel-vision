@@ -205,7 +205,7 @@ export class RangeManager {
     }
 
     const textNodesWithText = textNodes.filter(RangeManager.nodeHasRealText)
-    const ranges = RangeManager.textNodes2Ranges(textNodesWithText)
+    const ranges = RangeManager.#textNodes2Ranges(textNodesWithText)
 
     return ranges
   }
@@ -232,7 +232,7 @@ export class RangeManager {
   }
 
   // TODO: refactor so it uses binary search to find range endings
-  static textNodes2Ranges(textNodes: Node[]): Range[] {
+  static #textNodes2Ranges(textNodes: Node[]): Range[] {
     if (textNodes.length === 0) return [];
 
     // Safety limit to prevent infinite loops in pathological cases
