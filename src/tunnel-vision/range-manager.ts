@@ -6,16 +6,12 @@ export class RangeManager {
 
   constructor() { }
 
-  async initRanges(eleArray: Array<Element>): Promise<void> {
-    if (!eleArray) {
-      console.warn(`RangeManager.initRanges: eleArray is ${eleArray}!`)
-      return
-    }
+  async initRanges(eleArray: Element[]): Promise<void> {
     if (eleArray.length < 1) {
       console.warn(`RangeManager.initRanges: eleArray.length is zero!`)
       return
     }
-    this.RANGES = RangeManager.eleArray2Ranges(eleArray)
+    this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
 
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
@@ -72,18 +68,18 @@ export class RangeManager {
       console.warn(`RangeManager.getRangesLength: this.RANGES is null!`)
       return undefined
     }
-    return this.RANGES!.length
+    return this.RANGES.length
   }
 
-  static getMaxHeight(range: Range): number {
-    let res = 0
-    for (const rect of range.getClientRects()) {
-      if (rect.height > res) {
-        res = rect.height
-      }
-    }
-    return res
-  }
+  // static getMaxHeight(range: Range): number {
+  //   let res = 0
+  //   for (const rect of range.getClientRects()) {
+  //     if (rect.height > res) {
+  //       res = rect.height
+  //     }
+  //   }
+  //   return res
+  // }
 
   // FIXME: make rangeIsVisible more robust
   static rangeIsVisible(rng: Range): boolean {
@@ -196,7 +192,7 @@ export class RangeManager {
   }
 
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
-  static eleArray2Ranges(eleArray: Array<Element>): Array<Range> {
+  static #eleArray2Ranges(eleArray: Element[]): Array<Range> {
     const textNodes: Array<Node> = []
     for (let idx = 0; idx < eleArray.length; idx++) {
       const iterEle = eleArray[idx]
@@ -204,13 +200,13 @@ export class RangeManager {
       textNodes.push(...iterNodes)
     }
 
-    const textNodesWithText = textNodes.filter(RangeManager.nodeHasRealText)
+    const textNodesWithText = textNodes.filter(RangeManager.#nodeHasRealText)
     const ranges = RangeManager.#textNodes2Ranges(textNodesWithText)
 
     return ranges
   }
 
-  static nodeHasRealText(textNode: Node): boolean {
+  static #nodeHasRealText(textNode: Node): boolean {
     return textNode.textContent!.trim().length > 0
   }
 
