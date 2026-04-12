@@ -2,7 +2,7 @@ import {
   TvHandler,
   waitForNetworkIdle,
   waitForDOMIdle,
-  discoverScrollableFromCenter
+  discoverScrollableFromCenterPromise
 } from "./handler-utilities"
 
 // FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
@@ -48,10 +48,10 @@ function getBodyChildWithMostText(): Element | null {
   return null
 }
 
-export function genericElementGetter(): Array<Element> | null {
+export async function genericElementGetter(): Promise<Array<Element> | null> {
   let res: Element | Array<Element> | null = null;
 
-  res = discoverScrollableFromCenter()
+  res = await discoverScrollableFromCenterPromise()
   if (res) return [res]
 
   res = getArticleEle()
@@ -70,7 +70,7 @@ export function genericElementGetter(): Array<Element> | null {
 
 export const genericHandler: TvHandler = {
   getTvElements: genericElementGetter,
-  getScrollableElement: discoverScrollableFromCenter,
+  getScrollableElement: discoverScrollableFromCenterPromise,
   initDelay: async () => {
     await waitForNetworkIdle(100, 5000, 0)
     await waitForDOMIdle(50)

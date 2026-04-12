@@ -79,7 +79,7 @@ export class TvDirector {
   }
 
   async initRanges(): Promise<void> {
-    this.ELEMENT_ARRAY = HandlerManager.getEleArray()
+    this.ELEMENT_ARRAY = await HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
       throw new Error('TvDirector.initRanges: null element array, exiting early')
     }
@@ -93,24 +93,23 @@ export class TvDirector {
 
   async reInitRanges(): Promise<void> {
     const rangeManager = this.getRangeManager()
+    // TODO: change this to holding place by getting node and offset?
     const curIdx = rangeManager.getRangeIdx()
-    this.ELEMENT_ARRAY = HandlerManager.getEleArray() as Element[]
+
+    this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
+
     await rangeManager.initRanges(this.ELEMENT_ARRAY)
+
     const curRange = rangeManager.rangeIdx2Range(curIdx)
+
     if (!curRange) {
       const firstRange = rangeManager.getFirstVisibleRange()
       if (!firstRange) {
         this.setDirectorState(TvDirectorState.ERROR)
         return
       }
-      const firstIdx = rangeManager.range2RangeIdx(firstRange)
-      if (firstIdx === undefined) {
-        this.setDirectorState(TvDirectorState.ERROR)
-        return
-      }
-      rangeManager.setRangeIdx(firstIdx)
-      return
     }
+
     rangeManager.setRangeIdx(curIdx)
   }
 
@@ -457,8 +456,8 @@ export class TvDirector {
   * @param {Range} range - The Range to scroll into view 
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
-  scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): void {
-    const scrollable = HandlerManager.getScrollableElement(false)
+  async scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): Promise<void> {
+    const scrollable = await HandlerManager.getScrollableElement(false)
     if (scrollable) {
       this.useScrollableToScrollRangeIntoView(scrollable, range, scrollToMiddle)
       return
@@ -614,13 +613,13 @@ export class TvDirector {
   }
 
   setMutationObserver(): void {
+    let { getMutationTarget, mutationCallback } = defaultMutationHandler
+
     const handler = HandlerManager.getHandler()
     if (!handler) {
       console.error(`setMutationObserver: could not get handler!`)
       return
     }
-
-    let { getMutationTarget, mutationCallback } = defaultMutationHandler
 
     if (handler.mutationHandler) {
       getMutationTarget = handler.mutationHandler.getMutationTarget
@@ -639,7 +638,9 @@ export class TvDirector {
 
     observer.observe(target, {
       subtree: true,
-      childList: true
+      childList: true,
+      attributes: false,
+      characterData: true,
     })
 
     console.log(`setMutationObserver: mutation observer set`)

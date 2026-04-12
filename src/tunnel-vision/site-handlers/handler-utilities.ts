@@ -6,8 +6,8 @@ let DEFAULT_MUTATION_TIMEOUT: undefined | NodeJS.Timeout = undefined
 
 // TODO: make getTvElements and getScrollableElement async so they dont block normal user interaction and so the default getScrollableElement can be discoverScrollableFromCenterPromise
 export interface TvHandler {
-  getTvElements: () => Array<Element> | null
-  getScrollableElement: () => Element | null
+  getTvElements: () => Promise<Array<Element> | null>
+  getScrollableElement: () => Promise<Element | null>
   initDelay: () => Promise<void>
   mutationHandler: TvMutationSubHandler | null
 }
@@ -365,13 +365,13 @@ export async function waitForDOMIdle(
   return promise;
 }
 
-function nodeIsVisible(node: Node): boolean {
-  if (node.nodeType === Node.ELEMENT_NODE) {
-    return (node as Element).checkVisibility()
-  }
-  if (!node.parentElement) return false
-  return node.parentElement.checkVisibility()
-}
+// function nodeIsVisible(node: Node): boolean {
+//   if (node.nodeType === Node.ELEMENT_NODE) {
+//     return (node as Element).checkVisibility()
+//   }
+//   if (!node.parentElement) return false
+//   return node.parentElement.checkVisibility()
+// }
 
 export async function mutationsContainAddedText(mutations: MutationRecord[]): Promise<boolean> {
   for (let idx = 0; idx < mutations.length; idx++) {
@@ -379,20 +379,38 @@ export async function mutationsContainAddedText(mutations: MutationRecord[]): Pr
     if (rec.addedNodes.length > 0) {
       for (let jdx = 0; jdx < rec.addedNodes.length; jdx++) {
         const addedNode = rec.addedNodes[jdx]
-        if (nodeIsVisible(addedNode) && addedNode.textContent && addedNode.textContent.trim().length > 0) {
-          // console.log('mutationsContainAddedText: found some text:', addedNode.textContent)
-          return true
-        }
+        if (addedNode.nodeType !== Node.TEXT_NODE) continue
+        if (!addedNode.textContent) continue
+        if (addedNode.textContent.trim().length < 1) continue
+        // console.log('mutationsContainAddedText: found some text:', addedNode.textContent)
+        return true
       }
     }
   }
   return false
 }
 
+let MUTATIONS: MutationRecord[] = []
 
-export function defaultMutationCallback(curDir: TvDirector, _mutations: Array<MutationRecord>): void {
+export function defaultMutationCallback(curDir: TvDirector, mutations: MutationRecord[]): void {
+  MUTATIONS.push(...mutations)
   clearTimeout(DEFAULT_MUTATION_TIMEOUT)
-  DEFAULT_MUTATION_TIMEOUT = setTimeout(curDir.initRanges, 100)
+  DEFAULT_MUTATION_TIMEOUT = setTimeout(
+    () => {
+      mutationsContainAddedText(MUTATIONS)
+        .then((ans) => {
+          MUTATIONS = []
+          if (ans) {
+            curDir.initRanges()
+              .then(() => console.log('reinnitted'))
+          } else {
+            console.log('did not reinit')
+          }
+        })
+        .then(() => console.log('defaultMutationCallback: done'))
+    },
+    2000
+  )
 }
 
 export function defaultGetMutationTarget(): Node {

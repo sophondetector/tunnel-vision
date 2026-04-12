@@ -80,14 +80,15 @@ export class HandlerManager {
     return HANDLER
   }
 
-  static getEleArray(): Array<Element> | null {
+  // TODO: change this to getTvElements
+  static async getEleArray(): Promise<Array<Element> | null> {
     const handler = HandlerManager.getHandler()
     if (handler === null) return null
 
-    let ea = handler.getTvElements()
+    let ea = await handler.getTvElements()
     if (!ea || ea.length == 0) {
       console.warn(`getEleArray: handler failed: falling back on generic handler`)
-      ea = genericHandler.getTvElements()
+      ea = await genericHandler.getTvElements()
       if (!ea || ea.length == 0) {
         console.error(`getEleArray: generic handler fallback also failed`)
         return null
@@ -96,7 +97,7 @@ export class HandlerManager {
     return ea
   }
 
-  static getScrollableElement(resetScrollable: boolean = false): Element | undefined | null {
+  static async getScrollableElement(resetScrollable: boolean = false): Promise<Element | undefined | null> {
     if (SCROLLABLE_ELEMENT && resetScrollable === false) {
       return SCROLLABLE_ELEMENT
     }
@@ -106,7 +107,7 @@ export class HandlerManager {
     const handler = HandlerManager.getHandler()
     if (handler === null) return null
 
-    SCROLLABLE_ELEMENT = handler.getScrollableElement()
+    SCROLLABLE_ELEMENT = await handler.getScrollableElement()
 
     if (!SCROLLABLE_ELEMENT) {
       HAS_SCROLLABLE_ELEMENT = false
