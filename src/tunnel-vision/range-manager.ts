@@ -86,7 +86,6 @@ export class RangeManager {
   }
 
   // FIXME: make rangeIsVisible more robust
-  // FIXME: make this a private method
   static rangeIsVisible(rng: Range): boolean {
     const parent = rng.startContainer.parentElement
     if (!parent) {
