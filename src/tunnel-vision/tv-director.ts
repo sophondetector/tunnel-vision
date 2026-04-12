@@ -19,6 +19,8 @@ let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let SELECTION_RANGE: Range | undefined = undefined
 
+let DEBUG_SHOW_RANGES = false
+
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
 }
@@ -31,6 +33,11 @@ export class TvDirector {
 
   constructor() {
     console.log('TvDirector: new TvDirector constructed')
+  }
+
+  toggleShowRanges(): boolean {
+    DEBUG_SHOW_RANGES = !DEBUG_SHOW_RANGES
+    return DEBUG_SHOW_RANGES
   }
 
   getDirectorState(): TvDirectorState {
@@ -191,11 +198,28 @@ export class TvDirector {
     requestAnimationFrame(() => this.animate(curDir))
   }
 
+  #drawRanges(): void {
+    const rangeManager = this.getRangeManager()
+    const len = rangeManager.getRangesLength() as number
+    for (let idx = 0; idx < len; idx++) {
+      const range = rangeManager.rangeIdx2Range(idx) as Range
+      const rect = range.getBoundingClientRect()
+      TvScreen.drawBoxAroundRect(rect, "red", 3)
+      TvScreen.drawNumber(
+        rect.x,
+        rect.y,
+        idx
+      )
+    }
+  }
+
   drawScreen(): void {
 
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
     TvScreen.clearCanvas()
     TvScreen.fillCanvas()
+
+    if (DEBUG_SHOW_RANGES) this.#drawRanges()
 
     const buffer = TvScreen.getBufferRadius()
 
@@ -645,27 +669,4 @@ export class TvDirector {
 
     console.log(`setMutationObserver: mutation observer set`)
   }
-
-  // TODO: make this toggled via a global var
-  showRanges(): void {
-    const rangeManager = this.getRangeManager()
-
-    const drawRanges = () => {
-      const len = rangeManager.getRangesLength() as number
-      for (let idx = 0; idx < len; idx++) {
-        const range = rangeManager.rangeIdx2Range(idx) as Range
-        const rect = range.getBoundingClientRect()
-        TvScreen.drawBoxAroundRect(rect, "red", 3)
-        TvScreen.drawNumber(
-          rect.x,
-          rect.y,
-          idx
-        )
-      }
-      requestAnimationFrame(drawRanges)
-    }
-
-    requestAnimationFrame(drawRanges)
-  }
-
 }

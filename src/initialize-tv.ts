@@ -48,13 +48,13 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     sendResponse()
 
   } else if (value === TvMessage.RE_INIT) {
-    console.log('re-initting director')
+    console.log('re-initing director')
     DIRECTOR.init()
     sendResponse()
 
   } else if (value === TvMessage.SHOW_RANGES) {
     console.log('show ranges message received')
-    DIRECTOR.showRanges()
+    DIRECTOR.toggleShowRanges()
     sendResponse()
 
   } else {
