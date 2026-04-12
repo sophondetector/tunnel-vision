@@ -402,12 +402,13 @@ export function defaultMutationCallback(curDir: TvDirector, mutations: MutationR
           MUTATIONS = []
           if (ans) {
             curDir.initRanges()
-              .then(() => console.log('reinnitted'))
+              .then(() => console.log('defaultMutationCallback: reinnitted'))
           } else {
-            console.log('did not reinit')
+            console.log('defaultMutationCallback: did not reinit')
           }
         })
         .then(() => console.log('defaultMutationCallback: done'))
+      // FIXME: turn off these logging messages in production!
     },
     2000
   )
