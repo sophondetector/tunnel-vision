@@ -38,9 +38,7 @@ export class HandlerManager {
       return HANDLER
     }
 
-    // FIXME: this is very buggy when loading local *.md files and when viewing a folder
-    // There appears to be a race condition between injecting the #TvScreen div one the 
-    // one hand and ranging/fetching the first range on the other
+    // FIXME: this is very buggy when loading local *.md files and when viewing a folder There appears to be a race condition between injecting the #TvScreen div one the one hand and ranging/fetching the first range on the other
     if (isFile()) {
       console.log(`HandlerManager.getHandler: returning generic handler for non pdf local file`)
       HANDLER = genericHandler
@@ -97,6 +95,7 @@ export class HandlerManager {
     return ea
   }
 
+  // TODO: change this to an object interface so its more readable when its called in other parts of the codebase
   static async getScrollableElement(resetScrollable: boolean = false): Promise<Element | undefined | null> {
     if (SCROLLABLE_ELEMENT && resetScrollable === false) {
       return SCROLLABLE_ELEMENT
