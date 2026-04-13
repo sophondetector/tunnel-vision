@@ -330,7 +330,10 @@ export class RangeManager {
         previousTop = nextRect.top
       }
 
-      if (iterCount++ > MAX_ITERATIONS) break
+      if (iterCount++ > MAX_ITERATIONS) {
+        console.error(`textNodes2Ranges: ${MAX_ITERATIONS} iterations reached! exiting...`)
+        break
+      }
     }
 
     return ranges;
