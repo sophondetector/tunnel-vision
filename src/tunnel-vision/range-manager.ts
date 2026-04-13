@@ -221,7 +221,7 @@ export class RangeManager {
   }
 
   static #eleArray2Ranges(_eleArray: Element[]): Array<Range> {
-    // FIXME: always going from the root fails in the pdf reader
+    // FIXME: always going from document.body as the root fails in the pdf reader
     // TODO: refactor so eleArray2Ranges doesn't take a list of eles, but rather a root
     // TODO: refactor getTvEles to getTvRoot
     const textNodes = RangeManager.#getAllTextNodes(document.body)
