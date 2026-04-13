@@ -256,10 +256,9 @@ export class RangeManager {
     let previousTop = currentRange.getBoundingClientRect().top
 
     while (charIndex < totalChars) {
-      // Move to next text node when we reach the end of current one
-      if (charIndex === cumulativeEndIndices[nodeIndex]) {
-        nodeIndex++;
-        offsetInNode = 0;
+      if (offsetInNode >= textNodes[nodeIndex].textContent!.length) {
+        nodeIndex++
+        offsetInNode = 0
       }
 
       // Extend current range by one more character
