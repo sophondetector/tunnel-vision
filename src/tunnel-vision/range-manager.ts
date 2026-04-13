@@ -71,16 +71,6 @@ export class RangeManager {
     return this.RANGES.length
   }
 
-  // static getMaxHeight(range: Range): number {
-  //   let res = 0
-  //   for (const rect of range.getClientRects()) {
-  //     if (rect.height > res) {
-  //       res = rect.height
-  //     }
-  //   }
-  //   return res
-  // }
-
   // FIXME: make rangeIsVisible more robust
   static rangeIsVisible(rng: Range): boolean {
     const parent = rng.startContainer.parentElement
