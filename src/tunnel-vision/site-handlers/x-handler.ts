@@ -10,7 +10,7 @@ import {
 const SCROLLABLE_LEC = "div[data-testid='primaryColumn']"
 const PARAGRAPH_LEC = "div[data-testid='tweetText'] span"
 
-function getTvElements(): Array<Element> | null {
+async function getTvElements(): Promise<Element[] | null> {
   const arr = Array.from(document.querySelectorAll(PARAGRAPH_LEC))
   if (arr.length > 0) return arr
   return null
@@ -23,7 +23,7 @@ async function initDelay(): Promise<void> {
   return
 }
 
-function getScrollableElement(): Element | null {
+async function getScrollableElement(): Promise<Element | null> {
   return document.querySelector(SCROLLABLE_LEC)
 }
 

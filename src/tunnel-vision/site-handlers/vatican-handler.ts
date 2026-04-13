@@ -1,6 +1,6 @@
 import { blankDelay, TvHandler } from "./handler-utilities"
 
-export function vaticanElementGetter(): Array<Element> | null {
+async function vaticanElementGetter(): Promise<Element[] | null> {
   const mainContent = document.querySelector('.documento')
   if (!mainContent) {
     console.log(`vaticanElementGetter: could not find mainContent`)
@@ -11,7 +11,7 @@ export function vaticanElementGetter(): Array<Element> | null {
 
 export const vaticanHandler: TvHandler = {
   getTvElements: vaticanElementGetter,
-  getScrollableElement: () => null,
+  getScrollableElement: async () => null,
   initDelay: blankDelay,
   mutationHandler: null
 }

@@ -1,12 +1,12 @@
 import { TvHandler, waitForNetworkIdle } from "./handler-utilities"
 
-function grokElementGetter(): Array<Element> | null {
+async function grokElementGetter(): Promise<Element[] | null> {
   const content = document.querySelector('main')
   if (!content) return null
   return [content]
 }
 
-function grokGetScrollable(): Element | null {
+async function grokGetScrollable(): Promise<Element | null> {
   return document.querySelector('main div.scrollbar-gutter-stable')
 }
 

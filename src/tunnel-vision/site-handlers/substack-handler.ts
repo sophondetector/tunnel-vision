@@ -17,7 +17,7 @@ function isScrollable(ele: Element): boolean {
   return (overflowY == 'scroll' || overflowY == 'auto')
 }
 
-function substackScrollableElement(): Element | null {
+async function substackScrollableElement(): Promise<Element | null> {
   for (const lec of SCROLLABLE_ELE_LECS) {
     const ele = document.querySelector(lec)
     if (ele && isScrollable(ele)) {
@@ -28,7 +28,7 @@ function substackScrollableElement(): Element | null {
   return null
 }
 
-function substackElementGetter(): Array<Element> | null {
+async function substackElementGetter(): Promise<Element[] | null> {
   let mainContent;
 
   mainContent = document.querySelectorAll('h1, h3, p, .captioned-image-container, a.weight-bold-DmI9lw')

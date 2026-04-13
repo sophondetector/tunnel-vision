@@ -4,11 +4,11 @@ export function isPdfReader(): boolean {
   return window.location.href.match(/pdf-reader.html$/g) ? true : false
 }
 
-function pdfReaderElementGetter(): Array<Element> | null {
+async function pdfReaderElementGetter(): Promise<Element[] | null> {
   return Array.from(document.querySelectorAll('#text-layer span'))
 }
 
-function pdfReaderScrollableElement(): Element {
+async function pdfReaderScrollableElement(): Promise<Element> {
   return document.querySelector('main') as Element
 }
 

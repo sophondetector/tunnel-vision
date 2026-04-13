@@ -1,7 +1,7 @@
 import { waitForDOMIdle, TvHandler, mutationsContainAddedText } from "./handler-utilities"
 import { TvDirector } from "../tv-director"
 
-function getTvElements(): Array<Element> | null {
+async function getTvElements(): Promise<Element[] | null> {
   const res = []
 
   const mainContent = document.querySelector('#main-content')
@@ -34,7 +34,7 @@ function getMutationTarget(): Node | null {
 
 export const redditHandler: TvHandler = {
   getTvElements,
-  getScrollableElement: () => null,
+  getScrollableElement: async () => null,
   initDelay: async () => waitForDOMIdle(100),
   mutationHandler: {
     mutationCallback,

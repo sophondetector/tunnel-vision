@@ -1,6 +1,6 @@
 import { TvHandler, blankDelay } from "./handler-utilities"
 
-function mdnElementGetter(): Array<Element> | null {
+async function mdnElementGetter(): Promise<Element[] | null> {
   let mainContent;
 
   mainContent = document.querySelector('article')
@@ -11,7 +11,7 @@ function mdnElementGetter(): Array<Element> | null {
 
 export const mdnHandler: TvHandler = {
   getTvElements: mdnElementGetter,
-  getScrollableElement: () => null,
+  getScrollableElement: async () => null,
   initDelay: blankDelay,
   mutationHandler: null
 }
