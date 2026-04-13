@@ -200,21 +200,22 @@ export class RangeManager {
       textNodes.push(...iterNodes)
     }
 
-    const textNodesWithText = textNodes.filter(RangeManager.#nodeHasRealText)
-    const ranges = RangeManager.#textNodes2Ranges(textNodesWithText)
+    const ranges = RangeManager.#textNodes2Ranges(textNodes)
 
     return ranges
-  }
-
-  static #nodeHasRealText(textNode: Node): boolean {
-    return textNode.textContent!.trim().length > 0
   }
 
   static #getAllTextNodes(root: Node): Node[] {
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,     // Only text nodes
-      null,                     // No custom filter (or add one to skip whitespace)
+      (node: Node) => {
+        // Skip whitespace-only text nodes
+        const text = (node as Text).data.trim();
+        return text.length === 0
+          ? NodeFilter.FILTER_SKIP     // or FILTER_REJECT
+          : NodeFilter.FILTER_ACCEPT;
+      },
       //@ts-ignore
       false
     );
