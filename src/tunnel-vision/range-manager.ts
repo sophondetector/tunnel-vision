@@ -266,12 +266,14 @@ export class RangeManager {
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
 
       const curRect = currentRange.getBoundingClientRect()
-      const currentBottom = curRect.bottom;
+      const currentBottom = curRect.bottom
       const currentTop = curRect.top
 
+      const bottomExceed = Math.abs(currentBottom - previousBottom) > BOTTOM_LIMIT
+      const topExceed = Math.abs(currentTop - previousTop) > TOP_LIMIT
+
       // Did we cross into a new visual line?
-      if (Math.abs(currentBottom - previousBottom) > BOTTOM_LIMIT ||
-        (Math.abs(currentTop - previousTop)) > TOP_LIMIT) {
+      if (bottomExceed || topExceed) {
         // Roll back one character — that one belongs to the next line
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
 
