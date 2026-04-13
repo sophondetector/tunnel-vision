@@ -302,8 +302,10 @@ export class RangeManager {
         // Roll back one character — that one belongs to the next line
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
 
+        // NOTE: this block rolls the selection back until there's no more trailing whitespace
         let newOffset = offsetInNode - 1
         let newNodeIdx = nodeIndex
+        // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
         ) {
