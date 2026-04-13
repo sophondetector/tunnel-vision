@@ -1,17 +1,5 @@
 let LOG_RANGES = true
 
-function rangeIsOccluded(range: Range): boolean {
-  const rect = range.getBoundingClientRect()
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  const topElement = document.elementFromPoint(centerX, centerY)
-  if (!topElement) return false
-  // if the range does not intersect the topElement we return false
-  const isOnTop = range.intersectsNode(topElement)
-  const isNotOnTop = !isOnTop
-  return isNotOnTop
-}
-
 export class RangeManager {
   RANGES: Range[] | null = null
   RANGE_IDX: number = 0
@@ -83,6 +71,18 @@ export class RangeManager {
     return this.RANGES.length
   }
 
+  static #rangeIsOccluded(range: Range): boolean {
+    const rect = range.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const topElement = document.elementFromPoint(centerX, centerY)
+    if (!topElement) return false
+    // if the range does not intersect the topElement we return false
+    const isOnTop = range.intersectsNode(topElement)
+    const isNotOnTop = !isOnTop
+    return isNotOnTop
+  }
+
   static rangeIsVisible(range: Range): boolean {
     const parent = range.startContainer.parentElement
     if (!parent) {
@@ -94,7 +94,7 @@ export class RangeManager {
       return false
     }
 
-    if (rangeIsOccluded(range)) return false
+    if (RangeManager.#rangeIsOccluded(range)) return false
 
     return true
   }
