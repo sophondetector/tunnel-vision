@@ -238,15 +238,11 @@ export class RangeManager {
     const TOP_LIMIT = 10;
 
     const ranges: Range[] = [];
-    const lengths = textNodes.map(node => node.textContent?.length ?? 0);
-    const cumulativeEndIndices = this.#computeCumulativeEndIndices(lengths);
-    const totalChars = cumulativeEndIndices.at(-1) ?? 0;
 
     // We'll maintain one active range and extend it character-by-character
     let currentRange = new Range();
     ranges.push(currentRange);
 
-    let charIndex = 0;                // global character position across all text nodes
     let nodeIndex = 0;                // which text node we're currently in
     let offsetInNode = 0;             // offset inside the current text node
 
@@ -255,10 +251,13 @@ export class RangeManager {
     let previousBottom = currentRange.getBoundingClientRect().bottom;
     let previousTop = currentRange.getBoundingClientRect().top
 
-    while (charIndex < totalChars) {
+    let iterCount = 0
+
+    while (nodeIndex < textNodes.length) {
       if (offsetInNode >= textNodes[nodeIndex].textContent!.length) {
         nodeIndex++
         offsetInNode = 0
+        if (!(nodeIndex < textNodes.length)) break
       }
 
       // Extend current range by one more character
@@ -278,13 +277,11 @@ export class RangeManager {
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
 
         let newOffset = offsetInNode - 1
-        let newCharIdx = charIndex
         let newNodeIdx = nodeIndex
         while (
           currentRange.toString().match(/\s$/)
         ) {
           newOffset = newOffset - 1
-          newCharIdx = newCharIdx - 1
           if (newOffset <= 0) {
             newNodeIdx = newNodeIdx - 1
             newOffset = textNodes[newNodeIdx].textContent!.length
@@ -305,32 +302,10 @@ export class RangeManager {
         previousTop = nextRect.top
       }
 
-      charIndex++;
-
-      if (charIndex > MAX_ITERATIONS) {
-        console.warn('textNodesToLineRanges: iteration limit reached — possible infinite loop');
-        break;
-      }
-    }
-
-    // Make sure last range goes all the way to the end
-    if (ranges.length > 0) {
-      const lastNode = textNodes[textNodes.length - 1];
-      const lastLength = lengths[lengths.length - 1];
-      ranges[ranges.length - 1].setEnd(lastNode, lastLength);
+      if (iterCount++ > MAX_ITERATIONS) break
     }
 
     return ranges;
-  }
-
-  static #computeCumulativeEndIndices(lengths: number[]): number[] {
-    const ends: number[] = [];
-    let sum = 0;
-    for (const len of lengths) {
-      sum += len;
-      ends.push(sum);
-    }
-    return ends;
   }
 
   async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
