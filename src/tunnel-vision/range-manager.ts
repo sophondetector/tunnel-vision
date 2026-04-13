@@ -182,13 +182,9 @@ export class RangeManager {
   }
 
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
-  static #eleArray2Ranges(eleArray: Element[]): Array<Range> {
-    const textNodes: Array<Node> = []
-    for (let idx = 0; idx < eleArray.length; idx++) {
-      const iterEle = eleArray[idx]
-      const iterNodes = RangeManager.#getAllTextNodes(iterEle)
-      textNodes.push(...iterNodes)
-    }
+  static #eleArray2Ranges(_eleArray: Element[]): Array<Range> {
+
+    const textNodes = RangeManager.#getAllTextNodes(document.body)
 
     const ranges = RangeManager.#textNodes2Ranges(textNodes)
 
