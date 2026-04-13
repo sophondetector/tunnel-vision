@@ -1,4 +1,4 @@
-let LOG_RANGES = true
+let LOG_RANGES = false
 
 export class RangeManager {
   RANGES: Range[] | null = null
@@ -144,6 +144,7 @@ export class RangeManager {
     return range
   }
 
+  // TODO: change the incLine and decLine interface to return [idx, Range] or [null, null]
   incLine(): Range | undefined {
     if (this.RANGES === null) {
       console.error(`RangeManager.incLine: RANGES is null`)
