@@ -1,5 +1,17 @@
 let LOG_RANGES = false
 
+function rangeIsOccluded(range: Range): boolean {
+  const rect = range.getBoundingClientRect()
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const topElement = document.elementFromPoint(centerX, centerY)
+  if (!topElement) return false
+  // if the range does not intersect the topElement we return false
+  const ans = !range.intersectsNode(topElement)
+  // console.log(`rangeIsOccluded: ${ans}`)
+  return ans
+}
+
 export class RangeManager {
   RANGES: Range[] | null = null
   RANGE_IDX: number = 0
@@ -71,9 +83,8 @@ export class RangeManager {
     return this.RANGES.length
   }
 
-  // FIXME: make rangeIsVisible more robust
-  static rangeIsVisible(rng: Range): boolean {
-    const parent = rng.startContainer.parentElement
+  static rangeIsVisible(range: Range): boolean {
+    const parent = range.startContainer.parentElement
     if (!parent) {
       console.warn('range with no parent element!')
       return false
@@ -83,10 +94,7 @@ export class RangeManager {
       return false
     }
 
-    const compStyle = window.getComputedStyle(parent)
-    if (compStyle.visibility === 'hidden') {
-      return false
-    }
+    if (rangeIsOccluded(range)) return false
 
     return true
   }
@@ -201,6 +209,7 @@ export class RangeManager {
         return text.length === 0
           ? NodeFilter.FILTER_SKIP     // or FILTER_REJECT
           : NodeFilter.FILTER_ACCEPT;
+        // TODO: skip text nodes with script parent tag
       },
       //@ts-ignore
       false
