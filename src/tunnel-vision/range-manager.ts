@@ -73,28 +73,56 @@ export class RangeManager {
 
   static #rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+
+    const centerX = rect.left + (rect.width / 2);
+    const centerY = rect.top + (rect.height / 2);
+
+    // NOTE: this is here because if the range is outside the window then elementFromPoint comes back null and the check fails - so we return false here to be safe
+    if (centerY < 0 || centerY > window.innerHeight) return false
+
     const topElement = document.elementFromPoint(centerX, centerY)
-    if (!topElement) return false
-    // if the range does not intersect the topElement we return false
+    if (!topElement) return true
+
+    // if the range does not intersect the topElement that means it's not on top
     const isOnTop = range.intersectsNode(topElement)
     const isNotOnTop = !isOnTop
+
     return isNotOnTop
   }
 
+  static #isElementVisiblyRendered(el: Element | null): boolean {
+    if (!el) return true;
+
+    const style = window.getComputedStyle(el);
+
+    if (style.display === 'none') return false;
+    if (style.visibility === 'hidden') return false;
+    if (parseFloat(style.opacity) < 0.1) return false; // very low opacity
+
+    // content-visibility: hidden also hides rendering
+    if (style.contentVisibility === 'hidden') return false;
+
+    // Recurse up the tree (in case ancestor is hidden)
+    return this.#isElementVisiblyRendered(el.parentElement);
+  }
+
   static rangeIsVisible(range: Range): boolean {
-    const parent = range.startContainer.parentElement
+    let parent = range.startContainer.parentElement
     if (!parent) {
       console.warn('range with no parent element!')
       return false
     }
 
-    if (!parent.checkVisibility()) {
-      return false
-    }
-
     if (RangeManager.#rangeIsOccluded(range)) return false
+
+    const isRendered = RangeManager.#isElementVisiblyRendered(
+      range.startContainer instanceof Element ? range.startContainer : range.startContainer.parentElement
+    )
+
+    if (!isRendered) return false
+
+    const rect = range.getBoundingClientRect()
+    if (rect.width < 1 || rect.height < 1) return false
 
     return true
   }
@@ -131,6 +159,7 @@ export class RangeManager {
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
+          console.log(iterRange.startContainer.parentElement)
         }
         return iterRange
       }
@@ -153,6 +182,7 @@ export class RangeManager {
           console.log(iterRange)
           console.log(iterRange.getBoundingClientRect())
           console.log(iterRange.toString())
+          console.log(iterRange.startContainer.parentElement)
         }
         return iterRange
       }
@@ -189,15 +219,17 @@ export class RangeManager {
     return
   }
 
-  // TODO: refactor eleArray2Ranges to async generator to work with very large texts
   static #eleArray2Ranges(_eleArray: Element[]): Array<Range> {
+    // FIXME: always going from the root fails in the pdf reader
+    // TODO: refactor so eleArray2Ranges doesn't take a list of eles, but rather a root
+    // TODO: refactor getTvEles to getTvRoot
     const textNodes = RangeManager.#getAllTextNodes(document.body)
     const ranges = RangeManager.#textNodes2Ranges(textNodes)
     return ranges
   }
 
   static #getAllTextNodes(root: Node): Node[] {
-    const badTagNames = ['SCRIPT']
+    const badTagNames = ['SCRIPT', 'STYLE']
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,     // Only text nodes
