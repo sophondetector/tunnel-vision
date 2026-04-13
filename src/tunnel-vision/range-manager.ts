@@ -278,6 +278,21 @@ export class RangeManager {
         // Roll back one character — that one belongs to the next line
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
 
+        let newOffset = offsetInNode - 1
+        let newCharIdx = charIndex
+        let newNodeIdx = nodeIndex
+        while (
+          currentRange.toString().match(/\s$/)
+        ) {
+          newOffset = newOffset - 1
+          newCharIdx = newCharIdx - 1
+          if (newOffset <= 0) {
+            newNodeIdx = newNodeIdx - 1
+            newOffset = textNodes[newNodeIdx].textContent!.length
+          }
+          currentRange.setEnd(textNodes[newNodeIdx], newOffset);
+        }
+
         // Start new line range
         const nextRange = new Range();
         nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1);
