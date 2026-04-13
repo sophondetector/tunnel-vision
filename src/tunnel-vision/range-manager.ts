@@ -1,4 +1,4 @@
-let LOG_RANGES = false
+let LOG_RANGES = true
 
 function rangeIsOccluded(range: Range): boolean {
   const rect = range.getBoundingClientRect()
@@ -7,9 +7,9 @@ function rangeIsOccluded(range: Range): boolean {
   const topElement = document.elementFromPoint(centerX, centerY)
   if (!topElement) return false
   // if the range does not intersect the topElement we return false
-  const ans = !range.intersectsNode(topElement)
-  // console.log(`rangeIsOccluded: ${ans}`)
-  return ans
+  const isOnTop = range.intersectsNode(topElement)
+  const isNotOnTop = !isOnTop
+  return isNotOnTop
 }
 
 export class RangeManager {
@@ -191,25 +191,24 @@ export class RangeManager {
 
   // TODO: refactor eleArray2Ranges to async generator to work with very large texts
   static #eleArray2Ranges(_eleArray: Element[]): Array<Range> {
-
     const textNodes = RangeManager.#getAllTextNodes(document.body)
-
     const ranges = RangeManager.#textNodes2Ranges(textNodes)
-
     return ranges
   }
 
   static #getAllTextNodes(root: Node): Node[] {
+    const badTagNames = ['SCRIPT']
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,     // Only text nodes
       (node: Node) => {
         // Skip whitespace-only text nodes
         const text = (node as Text).data.trim();
-        return text.length === 0
-          ? NodeFilter.FILTER_SKIP     // or FILTER_REJECT
-          : NodeFilter.FILTER_ACCEPT;
-        // TODO: skip text nodes with script parent tag
+        if (text.length === 0) return NodeFilter.FILTER_REJECT
+        // Skip certain types of tags
+        const parentType = node.parentElement!.tagName
+        if (badTagNames.includes(parentType)) return NodeFilter.FILTER_REJECT
+        return NodeFilter.FILTER_ACCEPT
       },
       //@ts-ignore
       false
