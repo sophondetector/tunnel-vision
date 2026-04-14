@@ -117,15 +117,16 @@ export class RangeManager {
     return this.#isElementVisiblyRendered(element.parentElement)
   }
 
-  static #eleHasScrollWidth(ele: Element | null): boolean {
+  static #eleHasScrollableX(ele: Element | null): boolean {
     if (!ele) return false
-    if (ele.scrollWidth > ele.clientWidth) return true
-    return RangeManager.#eleHasScrollWidth(ele.parentElement)
+    const style = window.getComputedStyle(ele)
+    if (style.overflowX === 'scroll' || style.overflowX === 'auto') return true
+    return RangeManager.#eleHasScrollableX(ele.parentElement)
   }
 
   static #isOffToTheSide(ele: Element | null, rect: DOMRect): boolean {
-    // NOTE: if range is inside an element with scrollWidth we assume we can get to it somehow
-    const hasScrollWidth = RangeManager.#eleHasScrollWidth(ele)
+    // NOTE: if range is inside an element with scrollable X we assume we can get to it somehow
+    const hasScrollWidth = RangeManager.#eleHasScrollableX(ele)
     if (hasScrollWidth) return false
 
     const vw = window.innerWidth || document.documentElement.clientWidth
