@@ -96,21 +96,23 @@ export class RangeManager {
     return isNotOnTop
   }
 
-  // TODO: there are more checks in snippet number 8 on the laptop
-  static #isElementVisiblyRendered(el: Element | null): boolean {
-    if (!el) return true
+  static #isElementVisiblyRendered(element: Element | null): boolean {
+    if (!element) return true
 
-    const style = window.getComputedStyle(el)
+    if (element.hasAttribute("hidden")) return false
+
+    const style = window.getComputedStyle(element)
 
     if (style.display === 'none') return false
     if (style.visibility === 'hidden') return false
-    if (parseFloat(style.opacity) < 0.1) return false; // very low opacity
-
-    // content-visibility: hidden also hides rendering
+    if (parseFloat(style.opacity) < 0.1) return false
+    if (style.transform === 'scale(0)') return false
+    if (style.clipPath === 'circle(0px at 50% 50%)') return false
+    if (style.height === "0px") return false
     if (style.contentVisibility === 'hidden') return false
 
     // Recurse up the tree (in case ancestor is hidden)
-    return this.#isElementVisiblyRendered(el.parentElement)
+    return this.#isElementVisiblyRendered(element.parentElement)
   }
 
   static #eleHasScrollWidth(ele: Element | null): boolean {
