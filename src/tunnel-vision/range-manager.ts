@@ -80,8 +80,8 @@ export class RangeManager {
   static #rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
 
-    const centerX = rect.left + (rect.width / 2);
-    const centerY = rect.top + (rect.height / 2);
+    const centerX = rect.left + (rect.width / 2)
+    const centerY = rect.top + (rect.height / 2)
 
     // NOTE: this is here because if the range is outside the window then elementFromPoint comes back null and the check fails - so we return false here to be safe
     if (centerY < 0 || centerY > window.innerHeight) return false
@@ -98,19 +98,19 @@ export class RangeManager {
 
   // TODO: there are more checks in snippet number 8 on the laptop
   static #isElementVisiblyRendered(el: Element | null): boolean {
-    if (!el) return true;
+    if (!el) return true
 
-    const style = window.getComputedStyle(el);
+    const style = window.getComputedStyle(el)
 
-    if (style.display === 'none') return false;
-    if (style.visibility === 'hidden') return false;
+    if (style.display === 'none') return false
+    if (style.visibility === 'hidden') return false
     if (parseFloat(style.opacity) < 0.1) return false; // very low opacity
 
     // content-visibility: hidden also hides rendering
-    if (style.contentVisibility === 'hidden') return false;
+    if (style.contentVisibility === 'hidden') return false
 
     // Recurse up the tree (in case ancestor is hidden)
-    return this.#isElementVisiblyRendered(el.parentElement);
+    return this.#isElementVisiblyRendered(el.parentElement)
   }
 
   static #eleHasScrollWidth(ele: Element | null): boolean {
@@ -254,7 +254,7 @@ export class RangeManager {
       NodeFilter.SHOW_TEXT,     // Only text nodes
       (node: Node) => {
         // Skip whitespace-only text nodes
-        const text = (node as Text).data.trim();
+        const text = (node as Text).data.trim()
         if (text.length === 0) return NodeFilter.FILTER_REJECT
         // Skip certain types of tags
         const parentType = node.parentElement!.tagName
@@ -263,37 +263,37 @@ export class RangeManager {
       },
       //@ts-ignore
       false
-    );
+    )
 
-    const textNodes = [];
-    let node;
+    const textNodes = []
+    let node
     while (node = walker.nextNode()) {
-      textNodes.push(node);
+      textNodes.push(node)
     }
-    return textNodes;
+    return textNodes
   }
 
   // TODO: refactor so it uses binary search to find range endings
   static #textNodes2Ranges(textNodes: Node[]): Range[] {
-    if (textNodes.length === 0) return [];
+    if (textNodes.length === 0) return []
 
     // Safety limit to prevent infinite loops in pathological cases
-    const MAX_ITERATIONS = 100_000;
+    const MAX_ITERATIONS = 100_000
     const BOTTOM_LIMIT = 5;           // pixels — when bottom jumps more than this → new line
-    const TOP_LIMIT = 10;
+    const TOP_LIMIT = 10
 
-    const ranges: Range[] = [];
+    const ranges: Range[] = []
 
     // We'll maintain one active range and extend it character-by-character
-    let currentRange = new Range();
-    ranges.push(currentRange);
+    let currentRange = new Range()
+    ranges.push(currentRange)
 
     let nodeIndex = 0;                // which text node we're currently in
     let offsetInNode = 0;             // offset inside the current text node
 
-    currentRange.setStart(textNodes[0], 0);
+    currentRange.setStart(textNodes[0], 0)
 
-    let previousBottom = currentRange.getBoundingClientRect().bottom;
+    let previousBottom = currentRange.getBoundingClientRect().bottom
     let previousTop = currentRange.getBoundingClientRect().top
 
     let iterCount = 0
@@ -306,8 +306,8 @@ export class RangeManager {
       }
 
       // Extend current range by one more character
-      offsetInNode++;
-      currentRange.setEnd(textNodes[nodeIndex], offsetInNode);
+      offsetInNode++
+      currentRange.setEnd(textNodes[nodeIndex], offsetInNode)
 
       const curRect = currentRange.getBoundingClientRect()
       const currentBottom = curRect.bottom
@@ -319,7 +319,7 @@ export class RangeManager {
       // Did we cross into a new visual line?
       if (bottomExceed || topExceed) {
         // Roll back one character — that one belongs to the next line
-        currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1);
+        currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1)
 
         // NOTE: this block rolls the selection back until there's no more trailing whitespace
         let newOffset = offsetInNode - 1
@@ -333,16 +333,16 @@ export class RangeManager {
             newNodeIdx = newNodeIdx - 1
             newOffset = textNodes[newNodeIdx].textContent!.length
           }
-          currentRange.setEnd(textNodes[newNodeIdx], newOffset);
+          currentRange.setEnd(textNodes[newNodeIdx], newOffset)
         }
 
         // Start new line range
-        const nextRange = new Range();
-        nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1);
+        const nextRange = new Range()
+        nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1)
         nextRange.setEnd(textNodes[nodeIndex], offsetInNode)
-        ranges.push(nextRange);
+        ranges.push(nextRange)
 
-        currentRange = nextRange;
+        currentRange = nextRange
 
         const nextRect = nextRange.getBoundingClientRect()
         previousBottom = nextRect.bottom
@@ -355,35 +355,35 @@ export class RangeManager {
       }
     }
 
-    return ranges;
+    return ranges
   }
 
   async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
-    const len = this.getRangesLength() ?? 0;
-    if (len === 0) return [null, null];
+    const len = this.getRangesLength() ?? 0
+    if (len === 0) return [null, null]
 
-    let left = 0;
-    let right = len - 1;
+    let left = 0
+    let right = len - 1
 
     while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
-      const range = this.getRangeAtIdx(mid);
+      const mid = Math.floor((left + right) / 2)
+      const range = this.getRangeAtIdx(mid)
 
-      if (!range) break;
+      if (!range) break
 
       const cmp = range.comparePoint(node, offset);  // -1 before, 0 inside, +1 after
 
       if (cmp === 0) {
-        return [mid, range];
+        return [mid, range]
       } else if (cmp < 0) {
-        right = mid - 1;
+        right = mid - 1
       } else {
-        left = mid + 1;
+        left = mid + 1
       }
     }
 
-    console.error(`TvDirector.nodeOffset2Range: search for range failed`);
-    return [null, null];
+    console.error(`TvDirector.nodeOffset2Range: search for range failed`)
+    return [null, null]
   }
 
   async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
