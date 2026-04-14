@@ -491,6 +491,7 @@ export class TvDirector {
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
+    // NOTE: if it turns out we need a horizontal middleAdjust check useScrollableToScrollRangeIntoView for how to do it
 
     let dx = 0;
     let dy = 0;
@@ -522,13 +523,18 @@ export class TvDirector {
 
     const vw = scrollable.clientWidth;
     const vh = scrollable.clientHeight;
+    const scrollableRect = scrollable.getBoundingClientRect()
+
+    const leftBound = scrollableRect.left
+    const rightBound = scrollableRect.right
 
     let dx = 0;
     let dy = 0;
     let middleAdjust = scrollToMiddle ? Math.floor(vh / 2) : 0
+    let horizontalMiddleAdjust = scrollToMiddle ? Math.floor(vw / 2) : 0
 
-    if (rect.left < 0) dx = rect.left;
-    else if (rect.right > vw) dx = rect.right - vw;
+    if (rect.left < leftBound) dx = rect.left - leftBound - horizontalMiddleAdjust;
+    else if (rect.right > rightBound) dx = rect.right - rightBound + horizontalMiddleAdjust;
 
     if (rect.top < 0) dy = rect.top - middleAdjust;
     else if (rect.bottom > vh) dy = rect.bottom - vh + middleAdjust;
