@@ -140,7 +140,7 @@ export class RangeManager {
     return true
   }
 
-  getFirstVisibleRange(): Range | undefined {
+  setToFirstVisibleRange(): Range | undefined {
     this.setRangeIdx(0)
     let range: Range | undefined = this.getCurrentRange()
     if (range === undefined) {

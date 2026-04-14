@@ -88,13 +88,14 @@ export class TvDirector {
   async initRanges(): Promise<void> {
     this.ELEMENT_ARRAY = await HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
-      throw new Error('TvDirector.initRanges: null element array, exiting early')
+      console.error('TvDirector.initRanges: null element array, exiting early')
+      return
     }
     this.RANGE_MANAGER = new RangeManager()
     await this.RANGE_MANAGER.initRanges(this.ELEMENT_ARRAY)
-    const range = this.RANGE_MANAGER.getFirstVisibleRange()
+    const range = this.RANGE_MANAGER.setToFirstVisibleRange()
     if (range === undefined) {
-      throw new Error('TvDirector.init: could not get first visible range')
+      console.error('TvDirector.init: could not get first visible range')
     }
   }
 
@@ -110,7 +111,7 @@ export class TvDirector {
     const curRange = rangeManager.rangeIdx2Range(curIdx)
 
     if (!curRange) {
-      const firstRange = rangeManager.getFirstVisibleRange()
+      const firstRange = rangeManager.setToFirstVisibleRange()
       if (!firstRange) {
         this.setDirectorState(TvDirectorState.ERROR)
         return
