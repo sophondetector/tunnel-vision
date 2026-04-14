@@ -107,10 +107,21 @@ export class RangeManager {
     return this.#isElementVisiblyRendered(el.parentElement);
   }
 
-  static #isOffToTheSide(rect: DOMRect): boolean {
+  static #eleHasScrollWidth(ele: Element | null): boolean {
+    if (!ele) return false
+    if (ele.scrollWidth > ele.clientWidth) return true
+    return RangeManager.#eleHasScrollWidth(ele.parentElement)
+  }
+
+  static #isOffToTheSide(ele: Element | null, rect: DOMRect): boolean {
     // FIXME: this doesn't account for whether or not the user could scroll to it
     // need to figure out how to check what the maximum scrollable values are
     // ie what's the scroll width
+
+    // NOTE: idea here is if the range we are testing is nested inside an element with scrollWidth we assume we can get to it somehow
+    const hasScrollWidth = RangeManager.#eleHasScrollWidth(ele)
+    if (hasScrollWidth) return false
+
     const vw = window.innerWidth || document.documentElement.clientWidth
     return rect.left < 0 || rect.right > vw
   }
@@ -126,7 +137,7 @@ export class RangeManager {
 
     const rect = range.getBoundingClientRect()
     if (rect.width < 1 || rect.height < 1) return false
-    if (RangeManager.#isOffToTheSide(rect)) return false
+    if (RangeManager.#isOffToTheSide(ele, rect)) return false
 
     return true
   }
