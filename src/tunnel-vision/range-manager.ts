@@ -126,8 +126,8 @@ export class RangeManager {
 
   static #isOffToTheSide(ele: Element | null, rect: DOMRect): boolean {
     // NOTE: if range is inside an element with scrollable X we assume we can get to it somehow
-    const hasScrollWidth = RangeManager.#eleHasScrollableX(ele)
-    if (hasScrollWidth) return false
+    const scrollableX = RangeManager.#eleHasScrollableX(ele)
+    if (scrollableX) return false
 
     const vw = window.innerWidth || document.documentElement.clientWidth
     return rect.left < 0 || rect.right > vw
