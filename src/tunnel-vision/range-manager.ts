@@ -53,15 +53,14 @@ export class RangeManager {
     return [this.RANGE_IDX, range]
   }
 
-  // TODO: name this getRangeAtIdx
-  rangeIdx2Range(rangeIdx: number): Range | undefined {
+  getRangeAtIdx(idx: number): Range | undefined {
     if (this.RANGES === null) {
-      console.warn(`RangeManager.rangeIdx2Range: this.RANGES is null!`)
+      console.warn(`RangeManager.getRangeAtIdx: this.RANGES is null!`)
       return undefined
     }
-    const range = this.RANGES[rangeIdx]
+    const range = this.RANGES[idx]
     if (range === undefined) {
-      console.warn(`RangeManager.rangeIdx2Range: this.RANGES[${rangeIdx}] is undefined!`)
+      console.warn(`RangeManager.getRangeAtIdx: this.RANGES[${idx}] is undefined!`)
       return undefined
     }
     return range
@@ -213,7 +212,7 @@ export class RangeManager {
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
-      const iterRange = this.rangeIdx2Range(idx) as Range
+      const iterRange = this.getRangeAtIdx(idx) as Range
       const box = iterRange.getBoundingClientRect()
       // console.log(`${idx}\t${top}\t${box.top}`)
       // left has to be BETWEEN box.left and box.right
@@ -229,7 +228,7 @@ export class RangeManager {
   range2RangeIdx(range: Range): number | undefined {
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
-      const iterRange = this.rangeIdx2Range(idx)
+      const iterRange = this.getRangeAtIdx(idx)
       if (range === iterRange) {
         return idx
       }
@@ -374,7 +373,7 @@ export class RangeManager {
 
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
-      const range = this.rangeIdx2Range(mid);
+      const range = this.getRangeAtIdx(mid);
 
       if (!range) break;
 
@@ -396,7 +395,7 @@ export class RangeManager {
   async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0
     for (let idx = 0; idx < len; idx++) {
-      const iterRange = this.rangeIdx2Range(idx)
+      const iterRange = this.getRangeAtIdx(idx)
       if (!iterRange) continue
       if (iterRange.isPointInRange(node, offset)) {
         return [idx, iterRange]
@@ -407,7 +406,7 @@ export class RangeManager {
   }
 
   async bothWaysSearch(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
-    let iterRange = this.rangeIdx2Range(startIdx)
+    let iterRange = this.getRangeAtIdx(startIdx)
     if (iterRange && iterRange.isPointInRange(node, offset)) {
       return [startIdx, iterRange]
     }
@@ -418,14 +417,14 @@ export class RangeManager {
 
     while (topIdx < len && botIdx >= 0) {
       if (topIdx < len) {
-        const topRange = this.rangeIdx2Range(topIdx)
+        const topRange = this.getRangeAtIdx(topIdx)
         if (topRange && topRange.isPointInRange(node, offset)) {
           return [topIdx, topRange]
         }
         topIdx++
       }
       if (botIdx >= 0) {
-        const botRange = this.rangeIdx2Range(botIdx)
+        const botRange = this.getRangeAtIdx(botIdx)
         if (botRange && botRange.isPointInRange(node, offset)) {
           return [botIdx, botRange]
         }
@@ -439,7 +438,7 @@ export class RangeManager {
 
   async searchBehind(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
     for (let idx = startIdx; idx >= 0; idx--) {
-      const iterRange = this.rangeIdx2Range(idx)
+      const iterRange = this.getRangeAtIdx(idx)
       if (iterRange === undefined) {
         console.warn(`TvDirector.searchBehind: could not get range at index ${idx}`)
         continue
@@ -455,7 +454,7 @@ export class RangeManager {
   async searchAhead(node: Node, offset: number, startIdx: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0
     for (let idx = startIdx; idx < len; idx++) {
-      const iterRange = this.rangeIdx2Range(idx)
+      const iterRange = this.getRangeAtIdx(idx)
       if (iterRange === undefined) {
         console.warn(`TvDirector.searchAhead: could not get range at index ${idx}`)
         continue

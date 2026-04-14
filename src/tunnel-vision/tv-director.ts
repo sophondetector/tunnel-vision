@@ -108,7 +108,7 @@ export class TvDirector {
 
     await rangeManager.initRanges(this.ELEMENT_ARRAY)
 
-    const curRange = rangeManager.rangeIdx2Range(curIdx)
+    const curRange = rangeManager.getRangeAtIdx(curIdx)
 
     if (!curRange) {
       const firstRange = rangeManager.setToFirstVisibleRange()
@@ -203,7 +203,7 @@ export class TvDirector {
     const rangeManager = this.getRangeManager()
     const len = rangeManager.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
-      const range = rangeManager.rangeIdx2Range(idx) as Range
+      const range = rangeManager.getRangeAtIdx(idx) as Range
       const rect = range.getBoundingClientRect()
       TvScreen.drawBoxAroundRect(rect, "red", 3)
       TvScreen.drawNumber(
