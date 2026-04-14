@@ -145,22 +145,17 @@ export class RangeManager {
     return true
   }
 
-  // TODO: make this function easier to read
   setToFirstVisibleRange(): [number, Range] | [null, null] {
-    this.setRangeIdx(0)
-    let [idx, range] = this.getCurrentRange()
-    if (!range) {
-      console.error('RangeManager.getFirstVisibleRange: could not get first visible range')
-      return [null, null]
-    }
-    if (!RangeManager.rangeIsVisible(range)) {
-      [idx, range] = this.incLine()
-      if (range === undefined) {
-        console.error('RangeManager.getFirstVisibleRange: could not get first visible range!')
-        return [null, null]
+    const len = this.getRangesLength() as number
+    for (let idx = 0; idx < len; idx++) {
+      const iterRange = this.getRangeAtIdx(idx) as Range
+      if (RangeManager.rangeIsVisible(iterRange)) {
+        this.setRangeIdx(idx)
+        return [idx, iterRange]
       }
     }
-    return [idx, range] as [number, Range]
+    console.error(`RangeManager.setToFirstVisibleRange: could not find first visible range!`)
+    return [null, null]
   }
 
   incLine(): [number, Range] | [null, null] {
