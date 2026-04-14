@@ -35,7 +35,6 @@ export class RangeManager {
     return [rect]
   }
 
-  // TODO: name this getCurrentRangeIdx
   getCurrentRangeIdx(): number {
     return this.RANGE_IDX
   }
