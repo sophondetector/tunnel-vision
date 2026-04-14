@@ -117,10 +117,13 @@ export function logRange(logRangeOpts: LogRangeInterface): void {
     idx = 'NO INDEX GIVEN',
     caller = 'NO CALLER GIVEN'
   } = logRangeOpts
+
   console.log(`${caller}: range set to range at index ${idx}`)
   console.log(range)
-  console.log(range.getBoundingClientRect())
   console.log(range.toString())
+  console.log(range.getBoundingClientRect())
+  console.log(range.getClientRects())
   console.log(range.startContainer.parentElement)
+
 }
 
