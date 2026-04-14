@@ -1,6 +1,6 @@
 import { logRange } from "../common"
 
-let LOG_RANGES = true
+let LOG_RANGES = false
 
 export class RangeManager {
   RANGES: Range[] | null = null
