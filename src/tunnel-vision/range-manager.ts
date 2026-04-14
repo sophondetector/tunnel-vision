@@ -36,7 +36,7 @@ export class RangeManager {
   }
 
   // TODO: name this getCurrentRangeIdx
-  getRangeIdx(): number {
+  getCurrentRangeIdx(): number {
     return this.RANGE_IDX
   }
 
@@ -53,6 +53,7 @@ export class RangeManager {
     return [this.RANGE_IDX, range]
   }
 
+  // TODO: name this getRangeAtIdx
   rangeIdx2Range(rangeIdx: number): Range | undefined {
     if (this.RANGES === null) {
       console.warn(`RangeManager.rangeIdx2Range: this.RANGES is null!`)

@@ -102,7 +102,7 @@ export class TvDirector {
   async reInitRanges(): Promise<void> {
     const rangeManager = this.getRangeManager()
     // TODO: change this to holding place by getting node and offset?
-    const curIdx = rangeManager.getRangeIdx()
+    const curIdx = rangeManager.getCurrentRangeIdx()
 
     this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
 
@@ -264,9 +264,9 @@ export class TvDirector {
     return TvScreen.getScreenState()
   }
 
-  getRangeIdx(): number {
+  getCurrentRangeIdx(): number {
     const rm = this.RANGE_MANAGER as RangeManager
-    const idx = rm.getRangeIdx()
+    const idx = rm.getCurrentRangeIdx()
     return idx
   }
 
