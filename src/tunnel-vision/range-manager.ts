@@ -90,6 +90,7 @@ export class RangeManager {
     return isNotOnTop
   }
 
+  // TODO: there are more checks in snippet number 8 on the laptop
   static #isElementVisiblyRendered(el: Element | null): boolean {
     if (!el) return true;
 
@@ -106,23 +107,26 @@ export class RangeManager {
     return this.#isElementVisiblyRendered(el.parentElement);
   }
 
-  static rangeIsVisible(range: Range): boolean {
-    let parent = range.startContainer.parentElement
-    if (!parent) {
-      console.warn('range with no parent element!')
-      return false
-    }
+  static #isOffToTheSide(rect: DOMRect): boolean {
+    // FIXME: this doesn't account for whether or not the user could scroll to it
+    // need to figure out how to check what the maximum scrollable values are
+    // ie what's the scroll width
+    const vw = window.innerWidth || document.documentElement.clientWidth
+    return rect.left < 0 || rect.right > vw
+  }
 
+  static rangeIsVisible(range: Range): boolean {
     if (RangeManager.#rangeIsOccluded(range)) return false
 
-    const isRendered = RangeManager.#isElementVisiblyRendered(
-      range.startContainer instanceof Element ? range.startContainer : range.startContainer.parentElement
-    )
+    const ele = range.commonAncestorContainer instanceof Element ?
+      range.commonAncestorContainer : range.commonAncestorContainer.parentElement
 
+    const isRendered = RangeManager.#isElementVisiblyRendered(ele)
     if (!isRendered) return false
 
     const rect = range.getBoundingClientRect()
     if (rect.width < 1 || rect.height < 1) return false
+    if (RangeManager.#isOffToTheSide(rect)) return false
 
     return true
   }
@@ -220,12 +224,19 @@ export class RangeManager {
     return
   }
 
-  static #eleArray2Ranges(_eleArray: Element[]): Array<Range> {
+  static #eleArray2Ranges(eleArray: Element[]): Array<Range> {
     // FIXME: always going from document.body as the root fails in the pdf reader
     // TODO: refactor so eleArray2Ranges doesn't take a list of eles, but rather a root
     // TODO: refactor getTvEles to getTvRoot
-    const textNodes = RangeManager.#getAllTextNodes(document.body)
-    const ranges = RangeManager.#textNodes2Ranges(textNodes)
+
+    const allNodes = []
+    for (let idx = 0; idx < eleArray.length; idx++) {
+      allNodes.push(
+        ...RangeManager.#getAllTextNodes(eleArray[idx])
+      )
+    }
+
+    const ranges = RangeManager.#textNodes2Ranges(allNodes)
     return ranges
   }
 
