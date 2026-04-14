@@ -1,4 +1,6 @@
-let LOG_RANGES = false
+import { logRange } from "../common"
+
+let LOG_RANGES = true
 
 export class RangeManager {
   RANGES: Range[] | null = null
@@ -166,13 +168,11 @@ export class RangeManager {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
-        if (LOG_RANGES) {
-          console.log(`RangeManager.incLine: range set to range at index ${this.RANGE_IDX}`)
-          console.log(iterRange)
-          console.log(iterRange.getBoundingClientRect())
-          console.log(iterRange.toString())
-          console.log(iterRange.startContainer.parentElement)
-        }
+        if (LOG_RANGES) logRange({
+          range: iterRange,
+          idx: this.RANGE_IDX,
+          caller: 'RangeManager.incLine'
+        })
         return iterRange
       }
     }
@@ -189,13 +189,11 @@ export class RangeManager {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
-        if (LOG_RANGES) {
-          console.log(`RangeManager.decLine: range set to range at index ${this.RANGE_IDX}`)
-          console.log(iterRange)
-          console.log(iterRange.getBoundingClientRect())
-          console.log(iterRange.toString())
-          console.log(iterRange.startContainer.parentElement)
-        }
+        if (LOG_RANGES) logRange({
+          range: iterRange,
+          idx: this.RANGE_IDX,
+          caller: 'RangeManager.incLine'
+        })
         return iterRange
       }
     }

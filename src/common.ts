@@ -105,3 +105,22 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+interface LogRangeInterface {
+  range: Range,
+  idx?: number,
+  caller?: string
+}
+
+export function logRange(logRangeOpts: LogRangeInterface): void {
+  const {
+    range,
+    idx = 'NO INDEX GIVEN',
+    caller = 'NO CALLER GIVEN'
+  } = logRangeOpts
+  console.log(`${caller}: range set to range at index ${idx}`)
+  console.log(range)
+  console.log(range.getBoundingClientRect())
+  console.log(range.toString())
+  console.log(range.startContainer.parentElement)
+}
+
