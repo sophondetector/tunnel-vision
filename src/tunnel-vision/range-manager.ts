@@ -26,26 +26,31 @@ export class RangeManager {
   }
 
   getRectsToClear(): DOMRect[] {
-    const rng = this.getCurrentRange()
-    const rect = rng!.getBoundingClientRect()
+    const [_, range] = this.getCurrentRange()
+    if (!range) {
+      console.warn(`RangeManager.getRectsToClear: could not get range!`)
+      return []
+    }
+    const rect = range!.getBoundingClientRect()
     return [rect]
   }
 
+  // TODO: name this getCurrentRangeIdx
   getRangeIdx(): number {
     return this.RANGE_IDX
   }
 
-  getCurrentRange(): Range | undefined {
+  getCurrentRange(): [number, Range] | [null, null] {
     if (this.RANGES === null) {
       console.warn('RangeManager.getCurrentRange: this.RANGES is null!')
-      return undefined
+      return [null, null]
     }
     const range = this.RANGES[this.RANGE_IDX]
     if (range === undefined) {
       console.warn(`RangeManager.getCurrentRange: range at index ${this.RANGE_IDX} undefined!`)
-      return undefined
+      return [null, null]
     }
-    return range
+    return [this.RANGE_IDX, range]
   }
 
   rangeIdx2Range(rangeIdx: number): Range | undefined {
@@ -140,49 +145,50 @@ export class RangeManager {
     return true
   }
 
-  setToFirstVisibleRange(): Range | undefined {
+  // TODO: make this function easier to read
+  setToFirstVisibleRange(): [number, Range] | [null, null] {
     this.setRangeIdx(0)
-    let range: Range | undefined = this.getCurrentRange()
-    if (range === undefined) {
+    let [idx, range] = this.getCurrentRange()
+    if (!range) {
       console.error('RangeManager.getFirstVisibleRange: could not get first visible range')
-      return undefined
+      return [null, null]
     }
     if (!RangeManager.rangeIsVisible(range)) {
-      range = this.incLine()
+      [idx, range] = this.incLine()
       if (range === undefined) {
         console.error('RangeManager.getFirstVisibleRange: could not get first visible range!')
-        return undefined
+        return [null, null]
       }
     }
-    return range
+    return [idx, range] as [number, Range]
   }
 
-  // TODO: change the incLine and decLine interface to return [idx, Range] or [null, null]
-  incLine(): Range | undefined {
+  incLine(): [number, Range] | [null, null] {
     if (this.RANGES === null) {
       console.error(`RangeManager.incLine: RANGES is null`)
-      return undefined
+      return [null, null]
     }
     // find the next visible range
     for (let newIdx = this.RANGE_IDX + 1; newIdx < this.RANGES.length; newIdx++) {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
-        this.RANGE_IDX = newIdx
+        this.setRangeIdx(newIdx)
         if (LOG_RANGES) logRange({
           range: iterRange,
           idx: this.RANGE_IDX,
           caller: 'RangeManager.incLine'
         })
-        return iterRange
+        return [newIdx, iterRange]
       }
     }
     console.warn(`RangeManger.incLine: no visible ranges after RANGE_IDX ${this.RANGE_IDX}`)
+    return [null, null]
   }
 
-  decLine(): Range | undefined {
+  decLine(): [number, Range] | [null, null] {
     if (this.RANGES === null) {
       console.error(`RangeManager.decLine: this.RANGES is null`)
-      return undefined
+      return [null, null]
     }
     // find the first previous visible range
     for (let newIdx = this.RANGE_IDX - 1; newIdx >= 0; newIdx--) {
@@ -194,12 +200,14 @@ export class RangeManager {
           idx: this.RANGE_IDX,
           caller: 'RangeManager.incLine'
         })
-        return iterRange
+        return [newIdx, iterRange]
       }
     }
     console.warn(`RangeManager.decLine: no visible ranges before this.RANGE_IDX ${this.RANGE_IDX}`)
+    return [null, null]
   }
 
+  // TODO: change this interface to {x, y}
   rangeAtPoint(top: number, left: number): [Range, number] | [null, null] {
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number

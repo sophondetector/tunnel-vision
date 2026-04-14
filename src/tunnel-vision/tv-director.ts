@@ -373,13 +373,13 @@ export class TvDirector {
       return
     }
 
-    const nextRange = this.getRangeManager().incLine()
-    if (nextRange === undefined) {
+    const [_, range] = this.getRangeManager().incLine()
+    if (!range) {
       console.log('TvDirector.incLine: could not find next range')
       return
     }
 
-    this.scrollRangeIntoView(nextRange)
+    this.scrollRangeIntoView(range)
   }
 
   decLine(): void {
@@ -392,13 +392,13 @@ export class TvDirector {
       return
     }
 
-    const prevRange = this.getRangeManager().decLine()
-    if (prevRange === undefined) {
+    const [_, range] = this.getRangeManager().decLine()
+    if (!range) {
       console.log('TvDirector.decLine: could not find previous range')
       return
     }
 
-    this.scrollRangeIntoView(prevRange)
+    this.scrollRangeIntoView(range)
   }
 
   setRangeAtSelectionTop(): void {
@@ -561,8 +561,8 @@ export class TvDirector {
       return
     }
 
-    const prevRange = rangeManager.getCurrentRange()
-    if (prevRange === undefined) {
+    const [_, prevRange] = rangeManager.getCurrentRange()
+    if (!prevRange) {
       console.error('TvDirector.onResizeCallback: could not get current range!')
       return
     }
@@ -573,6 +573,7 @@ export class TvDirector {
 
     await rangeManager.initRanges(curDir.getElementArray())
 
+    // TODO: nodeOffset2Range -> getRangeAtNodeOffset
     const [idx, range] = await rangeManager.nodeOffset2Range(prevNode, prevOffset)
 
     if (idx === null) {
@@ -586,7 +587,7 @@ export class TvDirector {
 
   initializeControls() {
     // TODO: alt+click+drag creates a highlight box
-    // bring that in from grok-code.html
+    // bring that in from test-stuff/grok-code.html
     document.addEventListener('keyup', (event) => {
       switch (event.key) {
         case "l":
