@@ -103,13 +103,15 @@ export class RangeManager {
 
     const style = window.getComputedStyle(element)
 
-    if (style.display === 'none') return false
-    if (style.visibility === 'hidden') return false
-    if (parseFloat(style.opacity) < 0.1) return false
-    if (style.transform === 'scale(0)') return false
-    if (style.clipPath === 'circle(0px at 50% 50%)') return false
-    if (style.height === "0px") return false
-    if (style.contentVisibility === 'hidden') return false
+    if (
+      (style.display === 'none') ||
+      (style.visibility === 'hidden') ||
+      (parseFloat(style.opacity) < 0.1) ||
+      (style.transform === 'scale(0)') ||
+      (style.clipPath === 'circle(0px at 50% 50%)') ||
+      (style.height === "0px") ||
+      (style.contentVisibility === 'hidden')
+    ) return false
 
     // Recurse up the tree (in case ancestor is hidden)
     return this.#isElementVisiblyRendered(element.parentElement)
