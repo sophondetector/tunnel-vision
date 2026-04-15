@@ -2,6 +2,7 @@ import { logRange } from "../common"
 
 let LOG_RANGES = false
 
+
 export class RangeManager {
   RANGES: Range[] | null = null
   RANGE_IDX: number = 0
@@ -13,6 +14,7 @@ export class RangeManager {
       console.warn(`RangeManager.initRanges: eleArray.length is zero!`)
       return
     }
+
     this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
 
     // this.RANGES = this.RANGES.sort(
@@ -86,8 +88,14 @@ export class RangeManager {
     // NOTE: this is here because if the range is outside the window then elementFromPoint comes back null and the check fails - so we return false here to be safe
     if (centerY < 0 || centerY > window.innerHeight) return false
 
-    const topElement = document.elementFromPoint(centerX, centerY)
+    let topElement = document.elementFromPoint(centerX, centerY)
+
     if (!topElement) return true
+
+    if (topElement.shadowRoot) {
+      topElement = topElement.shadowRoot.elementFromPoint(centerX, centerY)
+      if (!topElement) return true
+    }
 
     // if the range does not intersect the topElement that means it's not on top
     const isOnTop = range.intersectsNode(topElement)
@@ -252,8 +260,19 @@ export class RangeManager {
     return ranges
   }
 
-  static #getAllTextNodes(root: Node): Node[] {
+  static #getAllTextNodes(
+    root: Node,
+    depth = 0
+  ): Node[] {
+
+    depth++
+
+    if (depth > 5) return []
+
+    const textNodes: Node[] = []
+
     const badTagNames = ['SCRIPT', 'STYLE']
+
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,     // Only text nodes
@@ -262,7 +281,7 @@ export class RangeManager {
         const text = (node as Text).data.trim()
         if (text.length === 0) return NodeFilter.FILTER_REJECT
         // Skip certain types of tags
-        const parentType = node.parentElement!.tagName
+        const parentType = node.parentElement?.tagName ?? ''
         if (badTagNames.includes(parentType)) return NodeFilter.FILTER_REJECT
         return NodeFilter.FILTER_ACCEPT
       },
@@ -270,11 +289,19 @@ export class RangeManager {
       false
     )
 
-    const textNodes = []
     let node
     while (node = walker.nextNode()) {
       textNodes.push(node)
     }
+
+    for (const ele of (root as Element).querySelectorAll('*')) {
+      if (ele.shadowRoot) {
+        textNodes.push(
+          ...RangeManager.#getAllTextNodes(ele.shadowRoot, depth)
+        )
+      }
+    }
+
     return textNodes
   }
 
