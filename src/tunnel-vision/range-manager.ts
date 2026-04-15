@@ -275,8 +275,10 @@ export class RangeManager {
 
     const walker = document.createTreeWalker(
       root,
-      NodeFilter.SHOW_TEXT,     // Only text nodes
+      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
       (node: Node) => {
+        if (node.nodeType === node.ELEMENT_NODE) return NodeFilter.FILTER_ACCEPT
+
         // Skip whitespace-only text nodes
         const text = (node as Text).data.trim()
         if (text.length === 0) return NodeFilter.FILTER_REJECT
@@ -291,14 +293,13 @@ export class RangeManager {
 
     let node
     while (node = walker.nextNode()) {
-      textNodes.push(node)
-    }
-
-    for (const ele of (root as Element).querySelectorAll('*')) {
-      if (ele.shadowRoot) {
-        textNodes.push(
-          ...RangeManager.#getAllTextNodes(ele.shadowRoot, depth)
-        )
+      if (node.nodeType === node.ELEMENT_NODE) {
+        if ((node as Element).shadowRoot) {
+          textNodes.push(...RangeManager.#getAllTextNodes((node as Element).shadowRoot as Node, depth))
+        }
+      }
+      if (node.nodeType === node.TEXT_NODE) {
+        textNodes.push(node)
       }
     }
 
