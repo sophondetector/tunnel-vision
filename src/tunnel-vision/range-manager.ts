@@ -350,19 +350,19 @@ export class RangeManager {
         currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1)
 
         // NOTE: this block rolls the selection back until there's no more trailing whitespace
-        let newOffset = offsetInNode - 1
-        let newNodeIdx = nodeIndex
+        let windbackOffset = offsetInNode - 1
+        let windbackNodeIdx = nodeIndex
 
         // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
         ) {
-          newOffset = newOffset - 1
-          if (newOffset <= 0) {
-            newNodeIdx = newNodeIdx - 1
-            newOffset = textNodes[newNodeIdx].textContent!.length
+          windbackOffset = windbackOffset - 1
+          if (windbackOffset <= 0) {
+            windbackNodeIdx = windbackNodeIdx - 1
+            windbackOffset = textNodes[windbackNodeIdx].textContent!.length
           }
-          currentRange.setEnd(textNodes[newNodeIdx], newOffset)
+          currentRange.setEnd(textNodes[windbackNodeIdx], windbackOffset)
         }
 
         ranges.push(currentRange.cloneRange())
