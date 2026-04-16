@@ -13,7 +13,10 @@ export class RangeManager {
       console.warn(`RangeManager.initRanges: eleArray.length is zero!`)
       return
     }
+
     this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
+
+    // this.#dumpRanges('initRanges')
 
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
@@ -376,6 +379,20 @@ export class RangeManager {
     }
 
     return ranges
+  }
+
+  //@ts-ignore
+  #dumpRanges(context: string | null = null): void {
+    console.log(`RangeManger.dumpRanges - context: ${context ? context : 'no context given'}`)
+
+    if (this.RANGES === null) {
+      console.log('RangeManger.dumpRanges: null RANGES')
+      return
+    }
+
+    for (let idx = 0; idx < this.RANGES.length; idx++) {
+      console.log(idx, this.RANGES[idx].toString())
+    }
   }
 
   async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
