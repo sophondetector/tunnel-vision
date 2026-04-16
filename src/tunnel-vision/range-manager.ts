@@ -248,7 +248,16 @@ export class RangeManager {
       )
     }
 
-    const ranges = RangeManager.#textNodes2Ranges(allNodes)
+    // NOTE: this helps prevent some "range collapsing" when incrementing to a "bad" text node causes the clientRect to collapse to 0 which causes some text to be missed
+    const filtered = allNodes.filter(n => {
+      const rng = new Range()
+      rng.selectNodeContents(n)
+      const rect = rng.getBoundingClientRect()
+      return (rect.width > 0 && rect.height > 0)
+    })
+
+    const ranges = RangeManager.#textNodes2Ranges(filtered)
+
     return ranges
   }
 
