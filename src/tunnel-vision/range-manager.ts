@@ -286,23 +286,35 @@ export class RangeManager {
 
       const iterRanges = RangeManager.#textNodes2Ranges(filtered)
 
+      // NOTE: This method assumes duplicate ranges are always next to each other
       // FIXME: fix the duplicate range problem at the source
-      for (let idx = 0; idx < iterRanges.length; idx++) {
-        if (idx === iterRanges.length - 1) {
-          ranges.push(iterRanges[idx])
-          break
-        }
-        const r = iterRanges[idx]
-        const s = iterRanges[idx + 1]
-        if (r.compareBoundaryPoints(Range.START_TO_START, s) === 0) {
-          continue
-        }
-        ranges.push(r)
-      }
+      ranges.push(
+        ...RangeManager.#removeDuplicateRanges(iterRanges)
+      )
 
     }
 
     return ranges
+  }
+
+  /**
+  * This method assumes duplicate ranges are always next to each other
+  */
+  static #removeDuplicateRanges(ranges: Range[]): Range[] {
+    const res: Range[] = []
+    for (let idx = 0; idx < ranges.length; idx++) {
+      if (idx === ranges.length - 1) {
+        res.push(ranges[idx])
+        break
+      }
+      const r = ranges[idx]
+      const s = ranges[idx + 1]
+      if (r.compareBoundaryPoints(Range.START_TO_START, s) === 0) {
+        continue
+      }
+      res.push(r)
+    }
+    return res
   }
 
   static #getAllTextNodes(
