@@ -35,6 +35,14 @@ export class TvDirector {
     console.log('TvDirector: new TvDirector constructed')
   }
 
+  dumpAllRanges(): void {
+    if (this.RANGE_MANAGER === null) {
+      console.log('TvDirector.dumpAllRanges: no range manager!')
+      return
+    }
+    this.RANGE_MANAGER.dumpAllRanges()
+  }
+
   toggleShowRanges(): boolean {
     DEBUG_SHOW_RANGES = !DEBUG_SHOW_RANGES
     return DEBUG_SHOW_RANGES
