@@ -62,6 +62,11 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     console.log(`log ranges is ${onOff ? "ON" : "OFF"}`)
     sendResponse()
 
+  } else if (value === TvMessage.DUMP_RANGES) {
+    console.log(`dumping ranges`)
+    DIRECTOR.dumpAllRanges()
+    sendResponse()
+
   } else {
     console.error(`controlPanelListenerCallback: Unknown message! value ${value}; sender ${sender}`)
     sendResponse()

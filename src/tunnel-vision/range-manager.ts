@@ -16,7 +16,7 @@ export class RangeManager {
 
     this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
 
-    // RangeManager.#dumpRanges({
+    // RangeManager.dumpRanges({
     //   ranges: this.RANGES,
     //   context: 'initRanges',
     //   startIdx: 50,
@@ -26,6 +26,12 @@ export class RangeManager {
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
     // )
+  }
+
+  dumpAllRanges(): void {
+    RangeManager.dumpRanges({
+      ranges: this.RANGES
+    })
   }
 
   toggleLogRanges(): boolean {
@@ -387,7 +393,7 @@ export class RangeManager {
   }
 
   // @ts-ignore
-  static #dumpRanges(dumpRangesOpts: {
+  static dumpRanges(dumpRangesOpts: {
     ranges: Range[] | null,
     context?: string,
     startIdx?: number,
