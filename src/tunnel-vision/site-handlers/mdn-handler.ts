@@ -1,4 +1,5 @@
-import { TvHandler, blankDelay } from "./handler-utilities"
+import { sleep } from "../../common";
+import { TvHandler } from "./handler-utilities"
 
 async function mdnElementGetter(): Promise<Element[] | null> {
   let mainContent;
@@ -12,6 +13,6 @@ async function mdnElementGetter(): Promise<Element[] | null> {
 export const mdnHandler: TvHandler = {
   getTvElements: mdnElementGetter,
   getScrollableElement: async () => null,
-  initDelay: blankDelay,
+  initDelay: async () => sleep(1000),
   mutationHandler: null
 }

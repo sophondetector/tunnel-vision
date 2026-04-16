@@ -260,50 +260,31 @@ export class RangeManager {
     return ranges
   }
 
-  static #getAllTextNodes(
-    root: Node,
-    depth = 0
-  ): Node[] {
-
-    depth++
-
-    if (depth > 5) return []
-
-    const textNodes: Node[] = []
-
-    const badTagNames = ['SCRIPT', 'STYLE']
-
-    const walker = document.createTreeWalker(
-      root,
-      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-      (node: Node) => {
-        if (node.nodeType === node.ELEMENT_NODE) return NodeFilter.FILTER_ACCEPT
-
-        // Skip whitespace-only text nodes
-        const text = (node as Text).data.trim()
-        if (text.length === 0) return NodeFilter.FILTER_REJECT
-        // Skip certain types of tags
-        const parentType = node.parentElement?.tagName ?? ''
-        if (badTagNames.includes(parentType)) return NodeFilter.FILTER_REJECT
-        return NodeFilter.FILTER_ACCEPT
-      },
-      //@ts-ignore
-      false
-    )
-
-    let node
-    while (node = walker.nextNode()) {
-      if (node.nodeType === node.ELEMENT_NODE) {
-        if ((node as Element).shadowRoot) {
-          textNodes.push(...RangeManager.#getAllTextNodes((node as Element).shadowRoot as Node, depth))
-        }
+  static #getAllTextNodes(node: Node): Node[] {
+    const res = []
+    if (node.nodeType === node.TEXT_NODE) {
+      if ((node as Text).data.trim().length > 0) {
+        res.push(node)
       }
-      if (node.nodeType === node.TEXT_NODE) {
-        textNodes.push(node)
-      }
+      return res
     }
 
-    return textNodes
+    for (const cn of node.childNodes) {
+      if (cn.nodeType === cn.ELEMENT_NODE) {
+        const ele = cn as Element
+        if (ele.shadowRoot) {
+          res.push(
+            ...RangeManager.#getAllTextNodes(ele)
+          )
+          res.push(
+            ...RangeManager.#getAllTextNodes(ele.shadowRoot)
+          )
+        }
+      }
+      res.push(...RangeManager.#getAllTextNodes(cn))
+    }
+
+    return res
   }
 
   // TODO: refactor so it uses binary search to find range endings
@@ -332,6 +313,7 @@ export class RangeManager {
     let iterCount = 0
 
     while (nodeIndex < textNodes.length) {
+
       if (offsetInNode >= textNodes[nodeIndex].textContent!.length) {
         nodeIndex++
         offsetInNode = 0
@@ -357,6 +339,7 @@ export class RangeManager {
         // NOTE: this block rolls the selection back until there's no more trailing whitespace
         let newOffset = offsetInNode - 1
         let newNodeIdx = nodeIndex
+
         // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
