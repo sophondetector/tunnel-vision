@@ -79,6 +79,7 @@ export class TvDirector {
 
     } catch (err) {
       console.error(`TvDirector.init: aborting due to error ${err}`)
+      console.error((err as Error).stack)
       this.setDirectorState(TvDirectorState.ERROR)
       this.toggleScreenOff()
       return
