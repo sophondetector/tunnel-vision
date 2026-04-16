@@ -257,21 +257,30 @@ export class RangeManager {
     // TODO: refactor getTvEles to getTvRoot
 
     const allNodes = []
+
     for (let idx = 0; idx < eleArray.length; idx++) {
       allNodes.push(
         ...RangeManager.#getAllTextNodes(eleArray[idx])
       )
     }
 
-    // NOTE: this helps prevent some "range collapsing" when incrementing to a "bad" text node causes the clientRect to collapse to 0 which causes some text to be missed
-    const filtered = allNodes.filter(n => {
-      const rng = new Range()
-      rng.selectNodeContents(n)
-      const rect = rng.getBoundingClientRect()
-      return (rect.width > 0 && rect.height > 0)
-    })
+    const newAllNodes = allNodes.filter(arr => arr.length > 0)
 
-    const ranges = RangeManager.#textNodes2Ranges(filtered)
+    const ranges = []
+
+    for (const nodeSet of newAllNodes) {
+
+      // NOTE: this helps prevent some "range collapsing" when incrementing to a "bad" text node causes the clientRect to collapse to 0 which causes some text to be missed
+      const filtered = nodeSet.filter(n => {
+        const rng = new Range()
+        rng.selectNodeContents(n)
+        const rect = rng.getBoundingClientRect()
+        return (rect.width > 0 && rect.height > 0)
+      })
+
+      ranges.push(...RangeManager.#textNodes2Ranges(filtered))
+
+    }
 
     return ranges
   }
@@ -279,13 +288,11 @@ export class RangeManager {
   static #getAllTextNodes(
     root: Node,
     depth = 0
-  ): Node[] {
+  ): Node[][] {
 
     depth++
 
     if (depth > 5) return []
-
-    const textNodes: Node[] = []
 
     const badTagNames = ['SCRIPT', 'STYLE']
 
@@ -307,11 +314,18 @@ export class RangeManager {
       false
     )
 
+    const master: Node[][] = []
+    let textNodes: Node[] = []
+
+    master.push(textNodes)
+
     let node
     while (node = walker.nextNode()) {
       if (node.nodeType === node.ELEMENT_NODE) {
         if ((node as Element).shadowRoot) {
-          textNodes.push(...RangeManager.#getAllTextNodes((node as Element).shadowRoot as Node, depth))
+          master.push(...RangeManager.#getAllTextNodes((node as Element).shadowRoot as Node, depth))
+          textNodes = []
+          master.push(textNodes)
         }
       }
       if (node.nodeType === node.TEXT_NODE) {
@@ -319,7 +333,7 @@ export class RangeManager {
       }
     }
 
-    return textNodes
+    return master
   }
 
   // TODO: refactor so it uses binary search to find range endings
@@ -356,9 +370,9 @@ export class RangeManager {
 
       // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specfic point
 
-      // if (currentRange.toString().includes('Adding variables')) {
-      //   console.log('break!')
-      // }
+      if (currentRange.toString().includes('other')) {
+        console.log('break!')
+      }
 
       // Extend current range by one more character
       offsetInNode++
