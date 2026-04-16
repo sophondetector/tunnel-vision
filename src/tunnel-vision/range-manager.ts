@@ -17,7 +17,7 @@ export class RangeManager {
 
     this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
 
-    // this.#dumpRanges('initRanges')
+    // RangeManager.#dumpRanges(this.RANGES, 'initRanges')
 
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
@@ -408,17 +408,17 @@ export class RangeManager {
     return ranges
   }
 
-  //@ts-ignore
-  #dumpRanges(context: string | null = null): void {
+  // @ts-ignore
+  static #dumpRanges(ranges: Range[] | null, context: string | null = null): void {
     console.log(`RangeManger.dumpRanges - context: ${context ? context : 'no context given'}`)
 
-    if (this.RANGES === null) {
-      console.log('RangeManger.dumpRanges: null RANGES')
+    if (ranges === null) {
+      console.log('RangeManger.dumpRanges: null ranges!')
       return
     }
 
-    for (let idx = 0; idx < this.RANGES.length; idx++) {
-      console.log(idx, this.RANGES[idx].toString())
+    for (let idx = 0; idx < ranges.length; idx++) {
+      console.log(idx, ranges[idx].toString())
     }
   }
 
