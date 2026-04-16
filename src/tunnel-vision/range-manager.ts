@@ -319,6 +319,12 @@ export class RangeManager {
         if (!(nodeIndex < textNodes.length)) break
       }
 
+      // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specfic point
+
+      // if (currentRange.toString().includes('Adding variables')) {
+      //   console.log('break!')
+      // }
+
       // Extend current range by one more character
       offsetInNode++
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode)
@@ -338,6 +344,7 @@ export class RangeManager {
         // NOTE: this block rolls the selection back until there's no more trailing whitespace
         let newOffset = offsetInNode - 1
         let newNodeIdx = nodeIndex
+
         // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
@@ -350,17 +357,16 @@ export class RangeManager {
           currentRange.setEnd(textNodes[newNodeIdx], newOffset)
         }
 
+        ranges.push(currentRange.cloneRange())
+
         // Start new line range
-        const nextRange = new Range()
-        nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1)
-        nextRange.setEnd(textNodes[nodeIndex], offsetInNode)
-        ranges.push(nextRange)
+        currentRange = new Range()
+        currentRange.setStart(textNodes[nodeIndex], offsetInNode - 1)
+        currentRange.setEnd(textNodes[nodeIndex], offsetInNode)
 
-        currentRange = nextRange
-
-        const nextRect = nextRange.getBoundingClientRect()
-        previousBottom = nextRect.bottom
-        previousTop = nextRect.top
+        const currentRect = currentRange.getBoundingClientRect()
+        previousBottom = currentRect.bottom
+        previousTop = currentRect.top
       }
 
       if (iterCount++ > MAX_ITERATIONS) {
