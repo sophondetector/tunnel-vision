@@ -17,6 +17,8 @@ export class RangeManager {
 
     this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
 
+    // this.#dumpRanges('initRanges')
+
     // this.RANGES = this.RANGES.sort(
     //   (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
     // )
@@ -347,6 +349,12 @@ export class RangeManager {
         if (!(nodeIndex < textNodes.length)) break
       }
 
+      // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specfic point
+
+      // if (currentRange.toString().includes('Adding variables')) {
+      //   console.log('break!')
+      // }
+
       // Extend current range by one more character
       offsetInNode++
       currentRange.setEnd(textNodes[nodeIndex], offsetInNode)
@@ -366,6 +374,7 @@ export class RangeManager {
         // NOTE: this block rolls the selection back until there's no more trailing whitespace
         let newOffset = offsetInNode - 1
         let newNodeIdx = nodeIndex
+
         // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
@@ -378,17 +387,16 @@ export class RangeManager {
           currentRange.setEnd(textNodes[newNodeIdx], newOffset)
         }
 
+        ranges.push(currentRange.cloneRange())
+
         // Start new line range
-        const nextRange = new Range()
-        nextRange.setStart(textNodes[nodeIndex], offsetInNode - 1)
-        nextRange.setEnd(textNodes[nodeIndex], offsetInNode)
-        ranges.push(nextRange)
+        currentRange = new Range()
+        currentRange.setStart(textNodes[nodeIndex], offsetInNode - 1)
+        currentRange.setEnd(textNodes[nodeIndex], offsetInNode)
 
-        currentRange = nextRange
-
-        const nextRect = nextRange.getBoundingClientRect()
-        previousBottom = nextRect.bottom
-        previousTop = nextRect.top
+        const currentRect = currentRange.getBoundingClientRect()
+        previousBottom = currentRect.bottom
+        previousTop = currentRect.top
       }
 
       if (iterCount++ > MAX_ITERATIONS) {
@@ -398,6 +406,20 @@ export class RangeManager {
     }
 
     return ranges
+  }
+
+  //@ts-ignore
+  #dumpRanges(context: string | null = null): void {
+    console.log(`RangeManger.dumpRanges - context: ${context ? context : 'no context given'}`)
+
+    if (this.RANGES === null) {
+      console.log('RangeManger.dumpRanges: null RANGES')
+      return
+    }
+
+    for (let idx = 0; idx < this.RANGES.length; idx++) {
+      console.log(idx, this.RANGES[idx].toString())
+    }
   }
 
   async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {

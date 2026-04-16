@@ -79,7 +79,7 @@ async function zoomIn(): Promise<void> {
   ZOOM_SCALE += SCALE_INC
   setRadiusBasedOnZoom()
   const dir = await getDirector()
-  const idx = dir.getRangeIdx()
+  const idx = dir.getCurrentRangeIdx()
   await renderPage()
   await renderTextLayer()
   await initRanges()
@@ -92,7 +92,7 @@ async function zoomOut(): Promise<void> {
   ZOOM_SCALE -= SCALE_INC
   setRadiusBasedOnZoom()
   const dir = await getDirector()
-  const idx = dir.getRangeIdx()
+  const idx = dir.getCurrentRangeIdx()
   await renderPage()
   await renderTextLayer()
   await initRanges()
@@ -102,7 +102,7 @@ async function zoomOut(): Promise<void> {
 
 async function zoomFit(): Promise<void> {
   const dir = await getDirector()
-  const idx = dir.getRangeIdx()
+  const idx = dir.getCurrentRangeIdx()
 
   const page = await PDF_DOC!.getPage(PAGE_NUM)
 
@@ -349,7 +349,7 @@ RE_INIT.addEventListener('click', async function () {
 
 SHOW_RANGES.addEventListener('click', async function () {
   const dir = await getDirector()
-  dir.showRanges()
+  dir.toggleShowRanges()
 })
 
 RESIZER.addEventListener('mousedown', () => {
