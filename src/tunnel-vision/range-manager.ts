@@ -284,7 +284,21 @@ export class RangeManager {
         return (rect.width > 0 && rect.height > 0)
       })
 
-      ranges.push(...RangeManager.#textNodes2Ranges(filtered))
+      const iterRanges = RangeManager.#textNodes2Ranges(filtered)
+
+      // FIXME: fix the duplicate range problem at the source
+      for (let idx = 0; idx < iterRanges.length; idx++) {
+        if (idx === iterRanges.length - 1) {
+          ranges.push(iterRanges[idx])
+          break
+        }
+        const r = iterRanges[idx]
+        const s = iterRanges[idx + 1]
+        if (r.compareBoundaryPoints(Range.START_TO_START, s) === 0) {
+          continue
+        }
+        ranges.push(r)
+      }
 
     }
 
