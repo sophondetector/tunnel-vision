@@ -19,6 +19,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 // TODO: add ability to open the pdf reader whenever the user desires
 // TODO: add ability to open pdf files on the local filesystem from the pdf reader
+// TODO: fix pdf text being too fuzzy
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
@@ -37,6 +38,8 @@ const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
 const RESIZER = document.getElementById('resizer') as HTMLElement;
 const COLLAPSER = document.getElementById('collapser') as HTMLButtonElement;
 const CHEVRON = document.getElementById('chevron') as HTMLElement;
+
+const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
 
 const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
 const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
@@ -370,6 +373,10 @@ COLLAPSER.addEventListener('click', () => {
   }
   CHEVRON.style.transform = 'rotate(0deg)'
   SIDEBAR.style.width = `${SIDEBAR_DEFAULT_WIDTH}px`
+})
+
+OPEN_PDF.addEventListener('click', async () => {
+  console.log('open pdf!')
 })
 
 SCREEN_TOGGLE.addEventListener('click', async () => {

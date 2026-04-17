@@ -22,6 +22,8 @@ const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
 const PDF_TOGGLE = document.getElementById('pdf-toggle') as HTMLButtonElement
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 
+const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
+
 const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLSpanElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
@@ -169,6 +171,10 @@ SHOW_TEXT_NODES.addEventListener('click', async function () {
 HELP_TOGGLE.addEventListener('click', showHelp)
 
 CONTROL_PANEL_TOGGLE.addEventListener('click', showControlPanel)
+
+OPEN_PDF.addEventListener('click', async () => {
+  console.log('open pdf!')
+})
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()
