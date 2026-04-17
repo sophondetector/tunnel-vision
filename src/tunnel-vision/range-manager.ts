@@ -227,8 +227,11 @@ export class RangeManager {
     return [null, null]
   }
 
-  // TODO: change this interface to {x, y}
-  rangeAtPoint(top: number, left: number): [Range, number] | [null, null] {
+  getRangeAtPoint(point: { x: number, y: number }): [Range, number] | [null, null] {
+
+    const top = point.y
+    const left = point.x
+
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {

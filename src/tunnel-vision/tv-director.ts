@@ -458,9 +458,7 @@ export class TvDirector {
       return
     }
 
-    const topBound = topRect.y
-    const leftBound = topRect.x
-    this.setRangeAtPoint(topBound, leftBound)
+    this.setRangeAtPoint({ x: topRect.x, y: topRect.y })
   }
 
   setRangeAtSelectionBottom(): void {
@@ -477,14 +475,12 @@ export class TvDirector {
       return
     }
 
-    const bottomBound = bottomRect.y
-    const leftBound = bottomRect.x
-    this.setRangeAtPoint(bottomBound, leftBound)
+    this.setRangeAtPoint({ x: bottomRect.x, y: bottomRect.y })
   }
 
-  setRangeAtPoint(top: number, left: number): void {
+  setRangeAtPoint(point: { x: number, y: number }): void {
     const rm = this.getRangeManager()
-    const [range, rangeIdx] = rm.rangeAtPoint(top, left)
+    const [range, rangeIdx] = rm.getRangeAtPoint(point)
     if (!range || (rangeIdx === null)) {
       console.error(`TvDirector.setRangeAtPoint: ERROR - could not get range`)
       return
