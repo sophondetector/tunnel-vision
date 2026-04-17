@@ -178,8 +178,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
-  // FIXME: this method needs a better name because it doesn't draw the selection rather it makes a decision about whether SELECTING/SELECTION should be set on or off and calls this.setSelectionRange if necessary
-  drawAroundSelection(curDir: TvDirector): void {
+  setWindowAroundSelection(curDir: TvDirector): void {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
       SELECTION = false
@@ -218,7 +217,7 @@ export class TvDirector {
 
   #setSelectionListener(): void {
     document.addEventListener(
-      "selectionchange", () => this.drawAroundSelection(this), { capture: true }
+      "selectionchange", () => this.setWindowAroundSelection(this), { capture: true }
     )
   }
 
@@ -549,7 +548,7 @@ export class TvDirector {
 
     if (SELECTION) {
       await rangeManager.initRanges(curDir.getElementArray())
-      curDir.drawAroundSelection(curDir)
+      curDir.setWindowAroundSelection(curDir)
       curDir.scrollRangeIntoView(curDir.getSelectionRange() as Range, false)
       return
     }
