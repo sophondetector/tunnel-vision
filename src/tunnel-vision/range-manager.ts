@@ -277,7 +277,7 @@ export class RangeManager {
   }
 
   static #getAllTextNodes(root: Node): Node[] {
-    const badTagNames = ['SCRIPT', 'STYLE']
+    const badTagNames = ['SCRIPT', 'STYLE', 'NOSCRIPT']
     // TODO: switch to NodeIterator
     const walker = document.createTreeWalker(
       root,
