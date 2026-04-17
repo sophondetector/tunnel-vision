@@ -405,6 +405,7 @@ OPEN_PDF.addEventListener('click', async () => {
         .then(setPageNumText)
         .then(displayZoomPercent)
         .then(initializeTV) // FIXME: re-initting breaks toggling the screen with alt+l
+      // FIXME: store file url in local storage so it opens the same file on reload
 
       // Clean up the object URL when done (or keep it while viewing)
       URL.revokeObjectURL(fileUrl);
