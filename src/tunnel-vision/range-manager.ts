@@ -6,6 +6,7 @@ let LOG_RANGES = false
 export class RangeManager {
   RANGES: Range[] | null = null
   RANGE_IDX: number = 0
+  TEXT_NODES: Node[] | null = null
 
   constructor() { }
 
@@ -15,7 +16,9 @@ export class RangeManager {
       return
     }
 
-    this.RANGES = RangeManager.#eleArray2Ranges(eleArray)
+    this.TEXT_NODES = RangeManager.#eleArray2Nodes(eleArray)
+
+    this.RANGES = RangeManager.#textNodes2Ranges(this.TEXT_NODES)
 
     // RangeManager.dumpRanges({
     //   ranges: this.RANGES,
@@ -38,6 +41,10 @@ export class RangeManager {
   toggleLogRanges(): boolean {
     LOG_RANGES = !LOG_RANGES
     return LOG_RANGES
+  }
+
+  getTextNodes(): Node[] | null {
+    return this.TEXT_NODES
   }
 
   getRectsToClear(): DOMRect[] {
@@ -257,7 +264,7 @@ export class RangeManager {
     return
   }
 
-  static #eleArray2Ranges(eleArray: Element[]): Array<Range> {
+  static #eleArray2Nodes(eleArray: Element[]): Node[] {
     // FIXME: always going from document.body as the root fails in the pdf reader
     // TODO: refactor so eleArray2Ranges doesn't take a list of eles, but rather a root
     // TODO: refactor getTvEles to getTvRoot
@@ -277,9 +284,7 @@ export class RangeManager {
       return (rect.width > 0 && rect.height > 0)
     })
 
-    const ranges = RangeManager.#textNodes2Ranges(filtered)
-
-    return ranges
+    return filtered
   }
 
   static #getAllTextNodes(
@@ -294,7 +299,7 @@ export class RangeManager {
     const textNodes: Node[] = []
 
     const badTagNames = ['SCRIPT', 'STYLE']
-
+    // TODO: switch to NodeIterator
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,

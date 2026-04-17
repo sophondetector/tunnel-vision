@@ -43,6 +43,7 @@ const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
 const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 const LOG_RANGES = document.getElementById('log-ranges') as HTMLButtonElement
 const DUMP_RANGES = document.getElementById('dump-ranges') as HTMLButtonElement
+const SHOW_TEXT_NODES = document.getElementById('show-text-nodes') as HTMLButtonElement
 
 function showErrorHeader(): void {
   ERROR_HEADER.classList.remove(HIDDEN)
@@ -155,6 +156,13 @@ DUMP_RANGES.addEventListener('click', async function () {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.DUMP_RANGES, function () {
     console.log(`sent message ${TvMessage.DUMP_RANGES} to content.ts in open tab`)
+  })
+})
+
+SHOW_TEXT_NODES.addEventListener('click', async function () {
+  const tab = await getCurrentTab()
+  chrome.tabs.sendMessage(tab.id!, TvMessage.SHOW_TEXT_NODES, function () {
+    console.log(`sent message ${TvMessage.SHOW_TEXT_NODES} to content.ts in open tab`)
   })
 })
 

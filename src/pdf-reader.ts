@@ -17,6 +17,9 @@ import { TvScreen } from './tunnel-vision/tv-screen';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+// TODO: add ability to open the pdf reader whenever the user desires
+// TODO: add ability to open pdf files on the local filesystem from the pdf reader
+
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
 const MIN_SCALE = .4
