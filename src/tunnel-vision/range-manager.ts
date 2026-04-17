@@ -108,7 +108,7 @@ export class RangeManager {
     )
   }
 
-  static #rangeIsOccluded(range: Range): boolean {
+  static rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
 
     const centerX = rect.left + (rect.width / 2)
@@ -165,7 +165,7 @@ export class RangeManager {
   }
 
   static rangeIsVisible(range: Range): boolean {
-    if (RangeManager.#rangeIsOccluded(range)) return false
+    if (RangeManager.rangeIsOccluded(range)) return false
 
     const ele = range.commonAncestorContainer instanceof Element ?
       range.commonAncestorContainer : range.commonAncestorContainer.parentElement
