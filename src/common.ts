@@ -39,12 +39,12 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   return tab
 }
 
-export async function storePDFUrlInLocalStorage(key: string, url: string): Promise<void> {
+export async function putInLocalStorage(key: string, url: string): Promise<void> {
   await chrome.storage.local.set({ [key]: url })
 }
 
 export async function storeLatestPDFUrlInLocalStorage(url: string): Promise<void> {
-  await storePDFUrlInLocalStorage(LATEST_PDF_URL_KEY, url)
+  await putInLocalStorage(LATEST_PDF_URL_KEY, url)
 }
 
 export async function soundIsOn(): Promise<boolean> {

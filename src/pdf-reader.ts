@@ -7,7 +7,7 @@ import {
   LATEST_PDF_URL_KEY,
   TV_SCREEN_Z_INDEX,
   getCurrentTab,
-  storePDFUrlInLocalStorage,
+  putInLocalStorage,
   setSoundVol,
   getSoundVol,
   soundIsOn,
@@ -22,6 +22,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // TODO: prev/ntext page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy
+// FIXME: reloading causes open tab to just always load the most recently loaded pdf even if its from another tab
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
@@ -220,7 +221,7 @@ async function getPDFUrl(): Promise<string> {
   if (res) return res
 
   const latestUrl = await getLatestPDFUrl()
-  await storePDFUrlInLocalStorage(key, latestUrl)
+  await putInLocalStorage(key, latestUrl)
 
   return latestUrl
 }
