@@ -479,13 +479,7 @@ export class TvDirector {
   }
 
   setRangeAtPoint(point: { x: number, y: number }): void {
-    const rm = this.getRangeManager()
-    const [range, rangeIdx] = rm.getRangeAtPoint(point)
-    if (!range || (rangeIdx === null)) {
-      console.error(`TvDirector.setRangeAtPoint: ERROR - could not get range`)
-      return
-    }
-    rm.setRangeIdx(rangeIdx)
+    this.getRangeManager().setRangeAtPoint(point)
   }
 
   // TODO: implement shift-adding ranges

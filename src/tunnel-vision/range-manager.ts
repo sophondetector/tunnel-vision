@@ -227,10 +227,9 @@ export class RangeManager {
     return [null, null]
   }
 
-  getRangeAtPoint(point: { x: number, y: number }): [Range, number] | [null, null] {
+  getRangeAtPoint(point: { x: number, y: number }): [number, Range] | [null, null] {
 
-    const top = point.y
-    const left = point.x
+    const { x, y } = point
 
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
@@ -239,13 +238,24 @@ export class RangeManager {
       const box = iterRange.getBoundingClientRect()
       // console.log(`${idx}\t${top}\t${box.top}`)
       // left has to be BETWEEN box.left and box.right
-      if (top <= box.top && left >= box.left && left <= box.right) {
+      if (y <= box.top && x >= box.left && x <= box.right) {
         // console.log(`top:\t\t${top}\nbox.top:\t${box.top}`)
-        return [iterRange, idx]
+        return [idx, iterRange]
       }
     }
-    console.error(`RangeManager.rangeAtHeight: ERROR could not get range`)
+
+    console.error(`RangeManager.getRangeAtPoint: ERROR could not get range`)
+
     return [null, null]
+  }
+
+  setRangeAtPoint(point: { x: number, y: number }): [number, Range] | [null, null] {
+    const [idx, range] = this.getRangeAtPoint(point)
+    if (idx === null) {
+      return [null, null]
+    }
+    this.setRangeIdx(idx)
+    return [idx, range]
   }
 
   range2RangeIdx(range: Range): number | undefined {
