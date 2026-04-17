@@ -361,7 +361,6 @@ export class RangeManager {
         let windbackOffset = offsetInNode - 1
         let windbackNodeIdx = nodeIndex
 
-        // FIXME: set an upper bound on this
         while (
           currentRange.toString().match(/\s$/)
         ) {
