@@ -1,4 +1,10 @@
-import { TvDirectorState, TvMessage, setSoundOn, setSoundVol } from "./common"
+import {
+  TvDirectorState,
+  TvMessage,
+  setSoundOn,
+  setSoundVol,
+  id2Key
+} from "./common"
 
 chrome.runtime.onInstalled.addListener(setSoundOn)
 chrome.runtime.onInstalled.addListener(() => setSoundVol(50))
@@ -67,4 +73,12 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (activeTab.id !== sender.tab?.id) return;
   setIconFromState(message, sender.tab?.id as number)
+})
+
+// Listener 3: When Tunnel Vision PDF Reader tabs close delete its url entry from local storage
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const key = id2Key(tabId)
+  chrome.storage.local.remove(key, () => {
+    console.log(`removed entry for ${key}`)
+  })
 })

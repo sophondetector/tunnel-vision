@@ -11,7 +11,8 @@ import {
   setSoundVol,
   getSoundVol,
   soundIsOn,
-  toggleSound
+  toggleSound,
+  id2Key
 } from './common';
 import { TvScreen } from './tunnel-vision/tv-screen';
 
@@ -194,10 +195,6 @@ function displaySoundIsOn(isOn: boolean): void {
   }
   SOUND_DISPLAY.textContent = 'Sound is Off'
   disableVolumeSlider()
-}
-
-function id2Key(id: number): string {
-  return `${id}-tvpdf`
 }
 
 async function getLatestPDFUrl(): Promise<string> {
@@ -476,15 +473,6 @@ document.addEventListener('mouseup', () => {
   document.body.style.cursor = 'default';
   document.body.style.userSelect = 'auto';
 });
-
-// FIXME: this causes keeping the same pdf after reloading the page to break - how do i keep local storage from getting clogged up with pdf urls?
-// window.addEventListener('beforeunload', async () => {
-//   const tab = await getCurrentTab() as chrome.tabs.Tab
-//   const key = id2Key(tab.id as number)
-//   await chrome.storage.local.remove(key)
-// }, {
-//   capture: true
-// })
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()

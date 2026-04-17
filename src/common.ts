@@ -47,6 +47,10 @@ export async function storeLatestPDFUrlInLocalStorage(url: string): Promise<void
   await putInLocalStorage(LATEST_PDF_URL_KEY, url)
 }
 
+export function id2Key(id: number): string {
+  return `${id}-tvpdf`
+}
+
 export async function soundIsOn(): Promise<boolean> {
   const res = await chrome.storage.local.get(SOUND_ON_KEY)
   const curVal = res[SOUND_ON_KEY]
