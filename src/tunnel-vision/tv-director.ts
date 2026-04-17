@@ -104,6 +104,7 @@ export class TvDirector {
     this.ELEMENT_ARRAY = await HandlerManager.getEleArray()
     if (this.ELEMENT_ARRAY === null) {
       console.error('TvDirector.initRanges: null element array, exiting early')
+      this.setDirectorState(TvDirectorState.ERROR)
       return
     }
     this.RANGE_MANAGER = new RangeManager()
@@ -111,26 +112,38 @@ export class TvDirector {
     const range = this.RANGE_MANAGER.setToFirstVisibleRange()
     if (range === undefined) {
       console.error('TvDirector.init: could not get first visible range')
+      this.setDirectorState(TvDirectorState.ERROR)
     }
   }
 
   async reInitRanges(): Promise<void> {
     const rangeManager = this.getRangeManager()
-    // TODO: change this to holding place by getting node and offset?
-    const curIdx = rangeManager.getCurrentRangeIdx()
+
+    const [_, range] = rangeManager.getCurrentRange()
 
     this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
 
     await rangeManager.initRanges(this.ELEMENT_ARRAY)
 
-    const curRange = rangeManager.getRangeAtIdx(curIdx)
-
-    if (!curRange) {
+    if (range === null) {
       const firstRange = rangeManager.setToFirstVisibleRange()
       if (!firstRange) {
         this.setDirectorState(TvDirectorState.ERROR)
-        return
       }
+      return
+    }
+
+    const [curIdx, curRange] = await rangeManager.nodeOffset2Range(
+      range.endContainer,
+      range.endOffset
+    )
+
+    if (curRange === null) {
+      const [_, firstRange] = rangeManager.setToFirstVisibleRange()
+      if (!firstRange) {
+        this.setDirectorState(TvDirectorState.ERROR)
+      }
+      return
     }
 
     rangeManager.setRangeIdx(curIdx)
