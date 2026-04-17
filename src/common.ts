@@ -14,7 +14,8 @@ export enum TvMessage {
   RE_INIT = "RE_INIT",
   SHOW_RANGES = "SHOW_RANGES",
   LOG_RANGES = "LOG_RANGES",
-  DUMP_RANGES = "DUMP_RANGES"
+  DUMP_RANGES = "DUMP_RANGES",
+  SHOW_TEXT_NODES = "SHOW_TEXT_NODES"
 }
 
 export enum TvDirectorState {

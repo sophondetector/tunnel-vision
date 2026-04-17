@@ -67,6 +67,11 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     DIRECTOR.dumpAllRanges()
     sendResponse()
 
+  } else if (value === TvMessage.SHOW_TEXT_NODES) {
+    const onOff = DIRECTOR.toggleShowTextNodes()
+    console.log(`show text nodes is ${onOff ? "ON" : "OFF"}`)
+    sendResponse()
+
   } else {
     console.error(`controlPanelListenerCallback: Unknown message! value ${value}; sender ${sender}`)
     sendResponse()

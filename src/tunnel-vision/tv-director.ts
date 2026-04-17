@@ -20,6 +20,7 @@ let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let SELECTION_RANGE: Range | undefined = undefined
 
 let DEBUG_SHOW_RANGES = false
+let DEBUG_SHOW_TEXT_NODES = false
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -46,6 +47,11 @@ export class TvDirector {
   toggleShowRanges(): boolean {
     DEBUG_SHOW_RANGES = !DEBUG_SHOW_RANGES
     return DEBUG_SHOW_RANGES
+  }
+
+  toggleShowTextNodes(): boolean {
+    DEBUG_SHOW_TEXT_NODES = !DEBUG_SHOW_TEXT_NODES
+    return DEBUG_SHOW_TEXT_NODES
   }
 
   getDirectorState(): TvDirectorState {
@@ -223,6 +229,20 @@ export class TvDirector {
     }
   }
 
+  #drawTextNodes(): void {
+    const rangeManager = this.getRangeManager()
+    const textNodes = rangeManager.getTextNodes()
+    if (textNodes === null) return
+
+    for (let idx = 0; idx < textNodes.length; idx++) {
+      const range = new Range()
+      range.selectNodeContents(textNodes[idx])
+      const rect = range.getBoundingClientRect()
+      TvScreen.drawBoxAroundRect(rect, "yellow", 4)
+      TvScreen.drawNumber(rect.right, rect.top, idx)
+    }
+  }
+
   drawScreen(): void {
 
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
@@ -230,6 +250,8 @@ export class TvDirector {
     TvScreen.fillCanvas()
 
     if (DEBUG_SHOW_RANGES) this.#drawRanges()
+
+    if (DEBUG_SHOW_TEXT_NODES) this.#drawTextNodes()
 
     const buffer = TvScreen.getBufferRadius()
 

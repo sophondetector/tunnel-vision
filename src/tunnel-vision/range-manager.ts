@@ -42,6 +42,10 @@ export class RangeManager {
     return LOG_RANGES
   }
 
+  getTextNodes(): Node[] | null {
+    return this.TEXT_NODES
+  }
+
   getRectsToClear(): DOMRect[] {
     const [_, range] = this.getCurrentRange()
     if (!range) {
