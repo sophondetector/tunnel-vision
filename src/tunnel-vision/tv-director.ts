@@ -116,38 +116,38 @@ export class TvDirector {
     }
   }
 
-  async reInitRanges(): Promise<void> {
-    const rangeManager = this.getRangeManager()
-
-    const [_, range] = rangeManager.getCurrentRange()
-
-    this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
-
-    await rangeManager.initRanges(this.ELEMENT_ARRAY)
-
-    if (range === null) {
-      const firstRange = rangeManager.setToFirstVisibleRange()
-      if (!firstRange) {
-        this.setDirectorState(TvDirectorState.ERROR)
-      }
-      return
-    }
-
-    const [curIdx, curRange] = await rangeManager.nodeOffset2Range(
-      range.endContainer,
-      range.endOffset
-    )
-
-    if (curRange === null) {
-      const [_, firstRange] = rangeManager.setToFirstVisibleRange()
-      if (!firstRange) {
-        this.setDirectorState(TvDirectorState.ERROR)
-      }
-      return
-    }
-
-    rangeManager.setRangeIdx(curIdx)
-  }
+  // async reInitRanges(): Promise<void> {
+  //   const rangeManager = this.getRangeManager()
+  //
+  //   const [_, range] = rangeManager.getCurrentRange()
+  //
+  //   this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
+  //
+  //   await rangeManager.initRanges(this.ELEMENT_ARRAY)
+  //
+  //   if (range === null) {
+  //     const firstRange = rangeManager.setToFirstVisibleRange()
+  //     if (!firstRange) {
+  //       this.setDirectorState(TvDirectorState.ERROR)
+  //     }
+  //     return
+  //   }
+  //
+  //   const [curIdx, curRange] = await rangeManager.nodeOffset2Range(
+  //     range.endContainer,
+  //     range.endOffset
+  //   )
+  //
+  //   if (curRange === null) {
+  //     const [_, firstRange] = rangeManager.setToFirstVisibleRange()
+  //     if (!firstRange) {
+  //       this.setDirectorState(TvDirectorState.ERROR)
+  //     }
+  //     return
+  //   }
+  //
+  //   rangeManager.setRangeIdx(curIdx)
+  // }
 
   disableSelectionHighlighting(): void {
     const style = document.createElement('style')
