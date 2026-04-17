@@ -22,7 +22,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // TODO: prev/ntext page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy
-// FIXME: reloading causes open tab to just always load the most recently loaded pdf even if its from another tab
+// FIXME: reloading the page causes whichever pdf the page was opened with to come back
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
@@ -477,13 +477,14 @@ document.addEventListener('mouseup', () => {
   document.body.style.userSelect = 'auto';
 });
 
-window.addEventListener('beforeunload', async () => {
-  const tab = await getCurrentTab() as chrome.tabs.Tab
-  const key = id2Key(tab.id as number)
-  await chrome.storage.local.remove(key)
-}, {
-  capture: true
-})
+// FIXME: this causes keeping the same pdf after reloading the page to break - how do i keep local storage from getting clogged up with pdf urls?
+// window.addEventListener('beforeunload', async () => {
+//   const tab = await getCurrentTab() as chrome.tabs.Tab
+//   const key = id2Key(tab.id as number)
+//   await chrome.storage.local.remove(key)
+// }, {
+//   capture: true
+// })
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
