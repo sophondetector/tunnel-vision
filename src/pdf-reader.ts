@@ -392,6 +392,8 @@ OPEN_PDF.addEventListener('click', async () => {
 
       // Create object URL
       const fileUrl = URL.createObjectURL(file);
+      // FIXME: store file url in local storage so it opens the same file on reload
+      console.log('fileUrl', fileUrl)
 
       // Load the PDF with pdf.js
       const loadingTask = pdfjsLib.getDocument(fileUrl);
@@ -404,8 +406,8 @@ OPEN_PDF.addEventListener('click', async () => {
         .then(renderTextLayer)
         .then(setPageNumText)
         .then(displayZoomPercent)
-        .then(initializeTV) // FIXME: re-initting breaks toggling the screen with alt+l
-      // FIXME: store file url in local storage so it opens the same file on reload
+        .then(getDirector)
+        .then((dir) => dir.initRanges())
 
       // Clean up the object URL when done (or keep it while viewing)
       URL.revokeObjectURL(fileUrl);
