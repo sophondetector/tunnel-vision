@@ -19,7 +19,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 // TODO: add ability to open the pdf reader whenever the user desires
 // TODO: add ability to open pdf files on the local filesystem from the pdf reader
-// TODO: prev/ntext page buttons visible without sidebar
+// TODO: prev/next page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy
 // FIXME: reloading the page causes whichever pdf the page was opened with to come back
