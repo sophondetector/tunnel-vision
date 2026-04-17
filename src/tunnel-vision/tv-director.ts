@@ -78,15 +78,15 @@ export class TvDirector {
 
       await handler.initDelay()
 
-      this.initializeControls()
-      this.initializeOnResizeCallback()
+      this.#initializeControls()
+      this.#initializeOnResizeCallback()
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
-      this.animate(this)
-      this.setMouseUpListener()
-      this.setSelectionListener()
-      // this.setMutationObserver()
+      this.#animate(this)
+      this.#setMouseUpListener()
+      this.#setSelectionListener()
+      // this.#setMutationObserver()
       this.toggleScreenOff()
 
       this.setDirectorState(TvDirectorState.READY)
@@ -216,15 +216,15 @@ export class TvDirector {
     return rects
   }
 
-  setSelectionListener(): void {
+  #setSelectionListener(): void {
     document.addEventListener(
       "selectionchange", () => this.drawAroundSelection(this), { capture: true }
     )
   }
 
-  animate(curDir: TvDirector) {
+  #animate(curDir: TvDirector) {
     this.drawScreen()
-    requestAnimationFrame(() => this.animate(curDir))
+    requestAnimationFrame(() => this.#animate(curDir))
   }
 
   #drawRanges(): void {
@@ -282,7 +282,6 @@ export class TvDirector {
       const rect = rects[idx]
       TvScreen.clearRect(rect, buffer)
     }
-
   }
 
   getRangeManager(): RangeManager {
@@ -293,7 +292,7 @@ export class TvDirector {
     return rm
   }
 
-  getElementArray(): Array<Element> {
+  getElementArray(): Element[] {
     const ea = this.ELEMENT_ARRAY
     if (!ea) {
       throw new Error(`TvDirector.getElementArray: this.ELEMENT_ARRAY is ${ea}`)
@@ -319,7 +318,7 @@ export class TvDirector {
     rm.setRangeIdx(idx)
   }
 
-  setMouseUpListener(): void {
+  #setMouseUpListener(): void {
     // NOTE: changed this from window.onclick = (event) => { etc ... } because window.onclick sets the event listener at the "bubbling" phase whereas we need to have it happen during the "capturing" phase to ensure it takes precedence over whatever listeners the site itself has set
 
     const mouseUpListener = (event: MouseEvent) => {
@@ -465,7 +464,7 @@ export class TvDirector {
     console.log('shift down!')
   }
 
-  rangeIsOccluded(range: Range): boolean {
+  #rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -519,7 +518,7 @@ export class TvDirector {
 
     const rect = range.getBoundingClientRect()
 
-    if (this.rangeIsOccluded(range)) {
+    if (this.#rangeIsOccluded(range)) {
       scrollable.scrollBy({
         top: rect.y - (window.innerHeight / 2),
         left: rect.x - (window.innerWidth / 2),
@@ -551,8 +550,7 @@ export class TvDirector {
     }
   }
 
-  // TODO: make the callbacks private
-  async onResizeCallback(curDir: TvDirector): Promise<void> {
+  async #onResizeCallback(curDir: TvDirector): Promise<void> {
     TvScreen.setBufferRadiusByScreenSize()
 
     const newWidth = window.innerWidth
@@ -592,7 +590,7 @@ export class TvDirector {
     curDir.scrollRangeIntoView(range)
   }
 
-  initializeControls() {
+  #initializeControls() {
     // TODO: alt+click+drag creates a highlight box - bring that in from test-stuff/grok-code.html
     document.addEventListener('keyup', (event) => {
       switch (event.key) {
@@ -639,23 +637,24 @@ export class TvDirector {
     })
   }
 
-  initializeOnResizeCallback(): void {
+  #initializeOnResizeCallback(): void {
     window.addEventListener('resize', () => {
       clearTimeout(DEBOUNCE_TIMEOUT_ID)
       DEBOUNCE_TIMEOUT_ID = setTimeout(
-        () => this.onResizeCallback(this),
+        () => this.#onResizeCallback(this),
         RESIZE_DEBOUNCE_MILLIS) as unknown as number
     }, {
       capture: true
     })
   }
 
-  setMutationObserver(): void {
+  //@ts-ignore
+  #setMutationObserver(): void {
     let { getMutationTarget, mutationCallback } = defaultMutationHandler
 
     const handler = HandlerManager.getHandler()
     if (!handler) {
-      console.error(`setMutationObserver: could not get handler!`)
+      console.error(`#setMutationObserver: could not get handler!`)
       return
     }
 
@@ -667,7 +666,7 @@ export class TvDirector {
     const target = getMutationTarget()
 
     if (!target) {
-      console.warn(`setMutationObserver: could not get mutation observer target - exiting`)
+      console.warn(`#setMutationObserver: could not get mutation observer target - exiting`)
       return
     }
 
@@ -681,6 +680,6 @@ export class TvDirector {
       characterData: true,
     })
 
-    console.log(`setMutationObserver: mutation observer set`)
+    console.log(`#setMutationObserver: mutation observer set`)
   }
 }
