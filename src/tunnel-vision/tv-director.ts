@@ -207,7 +207,7 @@ export class TvDirector {
     return SELECTION_RANGE
   }
 
-  getSelectionRects(): DOMRect[] {
+  #getSelectionRects(): DOMRect[] {
     const range = this.getSelectionRange() as Range
     const rects = Array.from(range.getClientRects()).filter(
       (r) => r.width > 1 && r.height > 1
@@ -255,6 +255,7 @@ export class TvDirector {
     }
   }
 
+  // TODO: remove most or all state from TvScreen - keep it in TvDirector
   drawScreen(): void {
 
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
@@ -268,7 +269,7 @@ export class TvDirector {
     const buffer = TvScreen.getBufferRadius()
 
     if (SELECTION) {
-      const rects = this.getSelectionRects()
+      const rects = this.#getSelectionRects()
       for (let idx = 0; idx < rects.length; idx++) {
         const rect = rects[idx]
         TvScreen.clearRect(rect, buffer)
