@@ -20,6 +20,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // TODO: add ability to open the pdf reader whenever the user desires
 // TODO: add ability to open pdf files on the local filesystem from the pdf reader
 // TODO: fix pdf text being too fuzzy
+// TODO: prev/ntext page buttons visible without sidebar
+// TODO: inc/decLine buttons visible without sidebar
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
@@ -376,7 +378,45 @@ COLLAPSER.addEventListener('click', () => {
 })
 
 OPEN_PDF.addEventListener('click', async () => {
-  console.log('open pdf!')
+  try {
+    // Create a file input dynamically (no need to add it to DOM)
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.pdf,application/pdf';
+
+    // Handle file selection
+    fileInput.onchange = async (event) => {
+      //@ts-ignore
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Create object URL
+      const fileUrl = URL.createObjectURL(file);
+
+      // Load the PDF with pdf.js
+      const loadingTask = pdfjsLib.getDocument(fileUrl);
+      await loadingTask.promise
+        .then((pdfDocProxy) => {
+          PDF_DOC = pdfDocProxy
+          PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
+        })
+        .then(renderPage)
+        .then(renderTextLayer)
+        .then(setPageNumText)
+        .then(displayZoomPercent)
+        .then(initializeTV) // FIXME: re-initting breaks toggling the screen with alt+l
+
+      // Clean up the object URL when done (or keep it while viewing)
+      URL.revokeObjectURL(fileUrl);
+    };
+
+    // Trigger the file picker
+    fileInput.click();
+
+  } catch (error) {
+    console.error('Error opening local PDF:', error);
+  }
+
 })
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
