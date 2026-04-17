@@ -4,9 +4,8 @@ const LOG_ELEMENTS = false
 
 let DEFAULT_MUTATION_TIMEOUT: undefined | NodeJS.Timeout = undefined
 
-// TODO: make getTvElements and getScrollableElement async so they dont block normal user interaction and so the default getScrollableElement can be discoverScrollableFromCenterPromise
 export interface TvHandler {
-  getTvElements: () => Promise<Array<Element> | null>
+  getTvElements: () => Promise<Element[] | null>
   getScrollableElement: () => Promise<Element | null>
   initDelay: () => Promise<void>
   mutationHandler: TvMutationSubHandler | null
