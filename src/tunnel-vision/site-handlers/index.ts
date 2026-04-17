@@ -95,7 +95,6 @@ export class HandlerManager {
     return ea
   }
 
-  // TODO: change this to an object interface so its more readable when its called in other parts of the codebase
   static async getScrollableElement(resetScrollable: boolean = false): Promise<Element | undefined | null> {
     if (SCROLLABLE_ELEMENT && resetScrollable === false) {
       return SCROLLABLE_ELEMENT
