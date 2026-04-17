@@ -390,8 +390,7 @@ OPEN_PDF.addEventListener('click', async () => {
 
       // Create object URL
       const fileUrl = URL.createObjectURL(file);
-      // FIXME: store file url in local storage so it opens the same file on reload
-      console.log('fileUrl', fileUrl)
+      // FIXME: fix it so the same pdf persists across reloads
 
       // Load the PDF with pdf.js
       const loadingTask = pdfjsLib.getDocument(fileUrl);
