@@ -51,6 +51,12 @@ export function id2Key(id: number): string {
   return `${id}-tvpdf`
 }
 
+export async function getCurrentTabKey(): Promise<string> {
+  const tab = await getCurrentTab()
+  const key = id2Key(tab.id!)
+  return key
+}
+
 export async function soundIsOn(): Promise<boolean> {
   const res = await chrome.storage.local.get(SOUND_ON_KEY)
   const curVal = res[SOUND_ON_KEY]
