@@ -22,7 +22,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 // TODO: prev/ntext page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy
-// FIXME: could not get handler error is firing for some reason
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4

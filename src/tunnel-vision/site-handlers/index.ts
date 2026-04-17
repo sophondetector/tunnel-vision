@@ -80,19 +80,24 @@ export class HandlerManager {
 
   static async getTvElements(): Promise<Element[] | null> {
     const handler = HandlerManager.getHandler()
-    console.error('getTvElements: could not get handler!')
-    if (handler === null) return null
+    if (handler === null) {
+      console.error('getTvElements: could not get handler!')
+      return null
+    }
 
-    let ea = await handler.getTvElements()
-    if (!ea || ea.length == 0) {
+    let elementArray = await handler.getTvElements()
+
+    if (!elementArray || elementArray.length == 0) {
       console.warn(`getTvElements: handler failed: falling back on generic handler`)
-      ea = await genericHandler.getTvElements()
-      if (!ea || ea.length == 0) {
+      elementArray = await genericHandler.getTvElements()
+
+      if (!elementArray || elementArray.length == 0) {
         console.error(`getTvElements: generic handler fallback also failed`)
         return null
       }
     }
-    return ea
+
+    return elementArray
   }
 
   static async getScrollableElement(resetScrollable: boolean = false): Promise<Element | undefined | null> {
