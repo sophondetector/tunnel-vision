@@ -76,6 +76,7 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
 })
 
 // Listener 3: When Tunnel Vision PDF Reader tabs close delete its url entry from local storage
+// NOTE: this fires every time any tab is closed; there appears to be no negative effect
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   const key = id2Key(tabId)
   chrome.storage.local.remove(key, () => {
