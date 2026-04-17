@@ -98,6 +98,16 @@ export class RangeManager {
     return this.RANGES.length
   }
 
+  static #pointInRange(point: { x: number, y: number }, range: Range): boolean {
+    const rect = range.getBoundingClientRect()
+    return (
+      point.y <= rect.bottom &&
+      point.y >= rect.top &&
+      point.x >= rect.left &&
+      point.x <= rect.right
+    )
+  }
+
   static #rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
 
@@ -229,17 +239,11 @@ export class RangeManager {
 
   getRangeAtPoint(point: { x: number, y: number }): [number, Range] | [null, null] {
 
-    const { x, y } = point
-
     // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
       const iterRange = this.getRangeAtIdx(idx) as Range
-      const box = iterRange.getBoundingClientRect()
-      // console.log(`${idx}\t${top}\t${box.top}`)
-      // left has to be BETWEEN box.left and box.right
-      if (y <= box.top && x >= box.left && x <= box.right) {
-        // console.log(`top:\t\t${top}\nbox.top:\t${box.top}`)
+      if (RangeManager.#pointInRange(point, iterRange)) {
         return [idx, iterRange]
       }
     }

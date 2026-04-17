@@ -319,47 +319,19 @@ export class TvDirector {
     rm.setRangeIdx(idx)
   }
 
-  static clickInRange(event: MouseEvent, range: Range): boolean {
-    const rect = range.getBoundingClientRect()
-    return (
-      event.y <= rect.bottom &&
-      event.y >= rect.top &&
-      event.x >= rect.left &&
-      event.x <= rect.right
-    )
-  }
-
   setMouseUpListener(): void {
-    // NOTE: changed this from window.onclick = (event) => { etc ... }
-    // because window.onclick sets the event listener at the "bubbling" phase
-    // whereas we need to have it happen during the "capturing" phase to ensure
-    // it takes precedence over whatever listeners the site itself has set
+    // NOTE: changed this from window.onclick = (event) => { etc ... } because window.onclick sets the event listener at the "bubbling" phase whereas we need to have it happen during the "capturing" phase to ensure it takes precedence over whatever listeners the site itself has set
+
     const mouseUpListener = (event: MouseEvent) => {
       if (!this.isOn()) return
-      // NOTE: This is here to prevent the 'click' event listener from cancelling out the 
-      // selectionChangeListener
+      // NOTE: This is here to prevent the 'click' event listener from cancelling out the selectionChangeListener
       if (SELECTING) {
         SELECTING = false
         return
       }
-
       this.collapseSelection()
-
       const rm = this.getRangeManager()
-      if (rm.RANGES === null) {
-        console.error(`TvDirector: RangeManager.RANGES is null!`)
-        return
-      }
-
-      // TODO: make this O(logN)
-      for (let idx = 0; idx < rm.RANGES.length; idx++) {
-        const rng = rm.RANGES[idx]
-        if (TvDirector.clickInRange(event, rng) && RangeManager.rangeIsVisible(rng)) {
-          rm.setRangeIdx(idx)
-          return
-        }
-      }
-      // console.error('TvDirector.clickListener: could not find clickable range')
+      rm.setRangeAtPoint(event)
     }
 
     window.addEventListener('mouseup', mouseUpListener, {
@@ -579,6 +551,7 @@ export class TvDirector {
     }
   }
 
+  // TODO: make the callbacks private
   async onResizeCallback(curDir: TvDirector): Promise<void> {
     TvScreen.setBufferRadiusByScreenSize()
 
@@ -620,8 +593,7 @@ export class TvDirector {
   }
 
   initializeControls() {
-    // TODO: alt+click+drag creates a highlight box
-    // bring that in from test-stuff/grok-code.html
+    // TODO: alt+click+drag creates a highlight box - bring that in from test-stuff/grok-code.html
     document.addEventListener('keyup', (event) => {
       switch (event.key) {
         case "l":
