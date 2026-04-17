@@ -1,4 +1,4 @@
-import { blankDelay, TvHandler } from "./handler-utilities"
+import { blankDelay, TvHandler, isScrollable } from "./handler-utilities"
 
 const SCROLLABLE_ELE_LECS = [
   '#post-viewer > div > div > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.content-cFaSRD > div.pencraft.pc-display-flex.pc-flexDirection-column.flexGrow-tjePuI.pc-reset.post-XKrpvd',
@@ -7,14 +7,6 @@ const SCROLLABLE_ELE_LECS = [
 
 export function isActuallySubstack(): boolean {
   return document.querySelector('link[href="https://substackcdn.com"]') ? true : false
-}
-
-// TODO: event listener for article fetch
-// TODO: dfs for the first element that satisfies this
-function isScrollable(ele: Element): boolean {
-  const map = ele.computedStyleMap()
-  const overflowY = map.get('overflow-y')
-  return (overflowY == 'scroll' || overflowY == 'auto')
 }
 
 async function substackScrollableElement(): Promise<Element | null> {

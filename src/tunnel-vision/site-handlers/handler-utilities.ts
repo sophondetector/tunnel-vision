@@ -20,7 +20,7 @@ export function blankDelay(): Promise<void> {
   return new Promise(resolve => resolve())
 }
 
-function isScrollable(ele: Element): boolean {
+export function isScrollable(ele: Element): boolean {
   const map = ele.computedStyleMap()
   const overflowY = map.get('overflow-y')
   return (overflowY == 'scroll' || overflowY == 'auto')
