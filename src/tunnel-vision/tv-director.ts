@@ -101,7 +101,7 @@ export class TvDirector {
   }
 
   async initRanges(): Promise<void> {
-    this.ELEMENT_ARRAY = await HandlerManager.getEleArray()
+    this.ELEMENT_ARRAY = await HandlerManager.getTvElements()
     if (this.ELEMENT_ARRAY === null) {
       console.error('TvDirector.initRanges: null element array, exiting early')
       this.setDirectorState(TvDirectorState.ERROR)
@@ -121,7 +121,7 @@ export class TvDirector {
   //
   //   const [_, range] = rangeManager.getCurrentRange()
   //
-  //   this.ELEMENT_ARRAY = await HandlerManager.getEleArray() as Element[]
+  //   this.ELEMENT_ARRAY = await HandlerManager.getTvElements() as Element[]
   //
   //   await rangeManager.initRanges(this.ELEMENT_ARRAY)
   //

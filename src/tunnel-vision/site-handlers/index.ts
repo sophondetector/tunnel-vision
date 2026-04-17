@@ -78,17 +78,17 @@ export class HandlerManager {
     return HANDLER
   }
 
-  // TODO: change this to getTvElements
-  static async getEleArray(): Promise<Array<Element> | null> {
+  static async getTvElements(): Promise<Element[] | null> {
     const handler = HandlerManager.getHandler()
+    console.error('getTvElements: could not get handler!')
     if (handler === null) return null
 
     let ea = await handler.getTvElements()
     if (!ea || ea.length == 0) {
-      console.warn(`getEleArray: handler failed: falling back on generic handler`)
+      console.warn(`getTvElements: handler failed: falling back on generic handler`)
       ea = await genericHandler.getTvElements()
       if (!ea || ea.length == 0) {
-        console.error(`getEleArray: generic handler fallback also failed`)
+        console.error(`getTvElements: generic handler fallback also failed`)
         return null
       }
     }
