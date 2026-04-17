@@ -83,7 +83,7 @@ export class TvDirector {
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
-      this.#animate(this)
+      this.#animate()
       this.#setMouseUpListener()
       this.#setSelectionListener()
       // this.#setMutationObserver()
@@ -221,9 +221,9 @@ export class TvDirector {
     )
   }
 
-  #animate(curDir: TvDirector) {
+  #animate = (): void => {
     this.drawScreen()
-    requestAnimationFrame(() => this.#animate(curDir))
+    requestAnimationFrame(this.#animate)
   }
 
   #drawRanges(): void {
