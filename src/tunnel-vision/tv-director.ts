@@ -79,7 +79,7 @@ export class TvDirector {
       await handler.initDelay()
 
       this.#initializeControls()
-      this.#initializeOnResizeCallback()
+      this.#setResizeListener()
       TvScreen.setBufferRadiusByScreenSize()
       await TvScreen.inject()
       await this.initRanges()
@@ -625,7 +625,7 @@ export class TvDirector {
     })
   }
 
-  #initializeOnResizeCallback(): void {
+  #setResizeListener(): void {
     window.addEventListener('resize', () => {
       clearTimeout(DEBOUNCE_TIMEOUT_ID)
       DEBOUNCE_TIMEOUT_ID = setTimeout(
