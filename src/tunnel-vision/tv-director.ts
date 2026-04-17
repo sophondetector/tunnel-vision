@@ -464,6 +464,8 @@ export class TvDirector {
     console.log('shift down!')
   }
 
+  // FIXME: if entire range isn't visible in viewport don't scroll at all
+
   /**
   * Scrolls the viewport so that the given DOMRect becomes fully visible.
   * 
