@@ -173,7 +173,7 @@ export class TvDirector {
     sel.collapseToStart()
   }
 
-  setWindowAroundSelection(curDir: TvDirector): void {
+  #setWindowAroundSelection = (): void => {
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
       SELECTION = false
@@ -191,7 +191,7 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    curDir.setSelectionRange(range)
+    this.setSelectionRange(range)
   }
 
   setSelectionRange(range: Range): void {
@@ -212,7 +212,7 @@ export class TvDirector {
 
   #setSelectionListener(): void {
     document.addEventListener(
-      "selectionchange", () => this.setWindowAroundSelection(this), { capture: true }
+      "selectionchange", this.#setWindowAroundSelection, { capture: true }
     )
   }
 
@@ -595,7 +595,7 @@ export class TvDirector {
 
       if (SELECTION) {
         await rangeManager.initRanges(this.getElementArray())
-        this.setWindowAroundSelection(this)
+        this.#setWindowAroundSelection()
         this.scrollRangeIntoView(this.getSelectionRange() as Range, false)
         return
       }
