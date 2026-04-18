@@ -230,13 +230,17 @@ async function renderPage(): Promise<void> {
   const page = await PDF_DOC.getPage(PAGE_NUM)
   const viewport = page.getViewport({ scale: ZOOM_SCALE })
 
+  const dpr = window.devicePixelRatio || 1
+  CONTEXT.scale(dpr, dpr)
+
   // Canvas resolution (backing store) at device pixels
-  CANVAS.width = Math.round(viewport.width)
-  CANVAS.height = Math.round(viewport.height)
+  CANVAS.width = Math.round(viewport.width * dpr)
+  CANVAS.height = Math.round(viewport.height * dpr)
 
   // IMPORTANT: CSS size = logical / CSS pixels (what text layer uses!)
   const cssWidth = Math.floor(viewport.width)
   const cssHeight = Math.floor(viewport.height)
+
   CANVAS.style.width = `${cssWidth}px`
   CANVAS.style.height = `${cssHeight}px`
 
