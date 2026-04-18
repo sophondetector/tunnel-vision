@@ -19,7 +19,6 @@ import { getBinary, setBinary } from './indexdb'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
-// TODO: add ability to open the pdf reader whenever the user desires
 // TODO: prev/next page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy

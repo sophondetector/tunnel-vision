@@ -18,13 +18,12 @@ const HIDDEN = "hidden"
 const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
 const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
 
-const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
+const OPEN_TUNNEL_PDF = document.getElementById('open-tunnel-pdf') as HTMLButtonElement
+const OPEN_IN_TUNNEL_PDF = document.getElementById('open-in-tunnel-pdf') as HTMLButtonElement
+const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
 const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
-const PDF_TOGGLE = document.getElementById('pdf-toggle') as HTMLButtonElement
-const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
-
-const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
+const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
 
 const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLSpanElement
@@ -77,11 +76,11 @@ function enableVolumeSlider(): void {
   VOLUME_CONTROL.style.opacity = '1'
 }
 
-function hidePdf(): void {
-  PDF_TOGGLE.classList.add(HIDDEN)
+function hideOpenInTunnelPDF(): void {
+  OPEN_IN_TUNNEL_PDF.classList.add(HIDDEN)
 }
 
-function hideNonPdf(): void {
+function hideNonOpenInTunnelPDf(): void {
   SCREEN_TOGGLE.classList.add(HIDDEN)
   COLOR_CONTROL.classList.add(HIDDEN)
   OPACITY_CONTROL.classList.add(HIDDEN)
@@ -174,8 +173,9 @@ HELP_TOGGLE.addEventListener('click', showHelp)
 
 CONTROL_PANEL_TOGGLE.addEventListener('click', showControlPanel)
 
-OPEN_PDF.addEventListener('click', async () => {
-  console.log('open pdf!')
+OPEN_TUNNEL_PDF.addEventListener('click', async () => {
+  console.log('open tunnel pdf!')
+  // TODO: get user feedback on whether or not this should trigger a file open dialogue
 })
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
@@ -222,13 +222,13 @@ getCurrentTab()
   .then(tab => {
 
     if (tab.url && urlIsPdf(tab.url)) {
-      PDF_TOGGLE.style.backgroundColor = "lightgreen"
-      PDF_TOGGLE.addEventListener("click", async () => {
+      OPEN_IN_TUNNEL_PDF.style.backgroundColor = "lightgreen"
+      OPEN_IN_TUNNEL_PDF.addEventListener("click", async () => {
         await storeLatestPDFUrlInLocalStorage(tab.url as string)
       })
-      hideNonPdf()
+      hideNonOpenInTunnelPDf()
     } else {
-      hidePdf()
+      hideOpenInTunnelPDF()
     }
 
     chrome.tabs.sendMessage(tab.id!, TvMessage.GET_SCREEN_STATE, function (state: TvScreenState) {
