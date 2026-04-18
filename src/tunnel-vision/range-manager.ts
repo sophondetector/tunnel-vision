@@ -1,5 +1,7 @@
 import { logRange } from "../common"
 
+// FIXME: Fix double first range bug
+
 let LOG_RANGES = false
 
 export class RangeManager {
