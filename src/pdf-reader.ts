@@ -227,11 +227,10 @@ async function renderPage(): Promise<void> {
     return
   }
 
+  const dpr = window.devicePixelRatio || 1
+
   const page = await PDF_DOC.getPage(PAGE_NUM)
   const viewport = page.getViewport({ scale: ZOOM_SCALE })
-
-  const dpr = window.devicePixelRatio || 1
-  CONTEXT.scale(dpr, dpr)
 
   // Canvas resolution (backing store) at device pixels
   CANVAS.width = Math.round(viewport.width * dpr)
@@ -243,6 +242,9 @@ async function renderPage(): Promise<void> {
 
   CANVAS.style.width = `${cssWidth}px`
   CANVAS.style.height = `${cssHeight}px`
+
+  // NOTE: Always scale the context AFTER applying the CANVAS dimensions
+  CONTEXT.scale(dpr, dpr)
 
   await page.render({
     canvasContext: CONTEXT,
