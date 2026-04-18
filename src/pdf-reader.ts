@@ -1,8 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
-import { initializeTV, getDirector } from './initialize-tv';
-import { playSound } from './tunnel-vision/sound';
+import { initializeTV, getDirector } from './initialize-tv'
+import { playSound } from './tunnel-vision/sound'
 import {
   LATEST_PDF_URL_KEY,
   TV_SCREEN_Z_INDEX,
@@ -11,18 +11,16 @@ import {
   soundIsOn,
   toggleSound,
   getCurrentTabKey
-} from './common';
-import { TvScreen } from './tunnel-vision/tv-screen';
-import { getBinary, setBinary } from './indexdb';
+} from './common'
+import { TvScreen } from './tunnel-vision/tv-screen'
+import { getBinary, setBinary } from './indexdb'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
 // TODO: add ability to open the pdf reader whenever the user desires
-// TODO: add ability to open pdf files on the local filesystem from the pdf reader
 // TODO: prev/next page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 // FIXME: fix pdf text being too fuzzy
-// FIXME: reloading the page causes whichever pdf the page was opened with to come back
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
@@ -33,14 +31,14 @@ const SIDEBAR_MIN_WIDTH = 100
 const SIDEBAR_MAX_WIDTH = 1000
 const SIDEBAR_DEFAULT_WIDTH = 350
 
-const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement;
+const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
 // control panel
-const SIDEBAR = document.getElementById('sidebar') as HTMLElement;
-const RESIZER = document.getElementById('resizer') as HTMLElement;
-const COLLAPSER = document.getElementById('collapser') as HTMLButtonElement;
-const CHEVRON = document.getElementById('chevron') as HTMLElement;
+const SIDEBAR = document.getElementById('sidebar') as HTMLElement
+const RESIZER = document.getElementById('resizer') as HTMLElement
+const COLLAPSER = document.getElementById('collapser') as HTMLButtonElement
+const CHEVRON = document.getElementById('chevron') as HTMLElement
 
 const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
 
@@ -74,7 +72,7 @@ const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 // state variables
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
-let IS_RESIZING = false;
+let IS_RESIZING = false
 let ZOOM_SCALE = DEFAULT_SCALE
 let DEFAULT_BUFFER_RADIUS = 1
 
@@ -177,14 +175,14 @@ async function zoomFit(): Promise<void> {
 }
 
 async function getClosestZoomInc(scale: number): Promise<number> {
-  if (scale <= MIN_SCALE) return MIN_SCALE;
-  if (scale >= MAX_SCALE) return MAX_SCALE;
+  if (scale <= MIN_SCALE) return MIN_SCALE
+  if (scale >= MAX_SCALE) return MAX_SCALE
 
   // Round to nearest multiple of SCALE_INC, then clamp
-  const steps = Math.round((scale - MIN_SCALE) / SCALE_INC);
-  let newScale = MIN_SCALE + steps * SCALE_INC;
+  const steps = Math.round((scale - MIN_SCALE) / SCALE_INC)
+  let newScale = MIN_SCALE + steps * SCALE_INC
 
-  return Math.min(newScale, MAX_SCALE);
+  return Math.min(newScale, MAX_SCALE)
 }
 
 function getScalePercent(): number {
@@ -228,17 +226,17 @@ async function renderPage(): Promise<void> {
   }
 
   const page = await PDF_DOC.getPage(PAGE_NUM)
-  const viewport = page.getViewport({ scale: ZOOM_SCALE });
+  const viewport = page.getViewport({ scale: ZOOM_SCALE })
 
   // Canvas resolution (backing store) at device pixels
-  CANVAS.width = Math.round(viewport.width);
-  CANVAS.height = Math.round(viewport.height);
+  CANVAS.width = Math.round(viewport.width)
+  CANVAS.height = Math.round(viewport.height)
 
   // IMPORTANT: CSS size = logical / CSS pixels (what text layer uses!)
-  const cssWidth = Math.floor(viewport.width);
-  const cssHeight = Math.floor(viewport.height);
-  CANVAS.style.width = `${cssWidth}px`;
-  CANVAS.style.height = `${cssHeight}px`;
+  const cssWidth = Math.floor(viewport.width)
+  const cssHeight = Math.floor(viewport.height)
+  CANVAS.style.width = `${cssWidth}px`
+  CANVAS.style.height = `${cssHeight}px`
 
   await page.render({
     canvasContext: CONTEXT,
@@ -253,34 +251,34 @@ async function renderTextLayer(): Promise<void> {
   }
 
   const page = await PDF_DOC.getPage(PAGE_NUM)
-  const viewport = page.getViewport({ scale: ZOOM_SCALE });
-  const cssWidth = Math.floor(viewport.width);
-  const cssHeight = Math.floor(viewport.height);
+  const viewport = page.getViewport({ scale: ZOOM_SCALE })
+  const cssWidth = Math.floor(viewport.width)
+  const cssHeight = Math.floor(viewport.height)
 
   const textLayerDiv = document.querySelector('#text-layer') as HTMLDivElement
-  textLayerDiv.innerHTML = '';
+  textLayerDiv.innerHTML = ''
 
-  textLayerDiv.style.setProperty('--scale-factor', viewport.scale.toString());
+  textLayerDiv.style.setProperty('--scale-factor', viewport.scale.toString())
 
   // Position & size MUST match canvas CSS pixels exactly
-  textLayerDiv.style.position = 'absolute';
-  textLayerDiv.style.left = `${CANVAS.offsetLeft}px`;
-  textLayerDiv.style.top = `${CANVAS.offsetTop}px`;
-  textLayerDiv.style.width = `${cssWidth}px`;
-  textLayerDiv.style.height = `${cssHeight}px`;
+  textLayerDiv.style.position = 'absolute'
+  textLayerDiv.style.left = `${CANVAS.offsetLeft}px`
+  textLayerDiv.style.top = `${CANVAS.offsetTop}px`
+  textLayerDiv.style.width = `${cssWidth}px`
+  textLayerDiv.style.height = `${cssHeight}px`
 
   // NOTE: Grok put these here but they seem un-necessary - leaving commented out for now
   // Optional: force pointer events & selection
-  // textLayerDiv.style.pointerEvents = 'all';
-  // textLayerDiv.style.userSelect = 'text';
+  // textLayerDiv.style.pointerEvents = 'all'
+  // textLayerDiv.style.userSelect = 'text'
 
   const textLayer = new pdfjsLib.TextLayer({
     textContentSource: page.streamTextContent(),
     container: textLayerDiv,
     viewport: viewport,
-  });
+  })
 
-  await textLayer.render();
+  await textLayer.render()
 }
 
 // FIXME: change page_num -> pange-num and make this a constant variable
@@ -321,25 +319,25 @@ ZOOM_FIT.addEventListener('click', zoomFit)
 
 PREV_PAGE.addEventListener('click', async function () {
   if (PAGE_NUM <= 1) {
-    return;
+    return
   }
-  PAGE_NUM--;
+  PAGE_NUM--
   await renderPage()
   await renderTextLayer()
   await initRanges()
   setPageNumText()
-});
+})
 
 NEXT_PAGE.addEventListener('click', async function () {
   if (PAGE_NUM >= PDF_DOC!.numPages) {
-    return;
+    return
   }
-  PAGE_NUM++;
+  PAGE_NUM++
   await renderPage()
   await renderTextLayer()
   await initRanges()
   setPageNumText()
-});
+})
 
 RE_RANGE.addEventListener('click', async function () {
   await initRanges()
@@ -358,10 +356,10 @@ SHOW_RANGES.addEventListener('click', async function () {
 })
 
 RESIZER.addEventListener('mousedown', () => {
-  IS_RESIZING = true;
-  document.body.style.cursor = 'col-resize';
-  document.body.style.userSelect = 'none';
-});
+  IS_RESIZING = true
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+})
 
 COLLAPSER.addEventListener('click', () => {
   const width = Number.parseFloat(SIDEBAR.style.width)
@@ -385,7 +383,7 @@ OPEN_PDF.addEventListener('click', async () => {
     fileInput.onchange = async (event) => {
       //@ts-ignore
       const file = event.target.files[0]
-      if (!file) return;
+      if (!file) return
 
       // Create object URL
       const fileUrl = URL.createObjectURL(file)
@@ -406,13 +404,14 @@ OPEN_PDF.addEventListener('click', async () => {
 
       // Clean up the object URL when done (or keep it while viewing)
       URL.revokeObjectURL(fileUrl)
-    };
+    }
 
     // Trigger the file picker
     fileInput.click()
 
-  } catch (error) {
-    console.error('Error opening local PDF:', error)
+  } catch (err) {
+    console.error('Error opening local PDF: ', err)
+    console.error((err as Error).stack)
   }
 
 })
@@ -458,18 +457,18 @@ COLOR_PICKER.addEventListener('input', async (event) => {
 })
 
 document.addEventListener('mousemove', async (e) => {
-  if (!IS_RESIZING) return;
-  const newWidth = e.clientX;
+  if (!IS_RESIZING) return
+  const newWidth = e.clientX
   if (newWidth > SIDEBAR_MIN_WIDTH && newWidth < SIDEBAR_MAX_WIDTH) {
-    SIDEBAR.style.width = `${newWidth}px`;
+    SIDEBAR.style.width = `${newWidth}px`
   }
-});
+})
 
 document.addEventListener('mouseup', () => {
-  IS_RESIZING = false;
-  document.body.style.cursor = 'default';
-  document.body.style.userSelect = 'auto';
-});
+  IS_RESIZING = false
+  document.body.style.cursor = 'default'
+  document.body.style.userSelect = 'auto'
+})
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
