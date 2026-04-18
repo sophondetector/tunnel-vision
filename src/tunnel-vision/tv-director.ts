@@ -144,7 +144,7 @@ export class TvDirector {
   //   rangeManager.setRangeIdx(curIdx)
   // }
 
-  disableSelectionHighlighting(): void {
+  #disableSelectionHighlighting(): void {
     const style = document.createElement('style')
     style.innerHTML = `
     ::selection {
@@ -158,13 +158,13 @@ export class TvDirector {
     // console.log('tunnel-vision: highlighting disabled')
   }
 
-  enableSelectionHighlighting(): void {
+  #enableSelectionHighlighting(): void {
     const style = document.getElementById(DISABLE_SELECTION_HIGHLIGHTING_ID)
     if (!style) return
     style.remove()
   }
 
-  collapseSelection(): void {
+  #collapseSelection(): void {
     SELECTION = false
     const sel = document.getSelection()
     if (!sel || sel.rangeCount < 1) {
@@ -191,19 +191,19 @@ export class TvDirector {
     SELECTING = true
     SELECTION = true
 
-    this.setSelectionRange(range)
+    this.#setSelectionRange(range)
   }
 
-  setSelectionRange(range: Range): void {
+  #setSelectionRange(range: Range): void {
     SELECTION_RANGE = range
   }
 
-  getSelectionRange(): Range | undefined {
+  #getSelectionRange(): Range | undefined {
     return SELECTION_RANGE
   }
 
   #getSelectionRects(): DOMRect[] {
-    const range = this.getSelectionRange() as Range
+    const range = this.#getSelectionRange() as Range
     const rects = Array.from(range.getClientRects()).filter(
       (r) => r.width > 1 && r.height > 1
     )
@@ -323,7 +323,7 @@ export class TvDirector {
         SELECTING = false
         return
       }
-      this.collapseSelection()
+      this.#collapseSelection()
       const rm = this.getRangeManager()
       rm.setRangeAtPoint(event)
     }
@@ -360,12 +360,12 @@ export class TvDirector {
   }
 
   toggleScreenOn(): void {
-    this.disableSelectionHighlighting()
+    this.#disableSelectionHighlighting()
     TvScreen.turnOn()
   }
 
   toggleScreenOff(): void {
-    this.enableSelectionHighlighting()
+    this.#enableSelectionHighlighting()
     TvScreen.turnOff()
   }
 
@@ -378,8 +378,8 @@ export class TvDirector {
 
     if (SELECTION) {
       SELECTION = false
-      this.setRangeAtSelectionBottom()
-      this.collapseSelection()
+      this.#setRangeAtSelectionBottom()
+      this.#collapseSelection()
       return
     }
 
@@ -397,8 +397,8 @@ export class TvDirector {
 
     if (SELECTION) {
       SELECTION = false
-      this.setRangeAtSelectionTop()
-      this.collapseSelection()
+      this.#setRangeAtSelectionTop()
+      this.#collapseSelection()
       return
     }
 
@@ -411,8 +411,8 @@ export class TvDirector {
     this.scrollRangeIntoView(range)
   }
 
-  setRangeAtSelectionTop(): void {
-    const selRange = this.getSelectionRange()
+  #setRangeAtSelectionTop(): void {
+    const selRange = this.#getSelectionRange()
     if (selRange === undefined) {
       console.error('setRangeAtSelectionTop: no selection range')
       return
@@ -427,8 +427,8 @@ export class TvDirector {
     this.setRangeAtPoint({ x: topRect.x, y: topRect.y })
   }
 
-  setRangeAtSelectionBottom(): void {
-    const selRange = this.getSelectionRange()
+  #setRangeAtSelectionBottom(): void {
+    const selRange = this.#getSelectionRange()
     if (selRange === undefined) {
       console.error('setRangeAtSelectionTop: no selection range')
       return
@@ -596,7 +596,7 @@ export class TvDirector {
       if (SELECTION) {
         await rangeManager.initRanges(this.getElementArray())
         this.#setWindowAroundSelection()
-        this.scrollRangeIntoView(this.getSelectionRange() as Range, false)
+        this.scrollRangeIntoView(this.#getSelectionRange() as Range, false)
         return
       }
 
