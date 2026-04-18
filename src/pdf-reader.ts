@@ -377,18 +377,18 @@ COLLAPSER.addEventListener('click', () => {
 OPEN_PDF.addEventListener('click', async () => {
   try {
     // Create a file input dynamically (no need to add it to DOM)
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,application/pdf';
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.pdf,application/pdf'
 
     // Handle file selection
     fileInput.onchange = async (event) => {
       //@ts-ignore
-      const file = event.target.files[0];
+      const file = event.target.files[0]
       if (!file) return;
 
       // Create object URL
-      const fileUrl = URL.createObjectURL(file);
+      const fileUrl = URL.createObjectURL(file)
 
       // Load the PDF with pdf.js
       await pdfjsLib.getDocument(fileUrl).promise
@@ -405,14 +405,14 @@ OPEN_PDF.addEventListener('click', async () => {
         .then((dir) => dir.initRanges())
 
       // Clean up the object URL when done (or keep it while viewing)
-      URL.revokeObjectURL(fileUrl);
+      URL.revokeObjectURL(fileUrl)
     };
 
     // Trigger the file picker
-    fileInput.click();
+    fileInput.click()
 
   } catch (error) {
-    console.error('Error opening local PDF:', error);
+    console.error('Error opening local PDF:', error)
   }
 
 })
