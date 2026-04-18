@@ -6,15 +6,14 @@ import { playSound } from './tunnel-vision/sound';
 import {
   LATEST_PDF_URL_KEY,
   TV_SCREEN_Z_INDEX,
-  getCurrentTab,
-  putInLocalStorage,
   setSoundVol,
   getSoundVol,
   soundIsOn,
   toggleSound,
-  id2Key
+  getCurrentTabKey
 } from './common';
 import { TvScreen } from './tunnel-vision/tv-screen';
+import { getBinary, setBinary } from './indexdb';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
@@ -73,12 +72,32 @@ const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
 const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 
 // state variables
-let PDF_PATH: null | string = null
 let PAGE_NUM: number = 1
 let PDF_DOC: null | pdfjsLib.PDFDocumentProxy = null
 let IS_RESIZING = false;
 let ZOOM_SCALE = DEFAULT_SCALE
 let DEFAULT_BUFFER_RADIUS = 1
+
+async function getPDFDocumentProxy(): Promise<pdfjsLib.PDFDocumentProxy> {
+  if (PDF_DOC) return PDF_DOC
+
+  const key = await getCurrentTabKey()
+  const dbResult = await getBinary(key)
+  if (dbResult) {
+    PDF_DOC = await pdfjsLib.getDocument({ data: dbResult }).promise
+    return PDF_DOC
+  }
+
+  const latestPDFUrl = await getLatestPDFUrl()
+  PDF_DOC = await pdfjsLib.getDocument(latestPDFUrl).promise
+  return PDF_DOC
+}
+
+async function putPDFInIndexDb(pdfDocProxy: pdfjsLib.PDFDocumentProxy): Promise<void> {
+  const data = await pdfDocProxy.getData()
+  const key = await getCurrentTabKey()
+  await setBinary(key, data.buffer as ArrayBuffer)
+}
 
 function setRadiusBasedOnZoom(): void {
   TvScreen.setBufferRadius(DEFAULT_BUFFER_RADIUS * ZOOM_SCALE * ZOOM_SCALE)
@@ -202,27 +221,6 @@ async function getLatestPDFUrl(): Promise<string> {
   return res[LATEST_PDF_URL_KEY]
 }
 
-/**
- * first get tab
- * query localStorage tab.id-tvpdf for pdf url
- * if there is return that pdf url
- * else fetch last pdf url then upload to localStorage w/ key `tab.id-tvpdf` 
- */
-async function getPDFUrl(): Promise<string> {
-  const tab = await getCurrentTab()
-  const key = id2Key(tab.id!)
-
-  const obj = await chrome.storage.local.get(key)
-  const res = obj[key]
-
-  if (res) return res
-
-  const latestUrl = await getLatestPDFUrl()
-  await putInLocalStorage(key, latestUrl)
-
-  return latestUrl
-}
-
 async function renderPage(): Promise<void> {
   if (PDF_DOC === null) {
     console.warn(`renderPage: PDF_DOC is null!`)
@@ -285,6 +283,7 @@ async function renderTextLayer(): Promise<void> {
   await textLayer.render();
 }
 
+// FIXME: change page_num -> pange-num and make this a constant variable
 function setPageNumText(): void {
   document.getElementById('page_num')!.textContent = PAGE_NUM.toString()
 }
@@ -390,15 +389,14 @@ OPEN_PDF.addEventListener('click', async () => {
 
       // Create object URL
       const fileUrl = URL.createObjectURL(file);
-      // FIXME: fix it so the same pdf persists across reloads
 
       // Load the PDF with pdf.js
-      const loadingTask = pdfjsLib.getDocument(fileUrl);
-      await loadingTask.promise
+      await pdfjsLib.getDocument(fileUrl).promise
         .then((pdfDocProxy) => {
           PDF_DOC = pdfDocProxy
           PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
         })
+        .then(() => putPDFInIndexDb(PDF_DOC as pdfjsLib.PDFDocumentProxy))
         .then(renderPage)
         .then(renderTextLayer)
         .then(setPageNumText)
@@ -476,17 +474,10 @@ document.addEventListener('mouseup', () => {
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 
-getPDFUrl()
-  .then((path) => PDF_PATH = path)
-  .then(async () => {
-    if (!PDF_PATH) {
-      throw new Error(`pdf-reader.ts: ERROR PDF_PATH is null!`)
-    }
-    return pdfjsLib.getDocument(PDF_PATH).promise
-  })
-  .then((pdfDocProxy) => {
-    PDF_DOC = pdfDocProxy
-    PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
+getPDFDocumentProxy()
+  .then(putPDFInIndexDb)
+  .then(() => {
+    PAGE_COUNT.textContent = PDF_DOC!.numPages.toString()
   })
   .then(renderPage)
   .then(renderTextLayer)

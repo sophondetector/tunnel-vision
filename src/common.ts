@@ -57,6 +57,7 @@ export async function getCurrentTabKey(): Promise<string> {
   return key
 }
 
+// FIXME: try breaking sound funcs into their own module
 export async function soundIsOn(): Promise<boolean> {
   const res = await chrome.storage.local.get(SOUND_ON_KEY)
   const curVal = res[SOUND_ON_KEY]

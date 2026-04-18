@@ -6,6 +6,8 @@ import {
   id2Key
 } from "./common"
 
+import { deleteBinary } from "./indexdb";
+
 chrome.runtime.onInstalled.addListener(setSoundOn)
 chrome.runtime.onInstalled.addListener(() => setSoundVol(50))
 
@@ -79,7 +81,5 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
 // NOTE: this fires every time any tab is closed; there appears to be no negative effect
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   const key = id2Key(tabId)
-  chrome.storage.local.remove(key, () => {
-    console.log(`removed entry for ${key}`)
-  })
+  await deleteBinary(key)
 })
