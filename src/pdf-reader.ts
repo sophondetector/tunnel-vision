@@ -2,14 +2,16 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initializeTV, getDirector } from './initialize-tv'
-import { playSound } from './tunnel-vision/sound'
 import {
-  LATEST_PDF_URL_KEY,
-  TV_SCREEN_Z_INDEX,
+  playSound,
   setSoundVol,
   getSoundVol,
   soundIsOn,
   toggleSound,
+} from './tunnel-vision/sound'
+import {
+  LATEST_PDF_URL_KEY,
+  TV_SCREEN_Z_INDEX,
   getCurrentTabKey
 } from './common'
 import { TvScreen } from './tunnel-vision/tv-screen'

@@ -1,11 +1,9 @@
 import {
   TvDirectorState,
   TvMessage,
-  setSoundOn,
-  setSoundVol,
   id2Key
 } from "./common"
-
+import { setSoundOn, setSoundVol, } from './tunnel-vision/sound'
 import { deleteBinary } from "./indexdb";
 
 chrome.runtime.onInstalled.addListener(setSoundOn)

@@ -1,13 +1,8 @@
 import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
-import {
-  soundIsOn,
-  toggleSound,
-  TvScreenState,
-  TvDirectorState
-} from "../common";
-import { playSound } from "./sound";
+import { TvScreenState, TvDirectorState } from "../common";
+import { playSound, soundIsOn, toggleSound, } from "./sound";
 import { defaultMutationHandler } from "./site-handlers/handler-utilities";
 
 const RESIZE_DEBOUNCE_MILLIS = 0

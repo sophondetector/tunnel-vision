@@ -2,14 +2,16 @@ import {
   TvScreenState,
   getCurrentTab,
   storeLatestPDFUrlInLocalStorage,
-  toggleSound,
-  soundIsOn,
-  setSoundVol,
-  getSoundVol,
   TvMessage,
   TvDirectorState
 } from "./common";
-import { playSound } from "./tunnel-vision/sound";
+import {
+  playSound,
+  toggleSound,
+  soundIsOn,
+  setSoundVol,
+  getSoundVol
+} from "./tunnel-vision/sound";
 
 const HIDDEN = "hidden"
 

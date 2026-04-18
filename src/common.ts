@@ -30,9 +30,6 @@ export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_ON_KEY = "TvSoundOnOff"
 export const SOUND_VOLUME_KEY = "TvSoundVolume"
 
-const TRUE = 'true'
-const FALSE = 'false'
-
 export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   let queryOptions = { active: true, lastFocusedWindow: true }
   let [tab] = await chrome.tabs.query(queryOptions)
@@ -57,54 +54,13 @@ export async function getCurrentTabKey(): Promise<string> {
   return key
 }
 
-// FIXME: try breaking sound funcs into their own module
-export async function soundIsOn(): Promise<boolean> {
-  const res = await chrome.storage.local.get(SOUND_ON_KEY)
-  const curVal = res[SOUND_ON_KEY]
-  if (curVal === undefined) {
-    console.warn(`soundIsOn: could not retrieve sound option`)
-    return false
-  }
-  if (curVal === TRUE) return true
-  return false
-}
-
-export async function toggleSound(): Promise<void> {
-  if (await soundIsOn()) {
-    await setSoundOff()
-    return
-  }
-  await setSoundOn()
-}
-
-export async function setSoundOn(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_ON_KEY]: TRUE })
-}
-
-export async function setSoundOff(): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_ON_KEY]: FALSE })
-}
-
-export async function setSoundVol(volumeLevel: number): Promise<void> {
-  await chrome.storage.local.set({ [SOUND_VOLUME_KEY]: volumeLevel })
-}
-
-export async function getSoundVol(): Promise<number> {
-  const res = await chrome.storage.local.get(SOUND_VOLUME_KEY)
-  const volume: number = res[SOUND_VOLUME_KEY]
-  return volume
-}
-
 export async function forceLayout(): Promise<void> {
   // Option 1: Simple and very common
   void document.documentElement.offsetHeight;   // or any element
-
   // Option 2: Using scroll properties
   void document.documentElement.scrollHeight;
-
   // Option 3: getBoundingClientRect (forces full layout)
   void document.body.getBoundingClientRect();
-
   // Option 4: Computed style (more expensive)
   void getComputedStyle(document.documentElement).height;
 }
@@ -118,13 +74,11 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-interface LogRangeInterface {
+export function logRange(logRangeOpts: {
   range: Range,
   idx?: number,
   caller?: string
-}
-
-export function logRange(logRangeOpts: LogRangeInterface): void {
+}): void {
   const {
     range,
     idx = 'NO INDEX GIVEN',
@@ -137,6 +91,5 @@ export function logRange(logRangeOpts: LogRangeInterface): void {
   console.log(range.getBoundingClientRect())
   console.log(range.getClientRects())
   console.log(range.startContainer.parentElement)
-
 }
 

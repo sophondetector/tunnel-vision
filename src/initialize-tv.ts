@@ -3,8 +3,7 @@ import { TvMessage } from "./common"
 
 let DIRECTOR: TvDirector | null = null
 
-// NOTE: This must call sendResponse on every path to prevent the following error:
-// "Unchecked runtime.lastError: The message port closed before a response was received."
+// NOTE: This must call sendResponse on every path to prevent the following error: "Unchecked runtime.lastError: The message port closed before a response was received."
 function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
   if (DIRECTOR === null) {
     console.error(`controlPanelListenerCallback: Director is null!`)
@@ -79,8 +78,7 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 }
 
 export async function initializeTV(): Promise<void> {
-  // receives messages from options.ts control-panel
-  // OR receives messages from background.ts asking for icon state
+  // receives messages from options.ts control-panel OR receives messages from background.ts asking for icon state
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
   DIRECTOR = new TvDirector()
