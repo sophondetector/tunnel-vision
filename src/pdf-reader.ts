@@ -45,6 +45,7 @@ const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
 const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
 const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
 const PAGE_COUNT = document.getElementById('page-count') as HTMLSpanElement
+const PAGE_NUM_DISPLAY = document.getElementById('page-num-display') as HTMLSpanElement
 
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
@@ -281,9 +282,8 @@ async function renderTextLayer(): Promise<void> {
   await textLayer.render()
 }
 
-// FIXME: change page_num -> pange-num and make this a constant variable
-function setPageNumText(): void {
-  document.getElementById('page_num')!.textContent = PAGE_NUM.toString()
+function setPageNumDisplay(): void {
+  PAGE_NUM_DISPLAY.textContent = PAGE_NUM.toString()
 }
 
 async function initRanges(): Promise<void> {
@@ -325,7 +325,7 @@ PREV_PAGE.addEventListener('click', async function () {
   await renderPage()
   await renderTextLayer()
   await initRanges()
-  setPageNumText()
+  setPageNumDisplay()
 })
 
 NEXT_PAGE.addEventListener('click', async function () {
@@ -336,7 +336,7 @@ NEXT_PAGE.addEventListener('click', async function () {
   await renderPage()
   await renderTextLayer()
   await initRanges()
-  setPageNumText()
+  setPageNumDisplay()
 })
 
 RE_RANGE.addEventListener('click', async function () {
@@ -397,7 +397,7 @@ OPEN_PDF.addEventListener('click', async () => {
         .then(() => putPDFInIndexDb(PDF_DOC as pdfjsLib.PDFDocumentProxy))
         .then(renderPage)
         .then(renderTextLayer)
-        .then(setPageNumText)
+        .then(setPageNumDisplay)
         .then(displayZoomPercent)
         .then(getDirector)
         .then((dir) => dir.initRanges())
@@ -481,7 +481,7 @@ getPDFDocumentProxy()
   .then(renderPage)
   .then(renderTextLayer)
   .then(initializeTV)
-  .then(setPageNumText)
+  .then(setPageNumDisplay)
   .then(displayZoomPercent)
   .then(soundIsOn)
   .then(displaySoundIsOn)
