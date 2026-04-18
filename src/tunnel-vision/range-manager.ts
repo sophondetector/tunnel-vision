@@ -439,7 +439,7 @@ export class RangeManager {
     }
   }
 
-  async nodeOffset2Range(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+  async getRangeAtNodeOffset(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
     const len = this.getRangesLength() ?? 0
     if (len === 0) return [null, null]
 
@@ -463,8 +463,17 @@ export class RangeManager {
       }
     }
 
-    console.error(`TvDirector.nodeOffset2Range: search for range failed`)
+    console.error(`TvDirector.getRangeAtNodeOffset: search for range failed`)
     return [null, null]
+  }
+
+  async setRangeAtNodeOffset(node: Node, offset: number): Promise<[number, Range] | [null, null]> {
+    const [idx, range] = await this.getRangeAtNodeOffset(node, offset)
+    if (range === null) {
+      return [null, null]
+    }
+    this.setRangeIdx(idx)
+    return [idx, range]
   }
 
   async bruteForceSearch(node: Node, offset: number): Promise<[number, Range] | [null, null]> {

@@ -563,15 +563,13 @@ export class TvDirector {
 
     await rangeManager.initRanges(curDir.getElementArray())
 
-    // TODO: nodeOffset2Range -> getRangeAtNodeOffset
-    const [idx, range] = await rangeManager.nodeOffset2Range(prevNode, prevOffset)
+    const [idx, range] = await rangeManager.setRangeAtNodeOffset(prevNode, prevOffset)
 
     if (idx === null) {
       console.error('onResizeCallback: could not find new range')
       return
     }
 
-    rangeManager.setRangeIdx(idx)
     curDir.scrollRangeIntoView(range)
   }
 
