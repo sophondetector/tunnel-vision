@@ -490,5 +490,8 @@ getPDFDocumentProxy()
     VOLUME_DISPLAY.textContent = `${vol}%`
     VOLUME_SLIDER.value = String(vol)
   })
-  .catch((err) => console.error(err))
+  .catch((err) => {
+    console.error(err)
+    console.error((err as Error).stack)
+  })
 
