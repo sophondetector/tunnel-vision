@@ -236,7 +236,6 @@ async function renderPage(): Promise<void> {
   CANVAS.width = Math.round(viewport.width * dpr)
   CANVAS.height = Math.round(viewport.height * dpr)
 
-  // IMPORTANT: CSS size = logical / CSS pixels (what text layer uses!)
   const cssWidth = Math.floor(viewport.width)
   const cssHeight = Math.floor(viewport.height)
 
