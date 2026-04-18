@@ -535,44 +535,6 @@ export class TvDirector {
     }
   }
 
-  async #onResizeCallback(curDir: TvDirector): Promise<void> {
-    TvScreen.setBufferRadiusByScreenSize()
-
-    const newWidth = window.innerWidth
-    const delta = newWidth - WIN_WIDTH
-    if (delta === 0) return
-    WIN_WIDTH = newWidth
-    const rangeManager = curDir.getRangeManager()
-
-    if (SELECTION) {
-      await rangeManager.initRanges(curDir.getElementArray())
-      curDir.setWindowAroundSelection(curDir)
-      curDir.scrollRangeIntoView(curDir.getSelectionRange() as Range, false)
-      return
-    }
-
-    const [_, prevRange] = rangeManager.getCurrentRange()
-    if (!prevRange) {
-      console.error('TvDirector.onResizeCallback: could not get current range!')
-      return
-    }
-
-    const prevNode = prevRange.startContainer
-    const prevOffset = Math.max(1, prevRange.startOffset)
-    // NOTE: prevOffset must be at least one or we get the range BEFORE we want
-
-    await rangeManager.initRanges(curDir.getElementArray())
-
-    const [idx, range] = await rangeManager.setRangeAtNodeOffset(prevNode, prevOffset)
-
-    if (idx === null) {
-      console.error('onResizeCallback: could not find new range')
-      return
-    }
-
-    curDir.scrollRangeIntoView(range)
-  }
-
   #initializeControls() {
     // TODO: alt+click+drag creates a highlight box - bring that in from test-stuff/grok-code.html
     document.addEventListener('keyup', (event) => {
@@ -621,10 +583,49 @@ export class TvDirector {
   }
 
   #setResizeListener(): void {
+
+    const callback = async (): Promise<void> => {
+      TvScreen.setBufferRadiusByScreenSize()
+
+      const newWidth = window.innerWidth
+      const delta = newWidth - WIN_WIDTH
+      if (delta === 0) return
+      WIN_WIDTH = newWidth
+      const rangeManager = this.getRangeManager()
+
+      if (SELECTION) {
+        await rangeManager.initRanges(this.getElementArray())
+        this.setWindowAroundSelection(this)
+        this.scrollRangeIntoView(this.getSelectionRange() as Range, false)
+        return
+      }
+
+      const [_, prevRange] = rangeManager.getCurrentRange()
+      if (!prevRange) {
+        console.error('TvDirector.onResizeCallback: could not get current range!')
+        return
+      }
+
+      const prevNode = prevRange.startContainer
+      const prevOffset = Math.max(1, prevRange.startOffset)
+      // NOTE: prevOffset must be at least one or we get the range BEFORE we want
+
+      await rangeManager.initRanges(this.getElementArray())
+
+      const [idx, range] = await rangeManager.setRangeAtNodeOffset(prevNode, prevOffset)
+
+      if (idx === null) {
+        console.error('onResizeCallback: could not find new range')
+        return
+      }
+
+      this.scrollRangeIntoView(range)
+    }
+
     window.addEventListener('resize', () => {
       clearTimeout(DEBOUNCE_TIMEOUT_ID)
       DEBOUNCE_TIMEOUT_ID = setTimeout(
-        () => this.#onResizeCallback(this),
+        callback,
         RESIZE_DEBOUNCE_MILLIS) as unknown as number
     }, {
       capture: true
