@@ -21,7 +21,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
 // TODO: prev/next page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
-// FIXME: fix pdf text being too fuzzy
 
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
