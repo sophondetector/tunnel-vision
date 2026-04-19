@@ -47,14 +47,6 @@
 
 <body class="h-screen flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
 
-  <!-- TODO: figure out what to do with this mobile header -->
-  <!-- Header / Top Bar (for mobile / small screens) -->
-  <!-- <header class="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between md:hidden"> -->
-  <!--   <h1 class="text-xl font-semibold text-gray-900">Tunnel Vision PDF</h1> -->
-  <!--   <button id="sidebar-toggle" class="text-indigo-600 hover:text-indigo-800"> -->
-  <!--     Menu -->
-  <!--   </button> -->
-  <!-- </header> -->
 
   <div class="flex flex-1 overflow-hidden">
 
@@ -64,7 +56,7 @@
       <div class="p-6 space-y-6">
 
         <h1 class="text-2xl font-semibold text-gray-900 tracking-tight text-center">
-          Tunnel Vision PDF Reader
+          Tunnel PDF
         </h1>
 
         <div class="flex flex-col gap-3">
@@ -241,6 +233,34 @@
   <!--     sidebar.classList.toggle('shadow-xl'); -->
   <!--   }); -->
   <!-- </script> -->
+
+  <footer id="footer"
+    class="hidden bg-white border-t-2 border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between">
+
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900">Tunnel PDF</h1>
+    </div>
+
+    <div>
+      <button id="footer-prev"
+        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+        Prev
+      </button>
+
+      <button id="footer-next"
+        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+        Next
+      </button>
+    </div>
+
+    <div>
+      <button id="footer-open-pdf"
+        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-5 text-white-600">
+        Open
+      </button>
+    </div>
+
+  </footer>
 
 </body>
 

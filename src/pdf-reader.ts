@@ -34,7 +34,7 @@ const SIDEBAR_DEFAULT_WIDTH = 350
 const CANVAS: HTMLCanvasElement = document.getElementById('the-canvas') as HTMLCanvasElement
 const CONTEXT = CANVAS.getContext('2d') as CanvasRenderingContext2D
 
-// control panel
+// sidebar control panel
 const SIDEBAR = document.getElementById('sidebar') as HTMLElement
 const RESIZER = document.getElementById('resizer') as HTMLElement
 const COLLAPSER = document.getElementById('collapser') as HTMLButtonElement
@@ -64,11 +64,17 @@ const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivEleme
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
-// debug panel
+// sidebar debug panel
 const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
 const RE_INIT = document.getElementById('re-init') as HTMLButtonElement
 const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
+
+// footer control panel
+const FOOTER = document.getElementById('footer') as HTMLElement
+const FOOTER_PREV_PAGE = document.getElementById('footer-prev') as HTMLButtonElement
+const FOOTER_NEXT_PAGE = document.getElementById('footer-next') as HTMLButtonElement
+const FOOTER_OPEN_PDF = document.getElementById('footer-open-pdf') as HTMLButtonElement
 
 // state variables
 let PAGE_NUM: number = 1
@@ -309,6 +315,82 @@ async function toggleDebugPanel(): Promise<void> {
   DEBUG_PANEL.classList.add("hidden")
 }
 
+async function nextPage(): Promise<void> {
+  if (PAGE_NUM >= PDF_DOC!.numPages) {
+    return
+  }
+  PAGE_NUM++
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  setPageNumDisplay()
+}
+
+async function prevPage(): Promise<void> {
+  if (PAGE_NUM <= 1) {
+    return
+  }
+  PAGE_NUM--
+  await renderPage()
+  await renderTextLayer()
+  await initRanges()
+  setPageNumDisplay()
+}
+
+async function openPDF(): Promise<void> {
+  try {
+    // Create a file input dynamically (no need to add it to DOM)
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.pdf,application/pdf'
+
+    // Handle file selection
+    fileInput.onchange = async (event) => {
+      //@ts-ignore
+      const file = event.target.files[0]
+      if (!file) return
+
+      // Create object URL
+      const fileUrl = URL.createObjectURL(file)
+
+      // Load the PDF with pdf.js
+      await pdfjsLib.getDocument(fileUrl).promise
+        .then((pdfDocProxy) => {
+          PDF_DOC = pdfDocProxy
+          PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
+          PAGE_NUM = 1
+        })
+        .then(() => putPDFInIndexDb(PDF_DOC as pdfjsLib.PDFDocumentProxy))
+        .then(renderPage)
+        .then(renderTextLayer)
+        .then(setPageNumDisplay)
+        .then(displayZoomPercent)
+        .then(getDirector)
+        .then((dir) => dir.initRanges())
+
+      // Clean up the object URL when done (or keep it while viewing)
+      URL.revokeObjectURL(fileUrl)
+    }
+
+    // Trigger the file picker
+    fileInput.click()
+
+  } catch (err) {
+    console.error('Error opening local PDF: ', err)
+    console.error((err as Error).stack)
+  }
+}
+
+// @ts-ignore
+function showFooter(): void {
+  FOOTER.classList.remove("hidden")
+}
+
+// @ts-ignore
+function hideFooter(): void {
+  FOOTER.classList.add("hidden")
+}
+
 document.addEventListener('keyup', (event) => {
   if (!event.altKey) return
   if (event.key === "D") {
@@ -322,27 +404,11 @@ ZOOM_OUT.addEventListener('click', zoomOut)
 
 ZOOM_FIT.addEventListener('click', zoomFit)
 
-PREV_PAGE.addEventListener('click', async function () {
-  if (PAGE_NUM <= 1) {
-    return
-  }
-  PAGE_NUM--
-  await renderPage()
-  await renderTextLayer()
-  await initRanges()
-  setPageNumDisplay()
-})
+PREV_PAGE.addEventListener('click', prevPage)
+FOOTER_PREV_PAGE.addEventListener('click', prevPage)
 
-NEXT_PAGE.addEventListener('click', async function () {
-  if (PAGE_NUM >= PDF_DOC!.numPages) {
-    return
-  }
-  PAGE_NUM++
-  await renderPage()
-  await renderTextLayer()
-  await initRanges()
-  setPageNumDisplay()
-})
+NEXT_PAGE.addEventListener('click', nextPage)
+FOOTER_NEXT_PAGE.addEventListener('click', nextPage)
 
 RE_RANGE.addEventListener('click', async function () {
   await initRanges()
@@ -371,55 +437,17 @@ COLLAPSER.addEventListener('click', () => {
   if (width > 0) {
     SIDEBAR.style.width = `${0}px`
     CHEVRON.style.transform = 'rotate(180deg)'
+    showFooter()
     return
   }
+
   CHEVRON.style.transform = 'rotate(0deg)'
   SIDEBAR.style.width = `${SIDEBAR_DEFAULT_WIDTH}px`
+  hideFooter()
 })
 
-OPEN_PDF.addEventListener('click', async () => {
-  try {
-    // Create a file input dynamically (no need to add it to DOM)
-    const fileInput = document.createElement('input')
-    fileInput.type = 'file'
-    fileInput.accept = '.pdf,application/pdf'
-
-    // Handle file selection
-    fileInput.onchange = async (event) => {
-      //@ts-ignore
-      const file = event.target.files[0]
-      if (!file) return
-
-      // Create object URL
-      const fileUrl = URL.createObjectURL(file)
-
-      // Load the PDF with pdf.js
-      await pdfjsLib.getDocument(fileUrl).promise
-        .then((pdfDocProxy) => {
-          PDF_DOC = pdfDocProxy
-          PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
-        })
-        .then(() => putPDFInIndexDb(PDF_DOC as pdfjsLib.PDFDocumentProxy))
-        .then(renderPage)
-        .then(renderTextLayer)
-        .then(setPageNumDisplay)
-        .then(displayZoomPercent)
-        .then(getDirector)
-        .then((dir) => dir.initRanges())
-
-      // Clean up the object URL when done (or keep it while viewing)
-      URL.revokeObjectURL(fileUrl)
-    }
-
-    // Trigger the file picker
-    fileInput.click()
-
-  } catch (err) {
-    console.error('Error opening local PDF: ', err)
-    console.error((err as Error).stack)
-  }
-
-})
+OPEN_PDF.addEventListener('click', openPDF)
+FOOTER_OPEN_PDF.addEventListener('click', openPDF)
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const dir = await getDirector()
@@ -477,6 +505,7 @@ document.addEventListener('mouseup', () => {
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
+FOOTER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 
 getPDFDocumentProxy()
   .then(putPDFInIndexDb)
