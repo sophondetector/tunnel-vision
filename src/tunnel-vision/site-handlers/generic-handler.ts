@@ -17,3 +17,5 @@ export const genericHandler: TvHandler = {
   },
   mutationHandler: null
 }
+
+// FIXME: put the generic mutation handler on here
