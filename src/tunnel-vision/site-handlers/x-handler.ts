@@ -30,7 +30,7 @@ async function getScrollableElement(): Promise<Element | null> {
 async function mutationCallback(curDir: TvDirector, mutations: Array<MutationRecord>): Promise<void> {
   if (!(await mutationsContainAddedText(mutations))) return
   await waitForDOMIdle(10)
-  await curDir.reInitRanges()
+  await curDir.initRanges()
   // console.log('re-initted ranges inside mutation callback')
 }
 
