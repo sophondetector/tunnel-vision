@@ -40,6 +40,7 @@ function setIconInitializing(): void {
   setIconReady()
 }
 
+// TODO: make the "pdf ready" icon green
 function setIconPdf(): void {
   setIconReady()
 }
