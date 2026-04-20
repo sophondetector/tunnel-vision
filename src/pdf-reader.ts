@@ -19,7 +19,6 @@ import { getBinary, setBinary } from './indexdb'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
-// TODO: prev/next page buttons visible without sidebar
 // TODO: inc/decLine buttons visible without sidebar
 
 const DEFAULT_SCALE = 2
@@ -47,6 +46,9 @@ const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
 const PAGE_COUNT = document.getElementById('page-count') as HTMLSpanElement
 const PAGE_NUM_DISPLAY = document.getElementById('page-num-display') as HTMLSpanElement
 
+const PREV_LINE = document.getElementById('prev-line') as HTMLButtonElement
+const NEXT_LINE = document.getElementById('next-line') as HTMLButtonElement
+
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLInputElement
@@ -72,6 +74,8 @@ const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 
 // footer control panel
 const FOOTER = document.getElementById('footer') as HTMLElement
+const FOOTER_PREV_LINE = document.getElementById('footer-prev-line') as HTMLButtonElement
+const FOOTER_NEXT_LINE = document.getElementById('footer-next-line') as HTMLButtonElement
 const FOOTER_PREV_PAGE = document.getElementById('footer-prev') as HTMLButtonElement
 const FOOTER_NEXT_PAGE = document.getElementById('footer-next') as HTMLButtonElement
 const FOOTER_OPEN_PDF = document.getElementById('footer-open-pdf') as HTMLButtonElement
@@ -337,9 +341,19 @@ async function prevPage(): Promise<void> {
   setPageNumDisplay()
 }
 
+async function incLine(): Promise<void> {
+  const dir = await getDirector()
+  if (dir.isOn()) dir.incLine()
+}
+
+// FIXME: push only-do-if-is-on logic down into director; there is no plausible situation where we want the user to change the line index while the screen is off
+async function decLine(): Promise<void> {
+  const dir = await getDirector()
+  if (dir.isOn()) dir.decLine()
+}
+
 async function openPDF(): Promise<void> {
   try {
-    // Create a file input dynamically (no need to add it to DOM)
     const fileInput = document.createElement('input')
     fileInput.type = 'file'
     fileInput.accept = '.pdf,application/pdf'
@@ -407,6 +421,12 @@ FOOTER_PREV_PAGE.addEventListener('click', prevPage)
 
 NEXT_PAGE.addEventListener('click', nextPage)
 FOOTER_NEXT_PAGE.addEventListener('click', nextPage)
+
+NEXT_LINE.addEventListener('click', incLine)
+FOOTER_NEXT_LINE.addEventListener('click', incLine)
+
+PREV_LINE.addEventListener('click', decLine)
+FOOTER_PREV_LINE.addEventListener('click', decLine)
 
 RE_RANGE.addEventListener('click', async function () {
   await initRanges()

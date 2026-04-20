@@ -48,6 +48,9 @@
 <body class="h-screen flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
 
   <!-- TODO: add help modal -->
+  <!-- TODO: need icon on the page -->
+  <!-- TODO: add screen on off button to footer -->
+
 
   <div class="flex flex-1 overflow-hidden">
 
@@ -65,18 +68,36 @@
             class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition">
             Open PDF
           </button>
+
+          <button id="screen-toggle"
+            class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1">
+            Screen On / Off
+          </button>
+
         </div>
 
         <!-- Navigation Controls -->
         <div class="flex flex-col gap-3">
+
+          <div class="flex gap-2 my-3">
+            <button id="prev-line"
+              class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition">
+              Previous Line
+            </button>
+            <button id="next-line"
+              class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm">
+              Next Line
+            </button>
+          </div>
+
           <div class="flex gap-2">
             <button id="prev"
               class="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg border border-gray-300 transition">
-              Previous
+              Previous Page
             </button>
             <button id="next"
               class="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm">
-              Next
+              Next Page
             </button>
           </div>
 
@@ -84,9 +105,11 @@
             Page: <span id="page-num-display" class="font-semibold text-indigo-700">1</span> /
             <span id="page-count" class="font-semibold">?</span>
           </div>
+
         </div>
 
         <!-- Zoom Controls -->
+        <!-- TODO: make zoom into a slider -->
         <div class="space-y-2 flex flex-col items-center gap-2">
           <h1 class="text-lg font-semibold text-gray-900 tracking-tight text-center">Zoom</h1>
           <div class="flex items-center gap-2">
@@ -113,11 +136,6 @@
 
             <!-- Toggle Buttons -->
             <div class="flex flex-col gap-3 flex-1">
-
-              <button id="screen-toggle"
-                class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1">
-                Screen On / Off
-              </button>
 
               <button id="sound-toggle"
                 class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition shadow-sm flex-1">
@@ -242,16 +260,32 @@
       <h1 class="text-xl font-semibold text-gray-900">Tunnel PDF</h1>
     </div>
 
-    <div>
-      <button id="footer-prev"
-        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
-        Prev
-      </button>
+    <div class="flex">
 
-      <button id="footer-next"
-        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
-        Next
-      </button>
+      <div class="mx-4">
+        <button id="footer-prev"
+          class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+          Prev Page
+        </button>
+
+        <button id="footer-next"
+          class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+          Next Page
+        </button>
+      </div>
+
+      <div class="mx-4">
+        <button id="footer-prev-line"
+          class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+          Prev Line
+        </button>
+
+        <button id="footer-next-line"
+          class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-2 text-white-600">
+          Next Line
+        </button>
+      </div>
+
     </div>
 
     <div>

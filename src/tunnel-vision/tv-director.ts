@@ -369,10 +369,12 @@ export class TvDirector {
     TvScreen.turnOff()
   }
 
+  // FIXME: change to screenIsOn
   isOn(): boolean {
     return TvScreen.isOn()
   }
 
+  // FIXME: setRangeAtSelectionBottom/Top is not working well in the pdf-reader; it is having problems with multi column text
   incLine(): void {
     playSound()
 
