@@ -19,8 +19,6 @@ import { getBinary, setBinary } from './indexdb'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
-// TODO: inc/decLine buttons visible without sidebar
-
 const DEFAULT_SCALE = 2
 const MAX_SCALE = 4
 const MIN_SCALE = .4
