@@ -375,6 +375,7 @@ export class TvDirector {
 
   // FIXME: setRangeAtSelectionBottom/Top is not working well in the pdf-reader; it is having problems with multi column text
   incLine(): void {
+    if (!this.screenIsOn()) return
     playSound()
 
     if (SELECTION) {
@@ -394,6 +395,7 @@ export class TvDirector {
   }
 
   decLine(): void {
+    if (!this.screenIsOn()) return
     playSound()
 
     if (SELECTION) {
@@ -541,41 +543,21 @@ export class TvDirector {
     document.addEventListener('keyup', (event) => {
       switch (event.key) {
         case "l":
-          event.altKey && this.toggleScreen()
+          if (event.altKey) this.toggleScreen()
           break;
         case "ArrowDown":
         case "j":
-          if (this.screenIsOn() && event.altKey) {
-            // event.shiftKey only works in the case of arrow keys
-            // shift + alt + j is handled as capital "J" case below
-            if (event.shiftKey) {
-              this.shiftRangeDown()
-              break
-            }
-            this.incLine()
-          }
-          break;
+          if (event.altKey) this.incLine()
+          break
         case "ArrowUp":
         case "k":
-          if (this.screenIsOn() && event.altKey) {
-            // event.shiftKey only works in the case of arrow keys
-            // shift + alt + k is handled as capital "K" case below
-            if (event.shiftKey) {
-              this.shiftRangeUp()
-              break
-            }
-            this.decLine()
-          }
-          break;
+          if (event.altKey) this.decLine()
+          break
         case "J":
-          if (this.screenIsOn() && event.altKey) {
-            this.shiftRangeDown()
-          }
+          if (event.altKey) this.shiftRangeDown()
           break
         case "K":
-          if (this.screenIsOn() && event.altKey) {
-            this.shiftRangeUp()
-          }
+          if (event.altKey) this.shiftRangeUp()
           break
         default:
           break;

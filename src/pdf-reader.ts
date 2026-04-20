@@ -341,13 +341,12 @@ async function prevPage(): Promise<void> {
 
 async function incLine(): Promise<void> {
   const dir = await getDirector()
-  if (dir.screenIsOn()) dir.incLine()
+  dir.incLine()
 }
 
-// FIXME: push only-do-if-is-on logic down into director; there is no plausible situation where we want the user to change the line index while the screen is off
 async function decLine(): Promise<void> {
   const dir = await getDirector()
-  if (dir.screenIsOn()) dir.decLine()
+  dir.decLine()
 }
 
 async function openPDF(): Promise<void> {
