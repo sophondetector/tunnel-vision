@@ -1,6 +1,7 @@
 import { logRange } from "../common"
 
 // FIXME: Fix double first range bug
+// FIXME: Fix no last range bug
 
 let LOG_RANGES = false
 
