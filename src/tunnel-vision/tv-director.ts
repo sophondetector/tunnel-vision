@@ -317,7 +317,7 @@ export class TvDirector {
     // NOTE: changed this from window.onclick = (event) => { etc ... } because window.onclick sets the event listener at the "bubbling" phase whereas we need to have it happen during the "capturing" phase to ensure it takes precedence over whatever listeners the site itself has set
 
     const mouseUpListener = (event: MouseEvent) => {
-      if (!this.isOn()) return
+      if (!this.screenIsOn()) return
       // NOTE: This is here to prevent the 'click' event listener from cancelling out the selectionChangeListener
       if (SELECTING) {
         SELECTING = false
@@ -334,12 +334,12 @@ export class TvDirector {
   }
 
   setScreenColor(color: string) {
-    if (!this.isOn()) return
+    if (!this.screenIsOn()) return
     TvScreen.setScreenColor(color)
   }
 
   setScreenOpacity(opacity: number) {
-    if (!this.isOn()) return
+    if (!this.screenIsOn()) return
     TvScreen.setScreenOpacity(opacity)
   }
 
@@ -370,7 +370,7 @@ export class TvDirector {
   }
 
   // FIXME: change to screenIsOn
-  isOn(): boolean {
+  screenIsOn(): boolean {
     return TvScreen.isOn()
   }
 
@@ -546,7 +546,7 @@ export class TvDirector {
           break;
         case "ArrowDown":
         case "j":
-          if (this.isOn() && event.altKey) {
+          if (this.screenIsOn() && event.altKey) {
             // event.shiftKey only works in the case of arrow keys
             // shift + alt + j is handled as capital "J" case below
             if (event.shiftKey) {
@@ -558,7 +558,7 @@ export class TvDirector {
           break;
         case "ArrowUp":
         case "k":
-          if (this.isOn() && event.altKey) {
+          if (this.screenIsOn() && event.altKey) {
             // event.shiftKey only works in the case of arrow keys
             // shift + alt + k is handled as capital "K" case below
             if (event.shiftKey) {
@@ -569,12 +569,12 @@ export class TvDirector {
           }
           break;
         case "J":
-          if (this.isOn() && event.altKey) {
+          if (this.screenIsOn() && event.altKey) {
             this.shiftRangeDown()
           }
           break
         case "K":
-          if (this.isOn() && event.altKey) {
+          if (this.screenIsOn() && event.altKey) {
             this.shiftRangeUp()
           }
           break

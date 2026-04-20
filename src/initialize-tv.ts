@@ -21,7 +21,7 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 
     //pure number means its opacity
   } else if (value.match(/^\d+$/)) {
-    if (!DIRECTOR.isOn()) {
+    if (!DIRECTOR.screenIsOn()) {
       sendResponse()
       return
     }
@@ -31,7 +31,7 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 
     // if its a color
   } else if (value.match(/^#[0-9a-f]{6}$/)) {
-    if (!DIRECTOR.isOn()) {
+    if (!DIRECTOR.screenIsOn()) {
       sendResponse()
     }
     DIRECTOR.setScreenColor(value)
