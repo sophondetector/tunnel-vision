@@ -329,7 +329,7 @@ export class RangeManager {
 
     // Safety limit to prevent infinite loops in pathological cases
     const MAX_ITERATIONS = 100_000
-    const BOTTOM_LIMIT = 5;           // pixels — when bottom jumps more than this → new line
+    const BOTTOM_LIMIT = 5           // pixels — when bottom jumps more than this → new line
     const TOP_LIMIT = 10
 
     const ranges: Range[] = []
@@ -338,8 +338,8 @@ export class RangeManager {
     let currentRange = new Range()
     ranges.push(currentRange)
 
-    let nodeIndex = 0;                // which text node we're currently in
-    let offsetInNode = 0;             // offset inside the current text node
+    let nodeIndex = 0                // which text node we're currently in
+    let offsetInNode = 0             // offset inside the current text node
 
     currentRange.setStart(textNodes[0], 0)
 
