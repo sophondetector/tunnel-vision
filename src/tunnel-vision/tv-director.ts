@@ -369,7 +369,6 @@ export class TvDirector {
     TvScreen.turnOff()
   }
 
-  // FIXME: change to screenIsOn
   screenIsOn(): boolean {
     return TvScreen.isOn()
   }
