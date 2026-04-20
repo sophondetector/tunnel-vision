@@ -538,26 +538,28 @@ export class TvDirector {
     }
   }
 
+  // TODO: holding down arrow keys or j/k causes rapid scrolling 
+  // TODO: alt+click+drag creates a highlight box - bring that in from test-stuff/grok-code.html
   #initializeControls() {
-    // TODO: alt+click+drag creates a highlight box - bring that in from test-stuff/grok-code.html
     document.addEventListener('keyup', (event) => {
+      if (!event.altKey) return
       switch (event.key) {
         case "l":
-          if (event.altKey) this.toggleScreen()
+          this.toggleScreen()
           break;
         case "ArrowDown":
         case "j":
-          if (event.altKey) this.incLine()
+          this.incLine()
           break
         case "ArrowUp":
         case "k":
-          if (event.altKey) this.decLine()
+          this.decLine()
           break
         case "J":
-          if (event.altKey) this.shiftRangeDown()
+          this.shiftRangeDown()
           break
         case "K":
-          if (event.altKey) this.shiftRangeUp()
+          this.shiftRangeUp()
           break
         default:
           break;
