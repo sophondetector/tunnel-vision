@@ -381,12 +381,10 @@ async function openPDF(): Promise<void> {
   }
 }
 
-// @ts-ignore
 function showFooter(): void {
   FOOTER.classList.remove("hidden")
 }
 
-// @ts-ignore
 function hideFooter(): void {
   FOOTER.classList.add("hidden")
 }
