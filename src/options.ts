@@ -120,13 +120,6 @@ async function toggleDebugPanel(): Promise<void> {
   DEBUG_PANEL.classList.add("hidden")
 }
 
-document.addEventListener('keyup', (event) => {
-  if (!event.altKey) return
-  if (event.key === "D") {
-    toggleDebugPanel()
-  }
-})
-
 RE_RANGE.addEventListener('click', async function () {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.INIT_RANGES, function () {
@@ -216,6 +209,13 @@ COLOR_PICKER.addEventListener("input", async (event) => {
   chrome.tabs.sendMessage(tab.id!, `${value}`, function () {
     console.log(`sent color value ${value} to content.ts in open tab`)
   })
+})
+
+document.addEventListener('keyup', (event) => {
+  if (!event.altKey) return
+  if (event.key === "D") {
+    toggleDebugPanel()
+  }
 })
 
 getCurrentTab()
