@@ -294,8 +294,7 @@ export class RangeManager {
   }
 
   static #getAllTextNodes(root: Node): Node[] {
-    const badTagNames = ['SCRIPT', 'STYLE', 'NOSCRIPT']
-    // TODO: switch to NodeIterator
+    const badTagNames = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE']
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,     // Only text nodes
