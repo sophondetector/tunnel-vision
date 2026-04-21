@@ -355,7 +355,7 @@ export class RangeManager {
         if (!(nodeIndex < textNodes.length)) break
       }
 
-      // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specfic point
+      // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specific point
 
       // if (currentRange.toString().includes('Adding variables')) {
       //   console.log('break!')
