@@ -410,6 +410,8 @@ export class RangeManager {
       }
     }
 
+    ranges.push(currentRange.cloneRange())
+
     return ranges
   }
 
