@@ -36,12 +36,14 @@
 
 <body class="mx-auto max-w-md min-w-90 p-6 text-gray-800">
   <!-- Main Controls Card -->
-  <div id="control-panel-div" class="mb-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+  <div id="control-panel-div" class="mb-7 rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+
     <!-- Header -->
     <header class="mb-8 text-center">
       <h1 class="text-3xl font-semibold tracking-tight text-gray-900">Tunnel Vision</h1>
       <h3 id="error-header" class="text-1xl font-semibold tracking-tight text-red-900 hidden">Error (Try Reloading)</h3>
     </header>
+
     <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
       <!-- Toggle Buttons -->
       <div class="flex flex-1 flex-col gap-3 sm:flex-row">
@@ -78,6 +80,7 @@
         </div>
 
       </div>
+
     </div>
 
     <!-- Sliders & Picker -->
@@ -148,28 +151,35 @@
 
   <!-- Help / Instructions -->
   <div id="help-div"
-    class="hidden flex-col items-center space-y-3 rounded-xl border border-gray-200 bg-gray-50 py-3 px-2 text-sm leading-relaxed text-gray-700">
-    <h3 class="mb-3 text-lg font-medium text-gray-900">How to use Tunnel Vision</h3>
+    class="hidden flex-col justify-center space-y-3 rounded-xl border border-gray-200 bg-gray-50 py-3 px-2 text-sm leading-relaxed text-gray-700">
 
-    <button id="control-panel-toggle"
-      class="rounded-lg bg-indigo-600 px-10 py-1 font-medium text-white shadow-sm hover:bg-indigo-700">
-      <span>Close Help</span>
-    </button>
+    <div class="flex justify-center">
+      <h3 class="mb-3 text-lg font-medium text-gray-900">How to use Tunnel Vision</h3>
+    </div>
 
-    <!-- TODO: update help modal -->
-    <ul class="space-y-2 pl-1">
-      <li>Press <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + L</kbd> to toggle the
-        screen</li>
-      <li>Press Sound On/Off button to toggle the sound which plays when moving up/down a line</li>
-      <li>Or click the extension icon and use the <strong>Screen On/Off</strong> button</li>
-      <li><kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↑</kbd> / <kbd
-          class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↓</kbd> — move highlight</li>
-      <li>Also works with <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + J</kbd> / <kbd
-          class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + K</kbd></li>
-      <li>When screen is <strong>on</strong>: click a line to highlight it</li>
-      <li>Click and drag to select a block of text</li>
-      <li>Select text while screen is <strong>off</strong> → it will be highlighted when turned on</li>
-    </ul>
+    <div class="bg-gray-200 p-2">
+      <ul class="space-y-2 pl-1 my-7">
+        <li>Press <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + L</kbd> to toggle the
+          screen</li>
+        <li>Press <strong>Sound On/Off</strong> button to toggle the sound which plays when moving up/down a line</li>
+        <li>Or click the extension icon and use the <strong>Screen On/Off</strong> button</li>
+        <li><kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↑</kbd> / <kbd
+            class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + ↓</kbd> — move highlight</li>
+        <li>Also works with <kbd class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + J</kbd> / <kbd
+            class="rounded bg-gray-100 px-1.5 py-0.5 font-mono font-semibold">Alt + K</kbd></li>
+        <li>When screen is <strong>on</strong> click a line to highlight it</li>
+        <li><strong>Click and drag</strong> to select a block of text</li>
+        <li>Select text while screen is <strong>off</strong> and it will be highlighted when turned on</li>
+      </ul>
+    </div>
+
+    <div class="flex justify-center">
+      <button id="control-panel-toggle"
+        class="rounded-lg bg-indigo-600 px-10 py-1 font-medium text-white shadow-sm hover:bg-indigo-700">
+        <span>Close Help</span>
+      </button>
+    </div>
+
   </div>
 
 </body>
