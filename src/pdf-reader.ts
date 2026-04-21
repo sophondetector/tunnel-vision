@@ -400,13 +400,6 @@ function hideFooter(): void {
   FOOTER.classList.add("hidden")
 }
 
-document.addEventListener('keyup', (event) => {
-  if (!event.altKey) return
-  if (event.key === "D") {
-    toggleDebugPanel()
-  }
-})
-
 ZOOM_IN.addEventListener('click', zoomIn)
 
 ZOOM_OUT.addEventListener('click', zoomOut)
@@ -438,7 +431,13 @@ RE_INIT.addEventListener('click', async function () {
 
 SHOW_RANGES.addEventListener('click', async function () {
   const dir = await getDirector()
-  dir.toggleShowRanges()
+  const isOn = dir.toggleShowRanges()
+  if (isOn) {
+    dir.toggleScreenOn()
+    SHOW_RANGES.classList.add("bg-red-300", "hover:bg-red-400")
+  } else {
+    SHOW_RANGES.classList.remove("bg-red-300", "hover:bg-red-400")
+  }
 })
 
 RESIZER.addEventListener('mousedown', () => {
@@ -516,6 +515,13 @@ document.addEventListener('mouseup', () => {
   IS_RESIZING = false
   document.body.style.cursor = 'default'
   document.body.style.userSelect = 'auto'
+})
+
+document.addEventListener('keyup', (event) => {
+  if (!event.altKey) return
+  if (event.key === "D") {
+    toggleDebugPanel()
+  }
 })
 
 SIDEBAR.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
