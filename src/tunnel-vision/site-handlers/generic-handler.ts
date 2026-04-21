@@ -2,7 +2,8 @@ import {
   TvHandler,
   waitForNetworkIdle,
   waitForDOMIdle,
-  discoverScrollableFromCenterPromise
+  discoverScrollableFromCenterPromise,
+  defaultMutationHandler
 } from "./handler-utilities"
 
 // FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
@@ -15,7 +16,5 @@ export const genericHandler: TvHandler = {
     await waitForDOMIdle(50)
     console.log('genericHandler.initDelay: done!')
   },
-  mutationHandler: null
+  mutationHandler: defaultMutationHandler
 }
-
-// FIXME: put the generic mutation handler on here
