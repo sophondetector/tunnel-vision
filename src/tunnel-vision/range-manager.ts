@@ -1,8 +1,5 @@
 import { logRange } from "../common"
 
-// FIXME: Fix double first range bug
-// FIXME: Fix no last range bug
-
 let LOG_RANGES = false
 
 export class RangeManager {
@@ -336,8 +333,6 @@ export class RangeManager {
 
     // We'll maintain one active range and extend it character-by-character
     let currentRange = new Range()
-    ranges.push(currentRange)
-
     let nodeIndex = 0                // which text node we're currently in
     let offsetInNode = 0             // offset inside the current text node
 
@@ -348,11 +343,17 @@ export class RangeManager {
 
     let iterCount = 0
 
-    while (nodeIndex < textNodes.length) {
+    // while (nodeIndex < textNodes.length) {
+    // NOTE: while (true) is a more accurate reflection of what's actually happening in the loop - see note directly below
+    while (true) {
       if (offsetInNode >= textNodes[nodeIndex].textContent!.length) {
         nodeIndex++
         offsetInNode = 0
-        if (!(nodeIndex < textNodes.length)) break
+        // NOTE: in practice this is where the loop always breaks
+        if (nodeIndex >= textNodes.length) {
+          ranges.push(currentRange.cloneRange())
+          break
+        }
       }
 
       // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specific point
@@ -409,8 +410,6 @@ export class RangeManager {
         break
       }
     }
-
-    ranges.push(currentRange.cloneRange())
 
     return ranges
   }
