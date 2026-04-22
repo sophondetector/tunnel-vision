@@ -203,11 +203,6 @@ export class RangeManager {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.setRangeIdx(newIdx)
-        if (LOG_RANGES) logRange({
-          range: iterRange,
-          idx: this.RANGE_IDX,
-          caller: 'RangeManager.incLine'
-        })
         return [newIdx, iterRange]
       }
     }
@@ -225,11 +220,6 @@ export class RangeManager {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
         this.RANGE_IDX = newIdx
-        if (LOG_RANGES) logRange({
-          range: iterRange,
-          idx: this.RANGE_IDX,
-          caller: 'RangeManager.incLine'
-        })
         return [newIdx, iterRange]
       }
     }
@@ -259,6 +249,9 @@ export class RangeManager {
       return [null, null]
     }
     this.setRangeIdx(idx)
+    if (LOG_RANGES) {
+      logRange({ range, idx, caller: 'setRangeAtPoint' })
+    }
     return [idx, range]
   }
 
@@ -357,7 +350,7 @@ export class RangeManager {
 
       // NOTE: this is a useful debug block; uncomment and create a breakpoint on the console log line to observe range creation at a specific point
 
-      // if (currentRange.toString().includes('Adding variables')) {
+      // if (currentRange.toString().includes('Using the prefix option')) {
       //   console.log('break!')
       // }
 
