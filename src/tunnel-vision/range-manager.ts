@@ -97,6 +97,10 @@ export class RangeManager {
 
   setRangeIdx(rangeIdx: number): void {
     this.RANGE_IDX = rangeIdx
+    if (LOG_RANGES) {
+      const range = this.RANGES![this.RANGE_IDX]
+      logRange({ range, idx: rangeIdx, caller: 'setRangeIdx' })
+    }
   }
 
   getRangesLength(): number | undefined {
@@ -228,7 +232,7 @@ export class RangeManager {
     for (let newIdx = this.RANGE_IDX - 1; newIdx >= 0; newIdx--) {
       const iterRange = this.RANGES[newIdx]
       if (RangeManager.rangeIsVisible(iterRange)) {
-        this.RANGE_IDX = newIdx
+        this.setRangeIdx(newIdx)
         return [newIdx, iterRange]
       }
     }
@@ -258,9 +262,6 @@ export class RangeManager {
       return [null, null]
     }
     this.setRangeIdx(idx)
-    if (LOG_RANGES) {
-      logRange({ range, idx, caller: 'setRangeAtPoint' })
-    }
     return [idx, range]
   }
 
