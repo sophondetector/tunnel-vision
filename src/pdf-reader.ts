@@ -297,9 +297,9 @@ async function renderTextLayer(): Promise<void> {
   await textLayer.render()
 
   if (textLayer.textDivs.length > 0) {
-    handleNoText()
-  } else {
     handleYesText()
+  } else {
+    handleNoText()
   }
 }
 
