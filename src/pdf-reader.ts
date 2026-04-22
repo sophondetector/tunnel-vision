@@ -39,6 +39,8 @@ const CHEVRON = document.getElementById('chevron') as HTMLElement
 
 const OPEN_PDF = document.getElementById('open-pdf') as HTMLButtonElement
 
+const NO_TEXT_DIV = document.getElementById('no-text-div') as HTMLDivElement
+
 const PREV_PAGE = document.getElementById('prev') as HTMLButtonElement
 const NEXT_PAGE = document.getElementById('next') as HTMLButtonElement
 const PAGE_COUNT = document.getElementById('page-count') as HTMLSpanElement
@@ -293,6 +295,38 @@ async function renderTextLayer(): Promise<void> {
   })
 
   await textLayer.render()
+
+  if (textLayer.textDivs.length > 0) {
+    handleNoText()
+  } else {
+    handleYesText()
+  }
+}
+
+function greyOutEle(ele: HTMLElement): void {
+  ele.style.transition = 'filter 0.3s ease, opacity 0.3s ease'
+  ele.style.filter = 'grayscale(100%)'
+  ele.style.opacity = '0.5'
+  ele.style.pointerEvents = 'none'  // Disable interactions
+}
+
+function unGreyOutEle(ele: HTMLElement): void {
+  ele.style.transition = ''
+  ele.style.filter = ''
+  ele.style.opacity = ''
+  ele.style.pointerEvents = ''
+}
+
+function handleNoText(): void {
+  NO_TEXT_DIV.classList.remove("hidden")
+  greyOutEle(PREV_LINE)
+  greyOutEle(NEXT_LINE)
+}
+
+function handleYesText(): void {
+  NO_TEXT_DIV.classList.add("hidden")
+  unGreyOutEle(PREV_LINE)
+  unGreyOutEle(NEXT_LINE)
 }
 
 function setPageNumDisplay(): void {
