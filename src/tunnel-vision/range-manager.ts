@@ -10,14 +10,23 @@ export class RangeManager {
   constructor() { }
 
   async initRanges(eleArray: Element[]): Promise<void> {
-    if (eleArray.length < 1) {
-      console.warn(`RangeManager.initRanges: eleArray.length is zero!`)
-      return
+    if (eleArray.length === 0) {
+      throw new Error(`RangeManager.initRanges: no elements to get text nodes from - aborting...`)
     }
 
     this.TEXT_NODES = RangeManager.#eleArray2Nodes(eleArray)
 
+    if (this.TEXT_NODES.length === 0) {
+      throw new Error(`RangeManager.initRanges: could not find any text nodes - aborting...`)
+    }
+
     this.RANGES = RangeManager.#textNodes2Ranges(this.TEXT_NODES)
+
+    if (this.RANGES.length === 0) {
+      throw new Error(`RangeManager.initRanges: could not make any ranges - aborting...`)
+    }
+
+    console.log(`RangeManager.initRanges: initted ${this.RANGES.length} ranges`)
 
     // RangeManager.dumpRanges({
     //   ranges: this.RANGES,
