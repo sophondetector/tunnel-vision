@@ -7,6 +7,7 @@ export function isPdfReader(): boolean {
 async function pdfReaderElementGetter(): Promise<Element[]> {
   const res = Array.from(document.querySelectorAll('#text-layer span'))
   if (res.length === 0) {
+    // NOTE: throwing here prevents it from falling back on the genericHandler which will just grab everything under document.body including the menus
     throw new Error(`pdfReaderHandler.getTvElements: could not get text layer`)
   }
   return res
