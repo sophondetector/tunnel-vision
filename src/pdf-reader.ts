@@ -582,7 +582,6 @@ getPDFDocumentProxy()
   .catch((err) => {
     console.error(err)
     console.error((err as Error).stack)
-    // FIXME: display to the user if text can't be extracted from the pdf
     // FIXME: display to the user is there is some other error
   })
 
