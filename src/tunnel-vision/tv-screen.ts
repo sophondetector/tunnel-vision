@@ -194,8 +194,9 @@ export class TvScreen {
 
   static clearRect(
     rect: DOMRect,
-    buffer: number = 0
+    buffer: number | null = null
   ): void {
+    if (buffer === null) buffer = TV_SCREEN_BUFFER_RADIUS
     const ctx = TvScreen.getContext()
     ctx.clearRect(
       rect.x - buffer,

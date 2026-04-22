@@ -217,10 +217,11 @@ export class TvDirector {
   }
 
   #animate = (): void => {
-    this.drawScreen()
+    this.#drawScreen()
     requestAnimationFrame(this.#animate)
   }
 
+  // FIXME: update me to show both the individual DOMRects and the overall bounding box rect
   #drawRanges(): void {
     const rangeManager = this.getRangeManager()
     const len = rangeManager.getRangesLength() as number
@@ -251,7 +252,7 @@ export class TvDirector {
   }
 
   // TODO: remove most or all state from TvScreen - keep it in TvDirector
-  drawScreen(): void {
+  #drawScreen(): void {
 
     TvScreen.setScreenSize(window.innerWidth, window.innerHeight)
     TvScreen.clearCanvas()
@@ -272,11 +273,37 @@ export class TvDirector {
       return
     }
 
-    const rects = this.RANGE_MANAGER!.getRectsToClear()
-    for (let idx = 0; idx < rects.length; idx++) {
-      const rect = rects[idx]
-      TvScreen.clearRect(rect, buffer)
+    // FIXME: push this logic down into rangeManager
+    const [_, range] = this.RANGE_MANAGER!.getCurrentRange()
+    if (range === null) {
+      return
     }
+
+    const rects = range.getClientRects()
+
+    const CUTOFF = 10
+
+    let rectToDraw = null
+    for (const rect of rects) {
+      if (rect.width < 1 || rect.height < 1) continue
+      if (!rectToDraw) {
+        rectToDraw = rect
+        continue
+      }
+      // NOTE: this doesn't care if the next rect is HIGHER
+      if (rect.bottom - rectToDraw.bottom < CUTOFF) {
+        rectToDraw = new DOMRect(
+          rectToDraw.x,
+          rectToDraw.y,
+          rect.right - rectToDraw.left,
+          Math.max(rectToDraw.height, rect.height)
+        )
+        continue
+      }
+      break
+    }
+
+    if (rectToDraw) TvScreen.clearRect(rectToDraw)
   }
 
   getRangeManager(): RangeManager {
