@@ -65,7 +65,7 @@ export function discoverScrollableFromCenter(): Element | null {
 
 // TODO: discoverScrollable by walking the entire tree and choosing the widest scrollable element
 
-// FIXME: figure out how to make ragnes only scroll the scrollable element they are actually in
+// FIXME: figure out how to make ranges only scroll the scrollable element they are actually in
 
 export async function discoverScrollableFromCenterPromise(): Promise<Element | null> {
   return new Promise((resolve) => {
