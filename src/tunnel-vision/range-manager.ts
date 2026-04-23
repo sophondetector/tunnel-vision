@@ -391,7 +391,6 @@ export class RangeManager {
           while (
             currentRange.toString().match(/\s$/)
           ) {
-            console.log('here')
             windbackOffset = windbackOffset - 1
             if (windbackOffset <= 0) {
               windbackNodeIdx = windbackNodeIdx - 1
