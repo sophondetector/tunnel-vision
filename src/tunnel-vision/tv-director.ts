@@ -14,8 +14,9 @@ let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let SELECTION_RANGE: Range | undefined = undefined
 
-let DEBUG_SHOW_RANGES = false
-let DEBUG_SHOW_TEXT_NODES = false
+let DEBUG_SHOW_RANGES = true
+let DEBUG_SHOW_TEXT_NODES = true
+let DEBUG_SCREEN_AUTO_ON = true
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -81,8 +82,10 @@ export class TvDirector {
       this.#animate()
       this.#setMouseUpListener()
       this.#setSelectionListener()
-      // this.#setMutationObserver()
+      this.#setMutationObserver()
       this.toggleScreenOff()
+
+      DEBUG_SCREEN_AUTO_ON && this.toggleScreenOn()
 
       this.setDirectorState(TvDirectorState.READY)
 
@@ -650,28 +653,11 @@ export class TvDirector {
 
   //@ts-ignore
   #setMutationObserver(): void {
-    let { getMutationTarget, mutationCallback } = defaultMutationHandler
+    const target = document.body
 
-    const handler = HandlerManager.getHandler()
-    if (!handler) {
-      console.error(`#setMutationObserver: could not get handler!`)
-      return
-    }
-
-    if (handler.mutationHandler) {
-      getMutationTarget = handler.mutationHandler.getMutationTarget
-      mutationCallback = handler.mutationHandler.mutationCallback
-    }
-
-    const target = getMutationTarget()
-
-    if (!target) {
-      console.warn(`#setMutationObserver: could not get mutation observer target - exiting`)
-      return
-    }
-
-    // TODO: this needs to add new elements to this.ELEMENT_ARRAY and then re-range
-    const observer = new MutationObserver((mutations) => mutationCallback(this, mutations))
+    const observer = new MutationObserver((mutations) => {
+      this.getRangeManager().onMutation(mutations)
+    })
 
     observer.observe(target, {
       subtree: true,
