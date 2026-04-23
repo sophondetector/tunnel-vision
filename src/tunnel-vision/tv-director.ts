@@ -3,7 +3,7 @@ import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
 import { TvScreenState, TvDirectorState } from "../common";
 import { playSound, soundIsOn, toggleSound, } from "./sound";
-import { defaultMutationHandler } from "./site-handlers/handler-utilities";
+import { defaultMutationHandler, range2Scrollable } from "./site-handlers/handler-utilities";
 
 const RESIZE_DEBOUNCE_MILLIS = 0
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
@@ -506,7 +506,7 @@ export class TvDirector {
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
   async scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): Promise<void> {
-    const scrollable = await HandlerManager.getScrollableElement(false)
+    const scrollable = range2Scrollable(range)
     if (scrollable) {
       this.useScrollableToScrollRangeIntoView(scrollable, range, scrollToMiddle)
       return

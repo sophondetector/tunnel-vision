@@ -1,7 +1,5 @@
 import { TvDirector } from "../tv-director"
 
-const LOG_ELEMENTS = false
-
 let DEFAULT_MUTATION_TIMEOUT: undefined | NodeJS.Timeout = undefined
 
 export interface TvHandler {
@@ -20,31 +18,47 @@ export function blankDelay(): Promise<void> {
   return new Promise(resolve => resolve())
 }
 
-export function isScrollable(ele: Element): boolean {
-  const map = ele.computedStyleMap()
-  const overflowY = map.get('overflow-y')
-  return (overflowY == 'scroll' || overflowY == 'auto')
+// NOTE: this is an older version with a less reliable technique which produced false positives - keeping it here in case we need to combine it later
+
+// export function isScrollable(ele: Element): boolean {
+//   const map = ele.computedStyleMap()
+//   const overflowY = map.get('overflow-y')
+//   return (overflowY == 'scroll' || overflowY == 'auto')
+// }
+
+export function isScrollable(element: Element): boolean {
+  const style = window.getComputedStyle(element);
+  const isOverflowHidden = style.overflowY === 'hidden' || style.overflow === 'hidden';
+  // element is scrollable if content is larger than container AND overflow isn't hidden
+  return element.scrollHeight > element.clientHeight && !isOverflowHidden;
 }
 
-// NOTE: function for discovering the scrollable element: start somewhere deep in the page and recurse upwards
-export function discoverScrollable(startElement: Element): Element | undefined {
+export function range2Scrollable(range: Range): Element | null {
+  const commonAncestor = range.commonAncestorContainer
+  const parentElement = (commonAncestor instanceof Element) ?
+    commonAncestor :
+    commonAncestor.parentElement
+
+  if (parentElement === null) return null
+
+  const res = discoverScrollable(parentElement)
+
+  return res
+}
+
+export function discoverScrollable(startElement: Element): Element | null {
   let ele = startElement
 
   while (!isScrollable(ele)) {
     ele = ele.parentElement as Element
     if (!ele) {
-      console.log('discoverScrollable: could not find scrollable ele')
-      return undefined
+      // console.log('discoverScrollable: could not find scrollable ele')
+      return null
     }
   }
 
   // NOTE: if the scrollable element is a body tag scrollElementIntoView breaks
-  if (ele.tagName === 'BODY') return undefined
-
-  if (LOG_ELEMENTS) {
-    console.log(`discoverScrollable: found scrollable ele`)
-    console.log(ele)
-  }
+  if (ele.tagName === 'BODY') return null
 
   return ele
 }
