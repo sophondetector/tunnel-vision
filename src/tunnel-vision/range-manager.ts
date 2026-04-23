@@ -377,22 +377,29 @@ export class RangeManager {
 
       // Did we cross into a new visual line?
       if (bottomExceed || topExceed) {
-        // Roll back one character — that one belongs to the next line
-        currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1)
 
-        // NOTE: this block rolls the selection back until there's no more trailing whitespace
-        let windbackOffset = offsetInNode - 1
-        let windbackNodeIdx = nodeIndex
+        // NOTE: if this is true we know we just crossed into a new node so instead of going through the windback process we just set the end to the end of the previous node
+        if ((offsetInNode - 1) === 0) {
+          currentRange.setEndAfter(textNodes[nodeIndex - 1])
+        } else {
 
-        while (
-          currentRange.toString().match(/\s$/)
-        ) {
-          windbackOffset = windbackOffset - 1
-          if (windbackOffset <= 0) {
-            windbackNodeIdx = windbackNodeIdx - 1
-            windbackOffset = textNodes[windbackNodeIdx].textContent!.length
+          // Roll back one character — that one belongs to the next line
+          currentRange.setEnd(textNodes[nodeIndex], offsetInNode - 1)
+          // NOTE: this block rolls the selection back until there's no more trailing whitespace
+          let windbackOffset = offsetInNode - 1
+          let windbackNodeIdx = nodeIndex
+          while (
+            currentRange.toString().match(/\s$/)
+          ) {
+            console.log('here')
+            windbackOffset = windbackOffset - 1
+            if (windbackOffset <= 0) {
+              windbackNodeIdx = windbackNodeIdx - 1
+              windbackOffset = textNodes[windbackNodeIdx].textContent!.length
+            }
+            currentRange.setEnd(textNodes[windbackNodeIdx], windbackOffset)
           }
-          currentRange.setEnd(textNodes[windbackNodeIdx], windbackOffset)
+
         }
 
         ranges.push(currentRange.cloneRange())
