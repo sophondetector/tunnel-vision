@@ -66,6 +66,10 @@ const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivEleme
 const VOLUME_DISPLAY = document.getElementById('volume-display') as HTMLSpanElement
 const VOLUME_SLIDER = document.getElementById('volume-slider') as HTMLInputElement
 
+const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
+const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
+const CLOSE_HELP = document.getElementById('close-help') as HTMLButtonElement
+
 // sidebar debug panel
 const DEBUG_PANEL = document.getElementById('debug-panel') as HTMLDivElement
 const RE_RANGE = document.getElementById('re-range') as HTMLButtonElement
@@ -535,6 +539,15 @@ COLOR_PICKER.addEventListener('input', async (event) => {
   //@ts-ignore
   const value = event.target.value
   dir.setScreenColor(value)
+})
+
+// FIXME: improve the presentation of the help modal
+HELP_TOGGLE.addEventListener('click', () => {
+  HELP_DIV.classList.remove("hidden")
+})
+
+CLOSE_HELP.addEventListener('click', () => {
+  HELP_DIV.classList.add("hidden")
 })
 
 document.addEventListener('mousemove', async (e) => {
