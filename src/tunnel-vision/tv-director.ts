@@ -262,28 +262,32 @@ export class TvDirector {
 
     if (DEBUG_SHOW_TEXT_NODES) this.#drawTextNodes()
 
-    const buffer = TvScreen.getBufferRadius()
-
     if (SELECTION) {
       const rects = this.#getSelectionRects()
       for (let idx = 0; idx < rects.length; idx++) {
         const rect = rects[idx]
-        TvScreen.clearRect(rect, buffer)
+        TvScreen.clearRect(rect)
       }
       return
     }
 
-    // FIXME: push this logic down into rangeManager
-    const [_, range] = this.RANGE_MANAGER!.getCurrentRange()
+    const [, range] = this.getRangeManager().getCurrentRange()
     if (range === null) {
       return
     }
 
+    const rectToDraw = this.#getRectFromRange(range)
+
+    if (rectToDraw) TvScreen.clearRect(rectToDraw)
+  }
+
+  #getRectFromRange(range: Range): DOMRect | null {
     const rects = range.getClientRects()
 
-    const CUTOFF = 10
+    const cutoff = 10
 
     let rectToDraw = null
+
     for (const rect of rects) {
       if (rect.width < 1 || rect.height < 1) continue
       if (!rectToDraw) {
@@ -291,7 +295,7 @@ export class TvDirector {
         continue
       }
       // NOTE: this doesn't care if the next rect is HIGHER
-      if (rect.bottom - rectToDraw.bottom < CUTOFF) {
+      if (rect.bottom - rectToDraw.bottom < cutoff) {
         rectToDraw = new DOMRect(
           rectToDraw.x,
           rectToDraw.y,
@@ -303,7 +307,7 @@ export class TvDirector {
       break
     }
 
-    if (rectToDraw) TvScreen.clearRect(rectToDraw)
+    return rectToDraw
   }
 
   getRangeManager(): RangeManager {
