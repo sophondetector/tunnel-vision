@@ -10,6 +10,8 @@ import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 import { xHandler } from "./x-handler"
 
+// TODO: get rid of the handlers
+
 function isFile(): boolean {
   return (window.location.protocol === "file:")
 }
