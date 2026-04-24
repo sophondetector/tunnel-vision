@@ -230,6 +230,18 @@ export class RangeManager {
     return [null, null]
   }
 
+  setToLastVisibleRange(): [number, Range] | [null, null] {
+    for (let idx = (this.getRangesLength() || 0) - 1; idx >= 0; idx--) {
+      const iterRange = this.getRangeAtIdx(idx) as Range
+      if (RangeManager.rangeIsVisible(iterRange)) {
+        this.setRangeIdx(idx)
+        return [idx, iterRange]
+      }
+    }
+    console.error(`RangeManager.setToLastVisibleRange: could not find last visible range!`)
+    return [null, null]
+  }
+
   incLine(): [number, Range] | [null, null] {
     if (this.RANGES === null) {
       console.error(`RangeManager.incLine: RANGES is null`)

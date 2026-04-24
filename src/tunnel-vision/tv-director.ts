@@ -274,9 +274,13 @@ export class TvDirector {
       return
     }
 
-    const [, range] = this.getRangeManager().getCurrentRange()
+    // NOTE: this is necessary because if a dom mutation makes it so the range at the current index is undefined it causes the range index to get stuck at that index
+    let [, range] = this.getRangeManager().getCurrentRange()
     if (range === null) {
-      return
+      [, range] = this.getRangeManager().setToLastVisibleRange()
+      if (range === null) {
+        throw new Error('drawScreen hit error - stopping animation')
+      }
     }
 
     const rectToDraw = this.#getRectFromRange(range)
