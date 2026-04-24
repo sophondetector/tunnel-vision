@@ -141,7 +141,7 @@ export async function waitForNetworkIdle(
 ): Promise<void> {
 
   let inflight = 0;
-  //@ts-ignore NOTE: If you try to npm run build without this ignore here the compiler gets mad
+  //@ts-ignore NOTE: If you try to npm run build without this ignore here the transpiler gets mad
   let lastActivity;
   //@ts-ignore
   let resolvePromise;
