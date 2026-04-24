@@ -78,17 +78,6 @@ export class RangeManager {
     return this.TEXT_NODES
   }
 
-  // FIXME: get rid of getRectsToClear
-  getRectsToClear(): DOMRect[] {
-    const [_, range] = this.getCurrentRange()
-    if (!range) {
-      console.warn(`RangeManager.getRectsToClear: could not get range!`)
-      return []
-    }
-    const rect = range!.getBoundingClientRect()
-    return [rect]
-  }
-
   getCurrentRangeIdx(): number {
     return this.RANGE_IDX
   }
