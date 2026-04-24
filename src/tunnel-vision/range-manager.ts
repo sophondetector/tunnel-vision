@@ -134,6 +134,11 @@ export class RangeManager {
     )
   }
 
+  static #elementIsTransparent(element: Element): boolean {
+    // NOTE: only HTMLElement has the 'style' property
+    return (element as HTMLElement).style.color === 'transparent'
+  }
+
   static rangeIsOccluded(range: Range): boolean {
     const rect = range.getBoundingClientRect()
 
@@ -145,6 +150,7 @@ export class RangeManager {
 
     const topElement = document.elementFromPoint(centerX, centerY)
     if (!topElement) return true
+    if (RangeManager.#elementIsTransparent(topElement)) return false
 
     // if the range does not intersect the topElement that means it's not on top
     const isOnTop = range.intersectsNode(topElement)
