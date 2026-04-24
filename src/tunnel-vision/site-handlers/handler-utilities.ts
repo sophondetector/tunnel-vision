@@ -26,6 +26,7 @@ export function blankDelay(): Promise<void> {
 //   return (overflowY == 'scroll' || overflowY == 'auto')
 // }
 
+// FIXME: make auto scrolling work on X
 export function isScrollable(element: Element): boolean {
   const style = window.getComputedStyle(element);
   const isOverflowHidden = style.overflowY === 'hidden' || style.overflow === 'hidden';
