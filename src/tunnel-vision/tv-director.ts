@@ -85,7 +85,7 @@ export class TvDirector {
       this.#setMutationObserver()
       this.toggleScreenOff()
 
-      DEBUG_SCREEN_AUTO_ON && this.toggleScreenOn()
+      if (DEBUG_SCREEN_AUTO_ON) this.toggleScreenOn()
 
       this.setDirectorState(TvDirectorState.READY)
 
