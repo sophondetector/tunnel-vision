@@ -651,7 +651,6 @@ export class TvDirector {
     })
   }
 
-  // TODO: debounce this
   #setMutationObserver(): void {
     const target = document.body
 
