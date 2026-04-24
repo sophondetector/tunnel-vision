@@ -1,5 +1,7 @@
 import { TvScreenState, TV_SCREEN_Z_INDEX } from "../common"
 
+// TODO: make it so when holding down the alt key clicks only set the range instead of activating any link under the click
+
 const TV_SCREEN_ID = 'TvScreen'
 const TV_SCREEN_DISPLAY = 'flex'
 
