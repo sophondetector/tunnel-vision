@@ -1,5 +1,7 @@
 import { logRange } from "../common"
 
+const MIN_TEXT_DELTA = 30
+
 let LOG_RANGES = false
 
 export class RangeManager {
@@ -42,11 +44,22 @@ export class RangeManager {
 
   onMutation(muations: MutationRecord[], eleArray: Element[]): void {
     const [, currentRange] = this.getCurrentRange()
+    if (!currentRange) return
+
+    let addedLen = 0
+    let removedLen = 0
+
     for (const mut of muations) {
-      if (!mut.addedNodes && !mut.removedNodes) continue
-      this.initRanges(eleArray)
-      this.setRangeAtNodeOffset((currentRange as Range).startContainer, (currentRange as Range).startOffset)
-      return
+      if (mut.addedNodes.length === 0 && mut.removedNodes.length === 0) continue
+
+      mut.addedNodes.forEach(n => addedLen += (n.textContent || '').trim().length)
+      mut.removedNodes.forEach(n => removedLen += (n.textContent || '').trim().length)
+
+      if (addedLen > MIN_TEXT_DELTA || removedLen > MIN_TEXT_DELTA) {
+        this.initRanges(eleArray)
+        this.setRangeAtNodeOffset(currentRange.startContainer, currentRange.startOffset)
+        return
+      }
     }
   }
 
@@ -65,6 +78,7 @@ export class RangeManager {
     return this.TEXT_NODES
   }
 
+  // FIXME: get rid of getRectsToClear
   getRectsToClear(): DOMRect[] {
     const [_, range] = this.getCurrentRange()
     if (!range) {

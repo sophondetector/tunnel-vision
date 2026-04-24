@@ -14,9 +14,9 @@ let SELECTION = false
 let DEBOUNCE_TIMEOUT_ID: undefined | number = undefined
 let SELECTION_RANGE: Range | undefined = undefined
 
-let DEBUG_SHOW_RANGES = true
-let DEBUG_SHOW_TEXT_NODES = true
-let DEBUG_SCREEN_AUTO_ON = true
+let DEBUG_SHOW_RANGES = false
+let DEBUG_SHOW_TEXT_NODES = false
+let DEBUG_SCREEN_AUTO_ON = false
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -651,7 +651,7 @@ export class TvDirector {
     })
   }
 
-  //@ts-ignore
+  // TODO: debounce this
   #setMutationObserver(): void {
     const target = document.body
 
