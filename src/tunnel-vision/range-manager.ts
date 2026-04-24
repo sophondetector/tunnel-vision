@@ -40,37 +40,14 @@ export class RangeManager {
     // )
   }
 
-  #alreadyHasTextNode(textNode: Node): boolean {
-    for (const tn of this.TEXT_NODES!) {
-      if (
-        tn.parentElement === textNode.parentElement &&
-        tn.textContent === textNode.textContent
-      ) {
-        return true
-      }
-    }
-    return false
-  }
-
-  onMutation(muations: MutationRecord[]): void {
-    const newNodes = []
+  onMutation(muations: MutationRecord[], eleArray: Element[]): void {
+    const [, currentRange] = this.getCurrentRange()
     for (const mut of muations) {
-      if (!mut.addedNodes) continue
-      for (const node of mut.addedNodes) {
-        for (const textNode of RangeManager.#getAllTextNodes(node)) {
-          if (this.#alreadyHasTextNode(textNode)) {
-            console.log('incuded!')
-            continue
-          }
-          newNodes.push(textNode)
-        }
-      }
+      if (!mut.addedNodes && !mut.removedNodes) continue
+      this.initRanges(eleArray)
+      this.setRangeAtNodeOffset((currentRange as Range).startContainer, (currentRange as Range).startOffset)
+      return
     }
-    const newRanges = RangeManager.#textNodes2Ranges(newNodes)
-    this.TEXT_NODES!.push(...newNodes)
-    this.RANGES!.push(...newRanges)
-    console.log(`added ${newNodes.length} text nodes`)
-    console.log(`added ${newRanges.length} ranges`)
   }
 
   dumpAllRanges(): void {

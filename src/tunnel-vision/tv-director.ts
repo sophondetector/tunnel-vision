@@ -656,7 +656,9 @@ export class TvDirector {
     const target = document.body
 
     const observer = new MutationObserver((mutations) => {
-      this.getRangeManager().onMutation(mutations)
+      HandlerManager.getTvElements().then((ea) => {
+        this.getRangeManager().onMutation(mutations, ea ?? [document.body])
+      })
     })
 
     observer.observe(target, {
