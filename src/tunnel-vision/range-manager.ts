@@ -273,7 +273,6 @@ export class RangeManager {
 
   getRangeAtPoint(point: { x: number, y: number }): [number, Range] | [null, null] {
 
-    // TODO: implement a binary search here
     const len = this.getRangesLength() as number
     for (let idx = 0; idx < len; idx++) {
       const iterRange = this.getRangeAtIdx(idx) as Range

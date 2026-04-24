@@ -6,10 +6,9 @@ import {
   defaultMutationHandler
 } from "./handler-utilities"
 
-// FIXME: for generic handler (and maybe all handlers?) create a function where if a range is contained in another range then remove the containing range
-
 export const genericHandler: TvHandler = {
   getTvElements: async () => [document.body],
+  // TODO: remove scrollable element handling from handlers; that's now handled dynamically per range
   getScrollableElement: discoverScrollableFromCenterPromise,
   initDelay: async () => {
     await waitForNetworkIdle(100, 5000, 0)
@@ -17,4 +16,5 @@ export const genericHandler: TvHandler = {
     console.log('genericHandler.initDelay: done!')
   },
   mutationHandler: defaultMutationHandler
+  // TODO: remove mutation handler from handlers
 }

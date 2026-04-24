@@ -31,7 +31,6 @@ function setIconReady() {
   });
 }
 
-// TODO: create greyed out unavailable icon
 function setIconUnavailable(): void {
   setIconError()
 }

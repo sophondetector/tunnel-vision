@@ -10,8 +10,6 @@ import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 import { xHandler } from "./x-handler"
 
-// TODO: get rid of the handlers
-
 function isFile(): boolean {
   return (window.location.protocol === "file:")
 }
@@ -40,7 +38,6 @@ export class HandlerManager {
       return HANDLER
     }
 
-    // FIXME: this is very buggy when loading local *.md files and when viewing a folder There appears to be a race condition between injecting the #TvScreen div one the one hand and ranging/fetching the first range on the other
     if (isFile()) {
       console.log(`HandlerManager.getHandler: returning generic handler for non pdf local file`)
       HANDLER = genericHandler
@@ -48,7 +45,7 @@ export class HandlerManager {
     }
 
     if (isPdfReader()) {
-      console.log("HandlerManager.getHandler: it's PDF time")
+      console.log("HandlerManager.getHandler: loading pdf reader handler")
       HANDLER = pdfReaderHandler
       return HANDLER
     }
