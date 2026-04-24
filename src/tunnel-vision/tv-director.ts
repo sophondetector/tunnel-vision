@@ -17,6 +17,7 @@ let SELECTION_RANGE: Range | undefined = undefined
 let DEBUG_SHOW_RANGES = false
 let DEBUG_SHOW_TEXT_NODES = false
 let DEBUG_SCREEN_AUTO_ON = false
+let DEBUG_MUTATION_OBSERVER_ENABLED = true
 
 function isPdf(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
@@ -82,7 +83,7 @@ export class TvDirector {
       this.#animate()
       this.#setMouseUpListener()
       this.#setSelectionListener()
-      this.#setMutationObserver()
+      if (DEBUG_MUTATION_OBSERVER_ENABLED) this.#setMutationObserver()
       this.toggleScreenOff()
 
       if (DEBUG_SCREEN_AUTO_ON) this.toggleScreenOn()
