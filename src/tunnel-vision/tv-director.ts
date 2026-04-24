@@ -3,7 +3,7 @@ import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
 import { TvScreenState, TvDirectorState } from "../common";
 import { playSound, soundIsOn, toggleSound, } from "./sound";
-import { defaultMutationHandler, range2Scrollable } from "./site-handlers/handler-utilities";
+import { range2Scrollable } from "./site-handlers/handler-utilities";
 
 const RESIZE_DEBOUNCE_MILLIS = 0
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
