@@ -1,14 +1,13 @@
 import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
-import { initDirectorForPdfExtension, getDirector } from './initialize-tv'
+import { initDirectorForWebApp, getDirector } from './initialize-tv'
 import {
-  LATEST_PDF_URL_KEY,
   TV_SCREEN_Z_INDEX,
-  getCurrentTabKey
 } from './common'
 import { TvScreen } from './tunnel-vision/tv-screen'
-import { getBinary, setBinary } from './indexdb'
+
+// NOTE: pdfjs-dist MUST BE version 4.10.38 or else the text layer doesn't render properly and the window.devicePixelRatio is 1.10000blahblah instead of 1
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 
@@ -85,24 +84,9 @@ let ZOOM_SCALE = DEFAULT_SCALE
 let DEFAULT_BUFFER_RADIUS = 1
 
 async function getPDFDocumentProxy(): Promise<pdfjsLib.PDFDocumentProxy> {
-  if (PDF_DOC) return PDF_DOC
-
-  const key = await getCurrentTabKey()
-  const dbResult = await getBinary(key)
-  if (dbResult) {
-    PDF_DOC = await pdfjsLib.getDocument({ data: dbResult }).promise
-    return PDF_DOC
-  }
-
   const latestPDFUrl = await getLatestPDFUrl()
   PDF_DOC = await pdfjsLib.getDocument(latestPDFUrl).promise
   return PDF_DOC
-}
-
-async function putPDFInIndexDb(pdfDocProxy: pdfjsLib.PDFDocumentProxy): Promise<void> {
-  const data = await pdfDocProxy.getData()
-  const key = await getCurrentTabKey()
-  await setBinary(key, data.buffer as ArrayBuffer)
 }
 
 function setRadiusBasedOnZoom(): void {
@@ -223,8 +207,7 @@ function displaySoundIsOn(isOn: boolean): void {
 }
 
 async function getLatestPDFUrl(): Promise<string> {
-  const res = await chrome.storage.local.get(LATEST_PDF_URL_KEY)
-  return res[LATEST_PDF_URL_KEY]
+  return 'https://mozilla.github.io/pdf.js/legacy/web/compressed.tracemonkey-pldi-09.pdf'
 }
 
 async function renderPage(): Promise<void> {
@@ -251,6 +234,7 @@ async function renderPage(): Promise<void> {
   // NOTE: Always scale the context AFTER applying the CANVAS dimensions
   CONTEXT.scale(dpr, dpr)
 
+  // TODO: feeding context in here throws an error with the latest version of pdfjs-dist
   await page.render({
     canvasContext: CONTEXT,
     viewport: viewport,
@@ -402,7 +386,6 @@ async function openPDF(): Promise<void> {
           PAGE_COUNT.textContent = PDF_DOC.numPages.toString()
           PAGE_NUM = 1
         })
-        .then(() => putPDFInIndexDb(PDF_DOC as pdfjsLib.PDFDocumentProxy))
         .then(renderPage)
         .then(renderTextLayer)
         .then(setPageNumDisplay)
@@ -571,13 +554,12 @@ RESIZER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 FOOTER.style.zIndex = (Number(TV_SCREEN_Z_INDEX) + 1).toString()
 
 getPDFDocumentProxy()
-  .then(putPDFInIndexDb)
   .then(() => {
     PAGE_COUNT.textContent = PDF_DOC!.numPages.toString()
   })
   .then(renderPage)
   .then(renderTextLayer)
-  .then(initDirectorForPdfExtension)
+  .then(initDirectorForWebApp)
   .then(setPageNumDisplay)
   .then(displayZoomPercent)
   .then(async () => {

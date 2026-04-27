@@ -3,11 +3,14 @@ import {
   TvMessage,
   id2Key
 } from "./common"
-import { setSoundOn, setSoundVol, } from './tunnel-vision/sound'
+import { ChromeExtensionSoundController } from './tunnel-vision/sound-for-extension'
 import { deleteBinary } from "./indexdb";
 
-chrome.runtime.onInstalled.addListener(setSoundOn)
-chrome.runtime.onInstalled.addListener(() => setSoundVol(50))
+const DEFAULT_VOLUME = 50
+const BACKGROUND_SOUND_CONTROLLER = new ChromeExtensionSoundController()
+
+chrome.runtime.onInstalled.addListener(BACKGROUND_SOUND_CONTROLLER.setSoundOn)
+chrome.runtime.onInstalled.addListener(() => BACKGROUND_SOUND_CONTROLLER.setSoundVol(DEFAULT_VOLUME))
 
 function setIconError() {
   chrome.action.setIcon({

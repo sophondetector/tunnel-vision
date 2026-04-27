@@ -6,12 +6,10 @@ import {
   TvDirectorState
 } from "./common";
 import {
-  playSound,
-  toggleSound,
-  soundIsOn,
-  setSoundVol,
-  getSoundVol
-} from "./tunnel-vision/sound";
+  ChromeExtensionSoundController
+} from "./tunnel-vision/sound-for-extension";
+
+const OPTIONS_SOUND_CONTROLLER = new ChromeExtensionSoundController()
 
 const HIDDEN = "hidden"
 
@@ -26,6 +24,7 @@ const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
 const CONTROL_PANEL_TOGGLE = document.getElementById('control-panel-toggle') as HTMLButtonElement
 
 const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivElement
+// FIXME: grey out opacity slider when screen isn't on
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLSpanElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
 
@@ -179,8 +178,8 @@ SCREEN_TOGGLE.addEventListener('click', async () => {
 })
 
 SOUND_TOGGLE.addEventListener('click', async () => {
-  await toggleSound()
-  const isOn = await soundIsOn()
+  await OPTIONS_SOUND_CONTROLLER.toggleSound()
+  const isOn = await OPTIONS_SOUND_CONTROLLER.soundIsOn()
   displaySoundState(isOn)
 })
 
@@ -197,9 +196,9 @@ OPACITY_SLIDER.addEventListener("input", async (event) => {
 VOLUME_SLIDER.addEventListener("input", async (event) => {
   //@ts-ignore
   const value = event.target.value
-  await setSoundVol(value)
+  await OPTIONS_SOUND_CONTROLLER.setSoundVol(value)
   VOLUME_DISPLAY.textContent = `${value}%`
-  playSound()
+  OPTIONS_SOUND_CONTROLLER.playSound()
 })
 
 COLOR_PICKER.addEventListener("input", async (event) => {
@@ -246,9 +245,9 @@ getCurrentTab()
     })
 
   })
-  .then(soundIsOn)
+  .then(OPTIONS_SOUND_CONTROLLER.soundIsOn)
   .then(displaySoundState)
-  .then(getSoundVol)
+  .then(OPTIONS_SOUND_CONTROLLER.getSoundVol)
   .then((vol) => {
     VOLUME_DISPLAY.textContent = `${vol}%`
     VOLUME_SLIDER.value = String(vol)

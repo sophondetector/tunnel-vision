@@ -271,6 +271,7 @@ export class RangeManager {
     return [null, null]
   }
 
+  // FIXME: why is this firing every time in the web app?
   getRangeAtPoint(point: { x: number, y: number }): [number, Range] | [null, null] {
 
     const len = this.getRangesLength() as number

@@ -2,8 +2,9 @@ import { HandlerManager } from "./site-handlers/index"
 import { RangeManager } from "./range-manager";
 import { TvScreen } from "./tv-screen";
 import { TvScreenState, TvDirectorState } from "../common";
-import { playSound, soundIsOn, toggleSound, } from "./sound";
-import { range2Scrollable } from "./site-handlers/handler-utilities";
+// import { playSound, soundIsOn, toggleSound, } from "./sound-for-extension";
+import { TvSoundController } from "./sound-interface";
+import { range2Scrollable, TvHandler } from "./site-handlers/handler-utilities";
 
 const RESIZE_DEBOUNCE_MILLIS = 0
 const DISABLE_SELECTION_HIGHLIGHTING_ID = "make-tv-selection-transparent"
@@ -17,19 +18,39 @@ let SELECTION_RANGE: Range | undefined = undefined
 let DEBUG_SHOW_RANGES = false
 let DEBUG_SHOW_TEXT_NODES = false
 let DEBUG_SCREEN_AUTO_ON = false
-let DEBUG_MUTATION_OBSERVER_ENABLED = true
 
-function isPdf(): boolean {
+function isPdfFile(): boolean {
   return window.location.pathname.match(/\.pdf$/) ? true : false
 }
 
-export class TvDirector {
-  RANGE_MANAGER: RangeManager | null = null
-  ELEMENT_ARRAY: Array<Element> | null = null
-  INITTED_ONCE: boolean = false
-  STATE: TvDirectorState = TvDirectorState.INITIALIZING
+export interface TvDirectorConfig {
+  handler: TvHandler | null,
+  enableMutationObserver: boolean,
+  soundController: TvSoundController
+}
 
-  constructor() {
+export class TvDirector {
+  // TODO: make all these state variables private
+  RANGE_MANAGER: RangeManager | null = null
+  // TODO: push ELEMENT_ARRAY down into RANGE_MANAGER
+  ELEMENT_ARRAY: Array<Element> | null = null
+  STATE: TvDirectorState = TvDirectorState.INITIALIZING
+  MUTATION_OBSERVER_ENABLED: boolean = false
+  SOUND_CONTROLLER: TvSoundController | null = null
+
+  // NOTE: The option for passing a handler ensures that all the handler choosing machinery is bypassed
+  constructor(config: TvDirectorConfig) {
+    console.log('constructing new TvDirector')
+    console.log(config)
+
+    const { handler, enableMutationObserver, soundController } = config
+
+    this.MUTATION_OBSERVER_ENABLED = enableMutationObserver
+
+    if (handler) HandlerManager.setHandler(handler)
+
+    this.SOUND_CONTROLLER = soundController
+
     console.log('TvDirector: new TvDirector constructed')
   }
 
@@ -59,19 +80,17 @@ export class TvDirector {
     this.STATE = state
   }
 
+  // TODO: make this return the TvDirectorState
   async init(): Promise<void> {
     try {
 
-      if (isPdf()) {
+      if (isPdfFile()) {
         console.log(`TvDirector.init: its a pdf - exiting early`)
         this.setDirectorState(TvDirectorState.PDF)
         return
       }
 
       const handler = HandlerManager.getHandler()
-      if (!handler) {
-        throw new Error(`TvDirector.init: could not get handler!`)
-      }
 
       await handler.initDelay()
 
@@ -83,7 +102,7 @@ export class TvDirector {
       this.#animate()
       this.#setMouseUpListener()
       this.#setSelectionListener()
-      if (DEBUG_MUTATION_OBSERVER_ENABLED) this.#setMutationObserver()
+      if (this.MUTATION_OBSERVER_ENABLED) this.#setMutationObserver()
       this.toggleScreenOff()
 
       if (DEBUG_SCREEN_AUTO_ON) this.toggleScreenOn()
@@ -383,11 +402,23 @@ export class TvDirector {
   }
 
   soundIsOn(): Promise<boolean> {
-    return soundIsOn()
+    return this.SOUND_CONTROLLER!.soundIsOn()
   }
 
   toggleSound(): Promise<void> {
-    return toggleSound()
+    return this.SOUND_CONTROLLER!.toggleSound()
+  }
+
+  getSoundVol(): Promise<number> {
+    return this.SOUND_CONTROLLER!.getSoundVol()
+  }
+
+  async setSoundVol(vol: number): Promise<void> {
+    this.SOUND_CONTROLLER!.setSoundVol(vol)
+  }
+
+  async playSound(): Promise<void> {
+    this.SOUND_CONTROLLER!.playSound()
   }
 
   toggleScreen(): void {
@@ -415,7 +446,7 @@ export class TvDirector {
   // FIXME: setRangeAtSelectionBottom/Top is not working well in the pdf-reader; it is having problems with multi column text
   incLine(): void {
     if (!this.screenIsOn()) return
-    playSound()
+    this.SOUND_CONTROLLER!.playSound()
 
     if (SELECTION) {
       SELECTION = false
@@ -435,7 +466,7 @@ export class TvDirector {
 
   decLine(): void {
     if (!this.screenIsOn()) return
-    playSound()
+    this.SOUND_CONTROLLER!.playSound()
 
     if (SELECTION) {
       SELECTION = false
@@ -514,6 +545,7 @@ export class TvDirector {
   * @param {boolean} scrollToMiddle - Whether you want the scrolling to bring the rect to the middle of the screen or keep it at the top/bottom; defaults to true
   */
   async scrollRangeIntoView(range: Range, scrollToMiddle: boolean = true): Promise<void> {
+    // FIXME: this is leading to false positives (like on the vatican website - but only if the window is narrow)
     const scrollable = range2Scrollable(range)
     if (scrollable) {
       this.useScrollableToScrollRangeIntoView(scrollable, range, scrollToMiddle)

@@ -1,3 +1,3 @@
-import { initializeTV } from "./initialize-tv";
+import { initDirectorForChromeExtension } from "./initialize-tv";
 
-initializeTV()
+initDirectorForChromeExtension()
