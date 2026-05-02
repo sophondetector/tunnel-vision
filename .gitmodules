@@ -1,0 +1,3 @@
+[submodule "src/tunnel-vision-core"]
+	path = src/tunnel-vision-core
+	url = git@github.com:sophondetector/tunnel-vision-core.git

@@ -30,17 +30,17 @@
         "file:///*"
       ],
       "js": [
-        "src/content.ts"
+        "src/tunnel-vision-core/content.ts"
       ]
     }
   ],
   "background": {
-    "service_worker": "src/background.ts"
+    "service_worker": "src/tunnel-vision-core/background.ts"
   },
   "web_accessible_resources": [
     {
       "resources": [
-        "src/tunnel-vision/click.mp3"
+        "src/tunnel-vision-core/tunnel-vision/click.mp3"
       ],
       "matches": [
         "<all_urls>"
