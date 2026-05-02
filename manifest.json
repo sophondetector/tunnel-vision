@@ -30,12 +30,12 @@
         "file:///*"
       ],
       "js": [
-        "src/tunnel-vision-core/content.ts"
+        "src/content.ts"
       ]
     }
   ],
   "background": {
-    "service_worker": "src/tunnel-vision-core/background.ts"
+    "service_worker": "src/background.ts"
   },
   "web_accessible_resources": [
     {
