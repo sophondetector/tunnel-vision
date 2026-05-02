@@ -1,10 +1,7 @@
-import {
-  TvDirectorState,
-  TvMessage,
-  id2Key
-} from "./tunnel-vision-core/common"
+import { TvDirectorState, } from "./tunnel-vision-core/common"
 import { ChromeExtensionSoundController } from './sound-for-extension'
 import { deleteBinary } from "./indexdb";
+import { TvMessage, id2Key } from "./chrome-helpers";
 
 const DEFAULT_VOLUME = 50
 const BACKGROUND_SOUND_CONTROLLER = new ChromeExtensionSoundController()

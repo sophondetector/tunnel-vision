@@ -4,12 +4,14 @@ import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initDirectorForPdfExtension } from './initialize-tv'
 import { getDirector } from './tunnel-vision-core/tunnel-vision/tv-director'
 import {
-  LATEST_PDF_URL_KEY,
   TV_SCREEN_Z_INDEX,
-  getCurrentTabKey
 } from './tunnel-vision-core/common'
 import { TvScreen } from './tunnel-vision-core/tunnel-vision/tv-screen'
 import { getBinary, setBinary } from './indexdb'
+import {
+  LATEST_PDF_URL_KEY,
+  getCurrentTabKey
+} from "./chrome-helpers"
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl
 

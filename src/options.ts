@@ -1,13 +1,10 @@
+import { TvScreenState, TvDirectorState } from "./tunnel-vision-core/common";
+import { ChromeExtensionSoundController } from "./sound-for-extension";
 import {
-  TvScreenState,
   getCurrentTab,
   storeLatestPDFUrlInLocalStorage,
   TvMessage,
-  TvDirectorState
-} from "./tunnel-vision-core/common";
-import {
-  ChromeExtensionSoundController
-} from "./sound-for-extension";
+} from "./chrome-helpers"
 
 const OPTIONS_SOUND_CONTROLLER = new ChromeExtensionSoundController()
 

@@ -1,5 +1,5 @@
 import { getDirector, initDirector } from "./tunnel-vision-core/tunnel-vision/tv-director"
-import { TvMessage } from "./tunnel-vision-core/common"
+import { TvMessage } from "./chrome-helpers"
 import { pdfReaderHandler } from "./tunnel-vision-core/tunnel-vision/site-handlers/pdf-reader-handler"
 import { ChromeExtensionSoundController } from "./sound-for-extension"
 
