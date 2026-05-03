@@ -1,4 +1,4 @@
-import { TvHandler } from "../tunnel-vision-core/tunnel-vision/handler-interface"
+import { TvHandler } from "../tunnel-vision-core/tunnel-vision/common"
 import { blankDelay } from "./handler-utilities"
 
 async function jpostElementGetter(): Promise<Element[] | null> {

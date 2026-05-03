@@ -1,4 +1,4 @@
-import { TvDirectorState, } from "./tunnel-vision-core/common"
+import { TvDirectorState, } from "./tunnel-vision-core/tunnel-vision/common"
 import { ChromeExtensionSoundController } from './sound-for-extension'
 import { deleteBinary } from "./indexdb";
 import { TvMessage, id2Key } from "./chrome-helpers";

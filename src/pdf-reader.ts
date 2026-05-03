@@ -5,7 +5,7 @@ import { initDirectorForPdfExtension } from './initialize-tv'
 import { getDirector } from './tunnel-vision-core/tunnel-vision/tv-director'
 import {
   TV_SCREEN_Z_INDEX,
-} from './tunnel-vision-core/common'
+} from './tunnel-vision-core/tunnel-vision/common'
 import { TvScreen } from './tunnel-vision-core/tunnel-vision/tv-screen'
 import { getBinary, setBinary } from './indexdb'
 import {

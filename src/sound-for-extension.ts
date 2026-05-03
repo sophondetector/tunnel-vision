@@ -1,4 +1,4 @@
-import { TvSoundController } from "./tunnel-vision-core/tunnel-vision/sound-interface";
+import { TvSoundController } from "./tunnel-vision-core/tunnel-vision/common"
 import { SOUND_ON_KEY, SOUND_VOLUME_KEY } from "./chrome-helpers"
 
 const AUDIO_URL = 'src/tunnel-vision-core/tunnel-vision/click.mp3'
