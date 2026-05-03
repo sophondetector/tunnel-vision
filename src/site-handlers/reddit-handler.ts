@@ -1,4 +1,4 @@
-import { TvHandler } from "../tunnel-vision-core/tunnel-vision/common"
+import { TvHandler } from "../tunnel-vision-core"
 import { waitForDOMIdle } from "./handler-utilities"
 
 async function getTvElements(): Promise<Element[] | null> {

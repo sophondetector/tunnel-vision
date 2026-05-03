@@ -1,4 +1,4 @@
-import { TvScreenState, TvDirectorState } from "./tunnel-vision-core/tunnel-vision/common";
+import { TvScreenState, TvDirectorState } from "./tunnel-vision-core";
 import { ChromeExtensionSoundController } from "./sound-for-extension";
 import {
   getCurrentTab,

@@ -2,11 +2,7 @@ import * as pdfjsLib from 'pdfjs-dist'
 //@ts-ignore
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import { initDirectorForPdfExtension } from './initialize-tv'
-import { getDirector } from './tunnel-vision-core/tunnel-vision/tv-director'
-import {
-  TV_SCREEN_Z_INDEX,
-} from './tunnel-vision-core/tunnel-vision/common'
-import { TvScreen } from './tunnel-vision-core/tunnel-vision/tv-screen'
+import { TvScreen, TV_SCREEN_Z_INDEX, getDirector } from './tunnel-vision-core'
 import { getBinary, setBinary } from './indexdb'
 import {
   LATEST_PDF_URL_KEY,

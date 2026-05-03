@@ -1,4 +1,4 @@
-import { getDirector, initDirector } from "./tunnel-vision-core/tunnel-vision/tv-director"
+import { getDirector, initDirector } from "./tunnel-vision-core"
 import { TvMessage } from "./chrome-helpers"
 import { pdfReaderHandler } from "./site-handlers/pdf-reader-handler"
 import { ChromeExtensionSoundController } from "./sound-for-extension"

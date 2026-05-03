@@ -2,7 +2,7 @@ import {
   waitForNetworkIdle,
   waitForDOMIdle,
 } from "./handler-utilities"
-import { TvHandler } from "../tunnel-vision-core/tunnel-vision/common"
+import { TvHandler } from "../tunnel-vision-core"
 
 export const genericHandler: TvHandler = {
   handlerName: 'genericHandler',
