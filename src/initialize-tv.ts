@@ -4,6 +4,8 @@ import { pdfReaderHandler } from "./site-handlers/pdf-reader-handler"
 import { ChromeExtensionSoundController } from "./sound-for-extension"
 import { UberHandler } from "./site-handlers"
 
+// TODO: smush this into the content.ts
+
 // NOTE: This must call sendResponse on every path to prevent the following error: "Unchecked runtime.lastError: The message port closed before a response was received."
 function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
   const dir = getDirector()
