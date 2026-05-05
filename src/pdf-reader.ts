@@ -70,6 +70,7 @@ const SHOW_RANGES = document.getElementById('show-ranges') as HTMLButtonElement
 
 // footer control panel
 const FOOTER = document.getElementById('footer') as HTMLElement
+const FOOTER_SCREEN_TOGGLE = document.getElementById('footer-screen-toggle') as HTMLButtonElement
 const FOOTER_PREV_LINE = document.getElementById('footer-prev-line') as HTMLButtonElement
 const FOOTER_NEXT_LINE = document.getElementById('footer-next-line') as HTMLButtonElement
 const FOOTER_PREV_PAGE = document.getElementById('footer-prev') as HTMLButtonElement
@@ -494,6 +495,11 @@ OPEN_PDF.addEventListener('click', openPDF)
 FOOTER_OPEN_PDF.addEventListener('click', openPDF)
 
 SCREEN_TOGGLE.addEventListener('click', async () => {
+  const dir = getDirector()
+  dir.toggleScreen()
+})
+
+FOOTER_SCREEN_TOGGLE.addEventListener('click', async () => {
   const dir = getDirector()
   dir.toggleScreen()
 })

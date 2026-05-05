@@ -48,8 +48,6 @@
 <body class="h-screen flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
 
   <!-- TODO: need icon on the page -->
-  <!-- TODO: add screen on off button to footer -->
-
 
   <div class="flex flex-1 overflow-hidden">
 
@@ -252,11 +250,16 @@
   <footer id="footer"
     class="hidden bg-white border-t-2 border-gray-200 shadow-sm px-4 py-3 flex items-center justify-between">
 
-    <div>
-      <h1 class="text-xl font-semibold text-gray-900">Tunnel PDF</h1>
+    <div class="flex">
+      <h1 class="text-xl font-semibold text-gray-900 mr-10">Tunnel PDF</h1>
+
+      <button id="footer-screen-toggle"
+        class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 text-white-600">
+        Screen On/Off
+      </button>
     </div>
 
-    <div class="flex">
+    <div class="flex justify-self-center">
 
       <div class="mx-4">
         <button id="footer-prev"
@@ -284,7 +287,7 @@
 
     </div>
 
-    <div>
+    <div class="flex">
       <button id="footer-open-pdf"
         class="rounded-md bg-indigo-600 hover:bg-indigo-700 text-xl text-white px-4 mx-5 text-white-600">
         Open
