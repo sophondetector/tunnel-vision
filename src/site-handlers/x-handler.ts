@@ -4,7 +4,6 @@ import {
   waitForDOMIdle
 } from "./handler-utilities"
 
-// FIXME: the x handler is extremely buggy
 const PARAGRAPH_LEC = "div[data-testid='tweetText'] span"
 
 async function getTvElements(): Promise<Element[] | null> {

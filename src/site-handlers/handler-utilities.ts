@@ -18,8 +18,6 @@ export function discoverScrollableFromCenter(): Element | null {
   return scrollable
 }
 
-// TODO: discoverScrollable by walking the entire tree and choosing the widest scrollable element
-
 export async function discoverScrollableFromCenterPromise(): Promise<Element | null> {
   return new Promise((resolve) => {
     requestAnimationFrame(() => {

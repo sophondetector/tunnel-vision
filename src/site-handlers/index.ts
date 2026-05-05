@@ -10,7 +10,6 @@ import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 import { xHandler } from "./x-handler"
 
-// TODO: make handlers able to discriminate by subdomain
 const DOMAIN_HANDLER_MAP: Map<string, TvHandler> = new Map()
 
 DOMAIN_HANDLER_MAP.set("vatican.va", vaticanHandler)

@@ -4,8 +4,6 @@ import { pdfReaderHandler } from "./site-handlers/pdf-reader-handler"
 import { ChromeExtensionSoundController } from "./sound-for-extension"
 import { UberHandler } from "./site-handlers"
 
-// TODO: smush this into the content.ts
-
 // NOTE: This must call sendResponse on every path to prevent the following error: "Unchecked runtime.lastError: The message port closed before a response was received."
 function controlPanelListenerCallback(value: string, sender: string, sendResponse: CallableFunction) {
   const dir = getDirector()
@@ -86,8 +84,6 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
  * Initializes the TvDirector for the PDF part of the extension - bypasses the UberHandler to set the pdfReaderHandler and also sets the control-panel listeners
  */
 export async function initDirectorForPdfExtension(): Promise<void> {
-  // FIXME: if we are in the web app but the user has the chrome extension use the extension Director not the web app Director
-
   // @ts-ignore
   chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
   const dir = await initDirector({
