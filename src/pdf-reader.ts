@@ -539,7 +539,6 @@ COLOR_PICKER.addEventListener('input', async (event) => {
   dir.setScreenColor(value)
 })
 
-// FIXME: improve the presentation of the help modal
 HELP_TOGGLE.addEventListener('click', () => {
   HELP_DIV.classList.remove("hidden")
 })
