@@ -532,6 +532,16 @@ OPACITY_SLIDER.addEventListener('input', async (event) => {
   OPACITY_SLIDER.blur()
 })
 
+// NOTE: this ensures that the changing opacity value is reflected in the control panel
+document.addEventListener('wheel', (event) => {
+  const dir = getDirector()
+  if (!(dir.screenIsOn() && event.altKey)) return
+  const { opacity } = dir.getScreenState()
+  const value = Math.round(opacity * 100)
+  OPACITY_DISPLAY.textContent = `${value}%`
+  OPACITY_SLIDER.value = String(value)
+})
+
 COLOR_PICKER.addEventListener('input', async (event) => {
   const dir = getDirector()
   //@ts-ignore
