@@ -1,6 +1,5 @@
 import { getDirector, initDirector } from "./tunnel-vision-core"
 import { TvMessage } from "./chrome-helpers"
-import { pdfReaderHandler } from "./site-handlers/pdf-reader-handler"
 import { ChromeExtensionSoundController } from "./sound-for-extension"
 import { UberHandler } from "./site-handlers"
 
@@ -78,22 +77,6 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
     console.error(`controlPanelListenerCallback: Unknown message! value ${value}; sender ${sender}`)
     sendResponse()
   }
-}
-
-/**
- * Initializes the TvDirector for the PDF part of the extension - bypasses the UberHandler to set the pdfReaderHandler and also sets the control-panel listeners
- */
-export async function initDirectorForPdfExtension(): Promise<void> {
-  // @ts-ignore
-  chrome.runtime.onMessage.addListener(controlPanelListenerCallback)
-  const dir = await initDirector({
-    handler: pdfReaderHandler,
-    enableMutationObserver: false,
-    soundController: new ChromeExtensionSoundController()
-  })
-  const dirState = dir.getDirectorState()
-  chrome.runtime.sendMessage(dirState)
-  console.log(`initDirectorForPdfExtension: init complete - TvDirector state is ${dirState}`)
 }
 
 /**

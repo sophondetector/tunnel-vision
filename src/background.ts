@@ -1,7 +1,6 @@
 import { TvDirectorState, } from "./tunnel-vision-core"
 import { ChromeExtensionSoundController } from './sound-for-extension'
-import { deleteBinary } from "./indexdb";
-import { TvMessage, id2Key } from "./chrome-helpers";
+import { TvMessage } from "./chrome-helpers";
 
 const DEFAULT_VOLUME = 50
 const BACKGROUND_SOUND_CONTROLLER = new ChromeExtensionSoundController()
@@ -73,11 +72,4 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (activeTab.id !== sender.tab?.id) return;
   setIconFromState(message, sender.tab?.id as number)
-})
-
-// Listener 3: When Tunnel Vision PDF Reader tabs close delete its url entry from local storage
-// NOTE: this fires every time any tab is closed; there appears to be no negative effect
-chrome.tabs.onRemoved.addListener(async (tabId) => {
-  const key = id2Key(tabId)
-  await deleteBinary(key)
 })

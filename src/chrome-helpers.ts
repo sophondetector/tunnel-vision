@@ -1,4 +1,3 @@
-export const LATEST_PDF_URL_KEY = "latestTVPDF"
 export const SOUND_ON_KEY = "TvSoundOnOff"
 export const SOUND_VOLUME_KEY = "TvSoundVolume"
 
@@ -20,21 +19,4 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   return tab
 }
 
-export async function putInLocalStorage(key: string, url: string): Promise<void> {
-  await chrome.storage.local.set({ [key]: url })
-}
-
-export async function storeLatestPDFUrlInLocalStorage(url: string): Promise<void> {
-  await putInLocalStorage(LATEST_PDF_URL_KEY, url)
-}
-
-export function id2Key(id: number): string {
-  return `${id}-tvpdf`
-}
-
-export async function getCurrentTabKey(): Promise<string> {
-  const tab = await getCurrentTab()
-  const key = id2Key(tab.id!)
-  return key
-}
 

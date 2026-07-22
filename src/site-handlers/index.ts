@@ -5,7 +5,6 @@ import { vaticanHandler } from "./vatican-handler"
 import { wikipediaHandler } from "./wiki-handler"
 import { jpostHandler } from "./jpost-handler"
 import { TvHandler } from "../tunnel-vision-core"
-import { pdfReaderHandler, isPdfReader } from "./pdf-reader-handler"
 import { grokHandler } from "./grok-handler"
 import { xHandler } from "./x-handler"
 
@@ -43,9 +42,6 @@ export class UberHandler implements TvHandler {
     } else if (SUPPORTED_DOMAINS.includes(topLevelHost)) {
       console.log(`getHandler: ${topLevelHost} supported!`)
       HANDLER = DOMAIN_HANDLER_MAP.get(topLevelHost) as TvHandler
-
-    } else if (isPdfReader()) {
-      HANDLER = pdfReaderHandler
 
     } else if (isActuallySubstack()) {
       console.log(`getHandler: ${topLevelHost} is substack - using substack handler...`)

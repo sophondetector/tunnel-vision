@@ -1,12 +1,12 @@
 import { initDirectorForChromeExtension } from "./initialize-tv";
 
-function weAreOnPdfWebApp(): boolean {
-  return document.title === "Vision PDF"
+function weAreOnVisionPdfWebApp(): boolean {
+  const host = window.location.hostname
+  return host === "visionpdf.dev" || host.endsWith(".visionpdf.dev")
 }
 
-if (weAreOnPdfWebApp()) {
-  // TODO: inject a link to the extension viewer "its better in the extension viewer"
-  console.log("using web app director - skipping extension director")
+if (weAreOnVisionPdfWebApp()) {
+  console.log("on visionpdf.dev - skipping extension director")
 } else {
   initDirectorForChromeExtension()
 }

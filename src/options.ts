@@ -2,7 +2,6 @@ import { TvScreenState, TvDirectorState } from "./tunnel-vision-core";
 import { ChromeExtensionSoundController } from "./sound-for-extension";
 import {
   getCurrentTab,
-  storeLatestPDFUrlInLocalStorage,
   TvMessage,
 } from "./chrome-helpers"
 
@@ -13,7 +12,6 @@ const HIDDEN = "hidden"
 const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
 const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
 
-const OPEN_TUNNEL_PDF = document.getElementById('open-tunnel-pdf') as HTMLButtonElement
 const OPEN_IN_TUNNEL_PDF = document.getElementById('open-in-tunnel-pdf') as HTMLButtonElement
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
@@ -162,11 +160,6 @@ HELP_TOGGLE.addEventListener('click', showHelp)
 
 CONTROL_PANEL_TOGGLE.addEventListener('click', showControlPanel)
 
-OPEN_TUNNEL_PDF.addEventListener('click', async () => {
-  console.log('open tunnel pdf!')
-  // TODO: get user feedback on whether or not this should trigger a file open dialogue
-})
-
 SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.TOGGLE_SCREEN, function () {
@@ -219,9 +212,6 @@ getCurrentTab()
 
     if (tab.url && urlIsPdf(tab.url)) {
       OPEN_IN_TUNNEL_PDF.style.backgroundColor = "lightgreen"
-      OPEN_IN_TUNNEL_PDF.addEventListener("click", async () => {
-        await storeLatestPDFUrlInLocalStorage(tab.url as string)
-      })
       hideNonOpenInTunnelPDf()
     } else {
       hideOpenInTunnelPDF()

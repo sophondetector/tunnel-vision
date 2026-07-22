@@ -9,7 +9,6 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        pdfReader: "pages/pdf-reader.html",
         options: "pages/options.html"
       }
     }
