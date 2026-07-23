@@ -67,6 +67,15 @@
         <span>Sound</span>
       </button>
 
+      <div id="color-control">
+        <label for="color-picker" class="mb-2 block text-sm font-medium text-gray-700"> Screen Color </label>
+        <div class="flex items-center gap-3">
+          <input type="color" id="color-picker" value="#0000ff"
+            class="h-12 w-12 cursor-pointer rounded-md border border-gray-300 p-1" />
+          <span class="text-sm text-gray-500">Click to choose</span>
+        </div>
+      </div>
+
       <div id="volume-control" class="col-span-2">
         <label for="volume-control" class="mb-2 justify-between text-sm font-medium text-gray-700 flex items-center">
           <span>Sound Volume</span>
@@ -79,7 +88,8 @@
     </div>
 
     <!-- Sliders & Picker -->
-    <div class="mt-4 grid gap-4 grid-cols-2">
+    <div>
+
       <!-- Opacity -->
       <div id="opacity-control">
         <label for="opacity-slider" class="mb-2 justify-between text-sm font-medium text-gray-700 flex items-center">
@@ -90,17 +100,7 @@
           class="slider h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200" id="opacity-slider" />
       </div>
 
-      <!-- Color and Help Button -->
-
-      <div id="color-control">
-        <label for="color-picker" class="mb-2 block text-sm font-medium text-gray-700"> Screen Color </label>
-        <div class="flex items-center gap-3">
-          <input type="color" id="color-picker" value="#0000ff"
-            class="h-12 w-12 cursor-pointer rounded-md border border-gray-300 p-1" />
-          <span class="text-sm text-gray-500">Click to choose</span>
-        </div>
-      </div>
-
+      <!-- Help Button -->
       <button id="help-toggle"
         class="col-span-2 rounded-lg bg-indigo-600 px-5 py-1 font-medium text-white shadow-sm hover:bg-indigo-700">
         <span>Help</span>
