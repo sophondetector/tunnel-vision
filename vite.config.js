@@ -9,7 +9,8 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        options: "pages/options.html"
+        options: "pages/options.html",
+        optionsCss: "pages/options.css"
       }
     }
   },
