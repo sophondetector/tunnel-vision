@@ -26,7 +26,6 @@ const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputEle
 const COLOR_CONTROL = document.getElementById("color-control") as HTMLDivElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
 
-const SOUND_DISPLAY = document.getElementById('sound-display') as HTMLSpanElement
 const SOUND_TOGGLE = document.getElementById('sound-toggle') as HTMLButtonElement
 
 const VOLUME_CONTROL = document.getElementById('volume-control') as HTMLDivElement
@@ -87,11 +86,9 @@ function urlIsPdf(url: string): boolean {
 
 function displaySoundState(isOn: boolean): void {
   if (isOn) {
-    SOUND_DISPLAY.textContent = 'Sound is On'
     enableVolumeSlider()
     return
   }
-  SOUND_DISPLAY.textContent = 'Sound is Off'
   disableVolumeSlider()
 }
 
