@@ -12,7 +12,7 @@ const HIDDEN = "hidden"
 const CONTROL_PANEL_DIV = document.getElementById('control-panel-div') as HTMLButtonElement
 const HELP_DIV = document.getElementById('help-div') as HTMLDivElement
 
-const OPEN_IN_TUNNEL_PDF = document.getElementById('open-in-tunnel-pdf') as HTMLAnchorElement
+const OPEN_IN_VISION_PDF = document.getElementById('open-in-tunnel-pdf') as HTMLAnchorElement
 const SCREEN_TOGGLE = document.getElementById('screen-toggle') as HTMLButtonElement
 const ERROR_HEADER = document.getElementById("error-header") as HTMLHeadingElement
 const HELP_TOGGLE = document.getElementById('help-toggle') as HTMLButtonElement
@@ -71,7 +71,7 @@ function enableVolumeSlider(): void {
 }
 
 function hideOpenInTunnelPDF(): void {
-  OPEN_IN_TUNNEL_PDF.classList.add(HIDDEN)
+  OPEN_IN_VISION_PDF.classList.add(HIDDEN)
 }
 
 function hideNonOpenInTunnelPDf(): void {
@@ -211,8 +211,8 @@ getCurrentTab()
   .then(tab => {
 
     if (tab.url && urlIsPdf(tab.url)) {
-      OPEN_IN_TUNNEL_PDF.href = `https://visionpdf.dev/?pdf=${encodeURIComponent(tab.url)}`
-      OPEN_IN_TUNNEL_PDF.style.backgroundColor = "lightgreen"
+      OPEN_IN_VISION_PDF.href = `https://visionpdf.dev/?pdf=${encodeURIComponent(tab.url)}`
+      OPEN_IN_VISION_PDF.style.backgroundColor = "lightgreen"
       hideNonOpenInTunnelPDf()
     } else {
       hideOpenInTunnelPDF()
