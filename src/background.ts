@@ -44,18 +44,24 @@ function setIconPdf(): void {
 }
 
 function setIconFromState(state: TvDirectorState, _tabId: number): void {
-  if (state === TvDirectorState.READY) {
-    setIconReady()
-  } else if (state === TvDirectorState.ERROR) {
-    setIconError()
-  } else if (state === TvDirectorState.UNAVAILABLE) {
-    setIconUnavailable()
-  } else if (state === TvDirectorState.INITIALIZING) {
-    setIconInitializing()
-  } else if (state === TvDirectorState.PDF) {
-    setIconPdf()
-  } else {
-    // console.warn(`background.ts: received unknown state ${state} from tab ${_tabId}`)
+  switch (state) {
+    case TvDirectorState.READY:
+      setIconReady()
+      break
+    case TvDirectorState.ERROR:
+      setIconError()
+      break
+    case TvDirectorState.UNAVAILABLE:
+      setIconUnavailable()
+      break
+    case TvDirectorState.INITIALIZING:
+      setIconInitializing()
+      break
+    case TvDirectorState.PDF:
+      setIconPdf()
+      break
+    default:
+      console.warn(`background.ts: received unknown state ${state} from tab ${_tabId}`)
   }
 }
 
