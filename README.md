@@ -5,6 +5,10 @@ Tunnel Vision helps you read by darkening the screen except for a single line, s
 ## Development
 Tunnel Vision is written in `typescript`, and built with `vite` and `crxjs`.
 
+### Submodule Management
+`$ git submodule update --remote --recursive` - updates submodule to the latest on the remote master branch
+`$ git submodule update --init --recursive` - inits the submodule to whichever commit it was pegged to last - run this if you've just cloned into it
+
 ### Logo
 To modify the logo do the following:
 1. Open `logo/Logo.xcf` in GIMP
