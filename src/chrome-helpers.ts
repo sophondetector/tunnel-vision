@@ -10,7 +10,8 @@ export enum TvMessage {
   SHOW_RANGES = "SHOW_RANGES",
   LOG_RANGES = "LOG_RANGES",
   DUMP_RANGES = "DUMP_RANGES",
-  SHOW_TEXT_NODES = "SHOW_TEXT_NODES"
+  SHOW_TEXT_NODES = "SHOW_TEXT_NODES",
+  CLEAR_BLOCK_BOXES = "CLEAR_BLOCK_BOXES"
 }
 
 export async function getCurrentTab(): Promise<chrome.tabs.Tab> {

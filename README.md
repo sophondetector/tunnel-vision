@@ -46,6 +46,7 @@ To activate the debug panel in the pop-up press `alt+shift+d` *while the pop-up 
 <div> <b>alt + down arrow</b> to move the highlighted range down.</div>
 <div>You can also use <b>alt + j</b> and <b>alt + k</b>.</div>
 <div>When the screen is on, you may <b>click on the line you wish to highlight.</b></div>
+<div>Press <b>ctrl + alt + b</b> to draw block boxes over parts of the screen. Drag to add a box, click a box to remove it, and press <b>escape</b> to leave drawing. <b>ctrl + alt + shift + b</b> clears every box.</div>
 <div>If you select text while the screen is off, that text will be highlighted when the screen is turned on.</div>
 
 ## Copyright

@@ -23,7 +23,7 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 
     //pure number means its opacity
   } else if (value.match(/^\d+$/)) {
-    if (!dir.screenIsOn()) {
+    if (!dir.acceptsScreenStyle()) {
       sendResponse()
       return
     }
@@ -33,8 +33,9 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
 
     // if its a color
   } else if (value.match(/^#[0-9a-f]{6}$/)) {
-    if (!dir.screenIsOn()) {
+    if (!dir.acceptsScreenStyle()) {
       sendResponse()
+      return
     }
     dir.setScreenColor(value)
     sendResponse()
@@ -71,6 +72,10 @@ function controlPanelListenerCallback(value: string, sender: string, sendRespons
   } else if (value === TvMessage.SHOW_TEXT_NODES) {
     const onOff = dir.toggleShowTextNodes()
     console.log(`show text nodes is ${onOff ? "ON" : "OFF"}`)
+    sendResponse()
+
+  } else if (value === TvMessage.CLEAR_BLOCK_BOXES) {
+    dir.clearBlockBoxes()
     sendResponse()
 
   } else {

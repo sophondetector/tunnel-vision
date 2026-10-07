@@ -22,6 +22,7 @@ const OPACITY_CONTROL = document.getElementById("opacity-control") as HTMLDivEle
 // FIXME: grey out opacity slider when screen isn't on
 const OPACITY_DISPLAY = document.getElementById('opacity-display') as HTMLSpanElement
 const OPACITY_SLIDER = document.getElementById('opacity-slider') as HTMLInputElement
+const CLEAR_BLOCKS = document.getElementById('clear-blocks') as HTMLButtonElement
 
 const COLOR_CONTROL = document.getElementById("color-control") as HTMLDivElement
 const COLOR_PICKER = document.getElementById('color-picker') as HTMLInputElement
@@ -57,6 +58,7 @@ function greyOutControls(): void {
   greyOutEle(OPACITY_DISPLAY)
   greyOutEle(OPACITY_SLIDER)
   greyOutEle(COLOR_PICKER)
+  greyOutEle(CLEAR_BLOCKS)
 }
 
 function disableVolumeSlider(): void {
@@ -77,6 +79,7 @@ function hideNonOpenInVisionPDF(): void {
   SCREEN_TOGGLE.classList.add(HIDDEN)
   COLOR_CONTROL.classList.add(HIDDEN)
   OPACITY_CONTROL.classList.add(HIDDEN)
+  CLEAR_BLOCKS.classList.add(HIDDEN)
 }
 
 function urlIsPdf(url: string): boolean {
@@ -161,6 +164,13 @@ SCREEN_TOGGLE.addEventListener('click', async () => {
   const tab = await getCurrentTab()
   chrome.tabs.sendMessage(tab.id!, TvMessage.TOGGLE_SCREEN, function () {
     console.log("sent message to content.ts in open tab")
+  })
+})
+
+CLEAR_BLOCKS.addEventListener('click', async () => {
+  const tab = await getCurrentTab()
+  chrome.tabs.sendMessage(tab.id!, TvMessage.CLEAR_BLOCK_BOXES, function () {
+    console.log(`sent message ${TvMessage.CLEAR_BLOCK_BOXES} to content.ts in open tab`)
   })
 })
 
